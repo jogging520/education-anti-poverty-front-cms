@@ -3,4 +3,5 @@ export class Role {
   name: string;
   appTypes: string[];
   permissions: number[];
+  status: string;
 }

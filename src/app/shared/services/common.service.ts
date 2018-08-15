@@ -49,7 +49,7 @@ export class CommonService {
    * @param {Object} originalObject 原始对象
    * @returns {Object} 增加了公共信息后的对象
    */
-  public setParams(originalObject: Object): Object {
+  public setParams(originalObject?: Object): Object {
 
     let params = {};
 

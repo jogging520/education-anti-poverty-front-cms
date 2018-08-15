@@ -1,5 +1,5 @@
 export const environment = {
-  server_url: `./`,
+  serverUrl: `./`,
   production: true,
   useHash: true,
   hmr: false,
