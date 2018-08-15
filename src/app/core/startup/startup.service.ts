@@ -10,7 +10,7 @@ import {CacheService} from "@delon/cache";
 import {Strategy} from "@shared/models/strategy";
 import {Role} from "@shared/models/role";
 import { v4 as uuid } from 'uuid';
-import {of} from "rxjs/index";
+import {throwError} from "rxjs/index";
 
 /**
  * 用于应用启动时
@@ -26,7 +26,7 @@ export class StartupService {
     private aclService: ACLService,
     private titleService: TitleService,
     private cacheService: CacheService,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
   ) { }
 
   private initial(resolve: any, reject: any) {
@@ -43,7 +43,7 @@ export class StartupService {
 
     //2、如果没有登录或者已经超过登录时间，那么重定向到登录页面。
     if (!tokenData.token || !tokenData.loginTime || currentTime - tokenData.loginTime > tokenData.lifeTime) {
-      this.injector.get(Router).navigateByUrl('/passport/login');
+      this.injector.get(Router).navigate(['/passport/login']);
       resolve({});
       return;
     }
@@ -52,21 +52,28 @@ export class StartupService {
     this.httpClient
       .get(`${environment.server_url}strategies\\application`,
         {headers: headers,
-          params: {serialNo: serialNo,
+          params: {
+            serialNo: serialNo,
             appType: `${environment.appType}`,
             category: `${environment.category}`}}
       )
       .pipe(
         flatMap((strategy: any) => strategy),
         catchError(error => {
+          this.injector.get(Router).navigate(['/passport/login']);
           resolve(null);
-          return of(error);
+          return throwError(error);
         })
       )
       .subscribe(
         (strategy: Strategy) => {
           this.settingService.setApp({name: strategy.name, description: strategy.description});
           this.titleService.suffix = strategy.name;
+        },
+        (error) => {
+          this.injector.get(Router).navigate(['/passport/login']);
+          resolve(null);
+          throwError(error);
         }
       );
 
@@ -82,13 +89,19 @@ export class StartupService {
       .pipe(
         flatMap((strategy: any) => strategy),
         catchError(error => {
+          this.injector.get(Router).navigate(['/passport/login']);
           resolve(null);
-          return of(error);
+          return throwError(error);
         })
       )
       .subscribe(
         (strategy: Strategy) => {
           this.cacheService.set('errorcode', strategy.parameters);
+        },
+        (error) => {
+          this.injector.get(Router).navigate(['/passport/login']);
+          resolve(null);
+          throwError(error);
         }
       );
 
@@ -122,16 +135,19 @@ export class StartupService {
           return ability;
         }, abilities),
         catchError(error => {
+          this.injector.get(Router).navigate(['/passport/login']);
           resolve(null);
-          return of(error);
+          return throwError(error);
         })
       )
       .subscribe(
         () => {
           console.info(this.aclService.data);
         },
-        () => {
+        (error) => {
+          this.injector.get(Router).navigate(['/passport/login']);
           resolve(null);
+          throwError(error);
         },
         () => {
           this.aclService.setAbility(abilities);
@@ -144,8 +160,9 @@ export class StartupService {
             )
             .pipe(
               catchError(error => {
+                this.injector.get(Router).navigate(['/passport/login']);
                 resolve(null);
-                return of(error);
+                return throwError(error);
               })
             )
             .subscribe(

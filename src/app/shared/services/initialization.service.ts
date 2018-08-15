@@ -105,6 +105,7 @@ export class InitializationService {
                   affiliations: user.affiliations
                 });
 
+                console.log(decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))));
                 this.settingService.setUser({
                   name: decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))),
                   avatar: user.avatar,
