@@ -48,7 +48,6 @@ export class StartupService {
         .set('serialNo', serialNo);
     }
 
-    console.log(serialNo);
     const tokenData = this.tokenService.get();
     const currentTime = new Date().getTime();
 

@@ -124,7 +124,7 @@ export class InitializationService {
           this.startupService.load().then(() => this.router.navigate(['/']));
         },
         () => {
-          this.router.navigate(['/passport/login']).then();
+          this.router.navigate(['/passport/login']).catch();
         }
       )
   }

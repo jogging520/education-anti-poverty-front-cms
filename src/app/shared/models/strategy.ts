@@ -1,6 +1,13 @@
 export class Strategy {
-  name?: string;
+  id: string;
+  type: string;
+  name: string;
+  appType?: string;
+  category?: string;
   parameters?: any;
-  description: string;
-  status: string;
+  createTime?: string;
+  timestamp?: string;
+  status?: string;
+  serialNo?: string;
+  description?: string;
 }

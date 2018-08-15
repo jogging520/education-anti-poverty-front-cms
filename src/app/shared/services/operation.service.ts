@@ -36,9 +36,6 @@ export class OperationService {
     else
       id = this.commonService.setSerialNo();
 
-    console.log(serialNo);
-    console.log(id);
-
     let operation: Operation = {
       id: id,
       type: 'COMMON',
