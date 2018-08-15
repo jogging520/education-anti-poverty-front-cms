@@ -37,16 +37,9 @@ export class StartupService {
       'apikey': `${environment.apiKey}`
     };
 
-    let serialNo: string = '';
-    if (this.cacheService.get('serialNo')) {
-      this.cacheService
-        .get<string>('serialNo')
-        .subscribe(data => serialNo = data);
-    } else {
-      serialNo = uuid();
-      this.cacheService
-        .set('serialNo', serialNo);
-    }
+    let serialNo: string = uuid();
+    this.cacheService
+      .set('serialNo', serialNo);
 
     const tokenData = this.tokenService.get();
     const currentTime = new Date().getTime();
