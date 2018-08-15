@@ -1,11 +1,13 @@
 export class User {
   id: string;
   type: string;
-  userName: string;
-  password: string;
+  name: string;
+  password?: string;
+  salt?: string;
   realName: string;
   avatar?: string;
-  appTypes: string[];
+  appTypes?: string[];
+  category?: string;
   roles: string[];
   permissions?: number[];
   affiliations: {
@@ -15,5 +17,9 @@ export class User {
   mobiles: string[];
   emails?: string[];
   wechates?: string[];
-  status: string;
+  createTime?: string;
+  timestamp?: string;
+  status?: string;
+  serialNo?: string;
+  description?: string;
 }

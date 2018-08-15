@@ -26,41 +26,59 @@ export class StartupService {
     private aclService: ACLService,
     private titleService: TitleService,
     private cacheService: CacheService,
-    private httpClient: HttpClient,
+    private httpClient: HttpClient
   ) { }
 
   private initial(resolve: any, reject: any) {
-    //1、设置headers信息
+    //1、设置headers信息，设置初始流水号
     let headers = {
       'Content-Type': `${environment.contentType}`,
       'Accept': `${environment.accept}`,
       'apikey': `${environment.apiKey}`
     };
 
-    const serialNo = uuid();
+    let serialNo: string = '';
+    if (this.cacheService.get('serialNo')) {
+      this.cacheService
+        .get<string>('serialNo')
+        .subscribe(data => serialNo = data);
+    } else {
+      serialNo = uuid();
+      this.cacheService
+        .set('serialNo', serialNo);
+    }
+
     const tokenData = this.tokenService.get();
     const currentTime = new Date().getTime();
 
     //2、如果没有登录或者已经超过登录时间，那么重定向到登录页面。
     if (!tokenData.token || !tokenData.loginTime || currentTime - tokenData.loginTime > tokenData.lifeTime) {
-      this.injector.get(Router).navigate(['/passport/login']);
+      this.injector.get(Router).navigate(['/passport/login']).catch();
       resolve({});
       return;
     }
 
     //3、获取应用程序相关信息并设置
     this.httpClient
-      .get(`${environment.server_url}strategies\\application`,
+      .get(`${environment.serverUrl}strategies\\application`,
         {headers: headers,
           params: {
             serialNo: serialNo,
             appType: `${environment.appType}`,
-            category: `${environment.category}`}}
+            category: `${environment.category}`,
+            session: tokenData.session,
+            user: tokenData.user,
+          }}
       )
       .pipe(
+        map((strategy: Strategy) => {
+          if (strategy.status !== 'SUCCESS') {
+            return throwError(strategy.status);
+          }
+        }),
         flatMap((strategy: any) => strategy),
         catchError(error => {
-          this.injector.get(Router).navigate(['/passport/login']);
+          this.injector.get(Router).navigate(['/passport/login']).catch();
           resolve(null);
           return throwError(error);
         })
@@ -71,7 +89,7 @@ export class StartupService {
           this.titleService.suffix = strategy.name;
         },
         (error) => {
-          this.injector.get(Router).navigate(['/passport/login']);
+          this.injector.get(Router).navigate(['/passport/login']).catch();
           resolve(null);
           throwError(error);
         }
@@ -80,16 +98,25 @@ export class StartupService {
     //4、获取错误码相关信息，并缓存
     this.cacheService.remove('errorcode');
     this.httpClient
-      .get(`${environment.server_url}strategies\\errorcode`,
+      .get(`${environment.serverUrl}strategies\\errorcode`,
         {headers: headers,
-          params: {serialNo: serialNo,
+          params: {
+            serialNo: serialNo,
             appType: `${environment.appType}`,
-            category: `${environment.category}`}}
+            category: `${environment.category}`,
+            session: tokenData.session,
+            user: tokenData.user,
+          }}
       )
       .pipe(
+        map((strategy: Strategy) => {
+          if (strategy.status !== 'SUCCESS') {
+            return throwError(strategy.status);
+          }
+        }),
         flatMap((strategy: any) => strategy),
         catchError(error => {
-          this.injector.get(Router).navigate(['/passport/login']);
+          this.injector.get(Router).navigate(['/passport/login']).catch();
           resolve(null);
           return throwError(error);
         })
@@ -99,7 +126,7 @@ export class StartupService {
           this.cacheService.set('errorcode', strategy.parameters);
         },
         (error) => {
-          this.injector.get(Router).navigate(['/passport/login']);
+          this.injector.get(Router).navigate(['/passport/login']).catch();
           resolve(null);
           throwError(error);
         }
@@ -111,20 +138,27 @@ export class StartupService {
     this.menuService.clear();
 
     const roles = tokenData.roles;
-    const permissions = tokenData.permissions;
-
-    let abilities = permissions;
+    let abilities = tokenData.permissions;
 
     this.httpClient
       .get(
-        `${environment.server_url}privileges\\roles`,
+        `${environment.serverUrl}privileges\\roles`,
         {headers: headers,
-          params: {serialNo: serialNo,
+          params: {
+            serialNo: serialNo,
             appType: `${environment.appType}`,
             category: `${environment.category}`,
-            roles: roles.join(',')}}
+            session: tokenData.session,
+            user: tokenData.user,
+            roles: roles.join(',')
+          }}
       )
       .pipe(
+        map((role: Role) => {
+          if (role.status !== 'SUCCESS') {
+            return throwError(role.status);
+          }
+        }),
         flatMap((role: any) => role),
         map((role: Role) => role.permissions),
         scan((ability, permissions) => {
@@ -135,7 +169,7 @@ export class StartupService {
           return ability;
         }, abilities),
         catchError(error => {
-          this.injector.get(Router).navigate(['/passport/login']);
+          this.injector.get(Router).navigate(['/passport/login']).catch();
           resolve(null);
           return throwError(error);
         })
@@ -145,7 +179,7 @@ export class StartupService {
           console.info(this.aclService.data);
         },
         (error) => {
-          this.injector.get(Router).navigate(['/passport/login']);
+          this.injector.get(Router).navigate(['/passport/login']).catch();
           resolve(null);
           throwError(error);
         },
@@ -154,25 +188,29 @@ export class StartupService {
 
           this.httpClient
             .get(
-              `${environment.server_url}menus\\${environment.appType}`,
+              `${environment.serverUrl}menus\\${environment.appType}`,
               {headers: headers,
                 params: {serialNo: serialNo}}
             )
             .pipe(
+              map((menu: any) => {
+                if (menu.status !== 'SUCCESS') {
+                  return throwError(menu.status);
+                }
+              }),
               catchError(error => {
-                this.injector.get(Router).navigate(['/passport/login']);
+                this.injector.get(Router).navigate(['/passport/login']).catch();
                 resolve(null);
                 return throwError(error);
               })
             )
             .subscribe(
-              (menus: Menu[]) => {
+              (menus: any) => {
                 this.menuService.add(menus);
-                console.info(this.menuService.menus);
               }
             );
         }
-      )
+      );
 
     resolve({});
   }

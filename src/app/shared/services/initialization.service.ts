@@ -10,6 +10,7 @@ import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
 import {mergeMap, catchError, map} from "rxjs/operators";
 import {environment} from "@env/environment";
 import {Token} from "@shared/models/token";
+import {OperationService} from "@shared/services/operation.service";
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,7 @@ export class InitializationService {
     @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService,
     private settingService: SettingsService,
     private commonService: CommonService,
+    private operationService: OperationService
   ) { }
 
   /**
@@ -42,8 +44,6 @@ export class InitializationService {
    */
   public login(userName?: string, password?: string, mobile?: string): void {
 
-    this.commonService.setSerialNo();
-
     let encryptedUserName = encodeURIComponent(
       this.commonService.encrypt(btoa(userName), true));
     let encryptedPassword = encodeURIComponent(
@@ -53,7 +53,7 @@ export class InitializationService {
 
     this.httpClient
       .post(
-        `${environment.server_url}login`,
+        `${environment.serverUrl}login`,
         null,
         this.commonService.setParams({
           userName: encryptedUserName,
@@ -79,8 +79,8 @@ export class InitializationService {
 
           return this.httpClient
             .get(
-              `${environment.server_url}users`,
-              this.commonService.setParams({user: token.user, userId: token.user}),
+              `${environment.serverUrl}users`,
+              this.commonService.setParams({user: token.user, id: token.user}),
               {headers: CommonService.setHeaders()}
             )
             .pipe(
@@ -105,7 +105,6 @@ export class InitializationService {
                   affiliations: user.affiliations
                 });
 
-                console.log(decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))));
                 this.settingService.setUser({
                   name: decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))),
                   avatar: user.avatar,
@@ -120,11 +119,12 @@ export class InitializationService {
       )
       .subscribe(
         () => {
+          this.operationService.createOperation('LOGIN', this.commonService.getSerialNo());
           this.reuseTabService.clear();
           this.startupService.load().then(() => this.router.navigate(['/']));
         },
         () => {
-          this.router.navigate(['/passport/login']).then();
+          this.router.navigate(['/passport/login']).catch();
         }
       )
   }
