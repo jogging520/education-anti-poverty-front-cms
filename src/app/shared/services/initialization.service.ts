@@ -121,7 +121,7 @@ export class InitializationService {
         () => {
           this.operationService.createOperation('LOGIN', this.commonService.getSerialNo());
           this.reuseTabService.clear();
-          this.startupService.load().then(() => this.router.navigate(['/']));
+          this.startupService.load().catch();
         },
         () => {
           this.router.navigate(['/passport/login']).catch();

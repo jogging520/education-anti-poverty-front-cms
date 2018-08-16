@@ -1,7 +1,7 @@
 import { Injectable, Injector, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import {MenuService, SettingsService, TitleService, Menu} from '@delon/theme';
+import {MenuService, SettingsService, TitleService} from '@delon/theme';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ACLService } from '@delon/acl';
 import {catchError, map, scan, flatMap} from "rxjs/operators";
@@ -147,13 +147,14 @@ export class StartupService {
           }}
       )
       .pipe(
+        flatMap((role: any) => role),
         map((role: Role) => {
           if (role.status !== 'SUCCESS') {
             return throwError(role.status);
           }
+
+          return role.permissions;
         }),
-        flatMap((role: any) => role),
-        map((role: Role) => role.permissions),
         scan((ability, permissions) => {
           for(let permission of permissions) {
             if(ability.indexOf(permission) == -1)
@@ -183,7 +184,13 @@ export class StartupService {
             .get(
               `${environment.serverUrl}menus\\${environment.appType}`,
               {headers: headers,
-                params: {serialNo: serialNo}}
+                params: {
+                  serialNo: serialNo,
+                  appType: `${environment.appType}`,
+                  category: `${environment.category}`,
+                  session: tokenData.session,
+                  user: tokenData.user,
+                }}
             )
             .pipe(
               map((menu: any) => {
@@ -200,6 +207,14 @@ export class StartupService {
             .subscribe(
               (menus: any) => {
                 this.menuService.add(menus);
+              },
+              (error) => {
+                this.injector.get(Router).navigate(['/passport/login']).catch();
+                resolve(null);
+                throwError(error);
+              },
+              () => {
+                this.injector.get(Router).navigate(['/']).catch();
               }
             );
         }
