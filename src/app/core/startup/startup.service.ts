@@ -1,7 +1,7 @@
 import { Injectable, Injector, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import {MenuService, SettingsService, TitleService} from '@delon/theme';
+import {Menu, MenuService, SettingsService, TitleService} from '@delon/theme';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ACLService } from '@delon/acl';
 import {catchError, map, scan, flatMap} from "rxjs/operators";
@@ -143,7 +143,7 @@ export class StartupService {
             category: `${environment.category}`,
             session: tokenData.session,
             user: tokenData.user,
-            roles: roles.join(',')
+            ids: roles.join(',')
           }}
       )
       .pipe(
@@ -169,9 +169,7 @@ export class StartupService {
         })
       )
       .subscribe(
-        () => {
-          console.info(this.aclService.data);
-        },
+        () => {},
         (error) => {
           this.injector.get(Router).navigate(['/passport/login']).catch();
           resolve(null);
@@ -193,11 +191,6 @@ export class StartupService {
                 }}
             )
             .pipe(
-              map((menu: any) => {
-                if (menu.status !== 'SUCCESS') {
-                  return throwError(menu.status);
-                }
-              }),
               catchError(error => {
                 this.injector.get(Router).navigate(['/passport/login']).catch();
                 resolve(null);
@@ -205,7 +198,7 @@ export class StartupService {
               })
             )
             .subscribe(
-              (menus: any) => {
+              (menus: Menu[]) => {
                 this.menuService.add(menus);
               },
               (error) => {
