@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { SettingsService } from '@delon/theme';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import {PassportService} from "@shared/services/general/passport.service";
 
 @Component({
   selector: 'header-user',
@@ -25,10 +26,11 @@ export class HeaderUserComponent {
     public settings: SettingsService,
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
+    private passportService: PassportService
   ) {}
 
   logout() {
-    this.tokenService.clear();
-    this.router.navigateByUrl(this.tokenService.login_url);
+    this.passportService.logout();
+    this.router.navigateByUrl(this.tokenService.login_url).catch();
   }
 }

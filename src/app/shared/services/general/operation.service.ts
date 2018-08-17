@@ -1,5 +1,5 @@
 import {Inject, Injectable} from '@angular/core';
-import {CommonService} from "@shared/services/common.service";
+import {CommonService} from "@shared/services/general/common.service";
 import {_HttpClient} from "@delon/theme";
 import {environment} from "@env/environment";
 import {Operation} from "@shared/models/operation";

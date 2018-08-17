@@ -2,7 +2,7 @@ import {Inject, Injectable, Optional} from '@angular/core';
 import {BehaviorSubject, ReplaySubject, throwError} from "rxjs/index";
 import {User} from "@shared/models/user";
 import {_HttpClient, SettingsService} from "@delon/theme";
-import {CommonService} from "@shared/services/common.service";
+import {CommonService} from "@shared/services/general/common.service";
 import {Router} from "@angular/router";
 import {ReuseTabService} from "@delon/abc";
 import {StartupService} from "@core/startup/startup.service";
@@ -10,12 +10,13 @@ import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
 import {mergeMap, catchError, map} from "rxjs/operators";
 import {environment} from "@env/environment";
 import {Token} from "@shared/models/token";
-import {OperationService} from "@shared/services/operation.service";
+import {OperationService} from "@shared/services/general/operation.service";
+import {CacheService} from "@delon/cache";
 
 @Injectable({
   providedIn: 'root'
 })
-export class InitializationService {
+export class PassportService {
 
   private currentUserSubject = new BehaviorSubject<User>(new User());
   public currentUser = this.currentUserSubject.asObservable();
@@ -32,6 +33,7 @@ export class InitializationService {
     private startupService: StartupService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService,
     private settingService: SettingsService,
+    private cacheService: CacheService,
     private commonService: CommonService,
     private operationService: OperationService
   ) { }
@@ -43,6 +45,10 @@ export class InitializationService {
    * @param {string} mobile 手机号码
    */
   public login(userName?: string, password?: string, mobile?: string): void {
+
+    if (!this.commonService.getSerialNo()) {
+      this.commonService.setSerialNo();
+    }
 
     let encryptedUserName = encodeURIComponent(
       this.commonService.encrypt(btoa(userName), true));
@@ -121,7 +127,7 @@ export class InitializationService {
         () => {
           this.operationService.createOperation('LOGIN', this.commonService.getSerialNo());
           this.reuseTabService.clear();
-          this.startupService.load().catch();
+          this.startupService.load(this.commonService.getSerialNo()).catch();
         },
         () => {
           this.router.navigate(['/passport/login']).catch();
@@ -133,7 +139,25 @@ export class InitializationService {
    * 方法：登出
    */
   public logout() {
-    this.purgeAuth();
+
+    this.operationService.createOperation('LOGOUT', this.commonService.setSerialNo());
+
+    this.httpClient
+      .delete(`${environment.serverUrl}sessions`,
+        this.commonService.setParams({}),
+        {headers: CommonService.setHeaders()}
+        )
+      .pipe(
+        catchError(error => this.commonService.handleError(error))
+      )
+      .subscribe(
+        () => {
+          this.purgeAuth();
+        },
+        () => {
+          this.router.navigate(['/passport/login']).catch();
+        }
+      )
   }
 
   /**
@@ -151,5 +175,6 @@ export class InitializationService {
   private purgeAuth() {
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
+    this.reuseTabService.clear();
   }
 }

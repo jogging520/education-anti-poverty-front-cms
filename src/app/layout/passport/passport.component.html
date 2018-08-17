@@ -1,17 +1,23 @@
 <div class="container">
-  <div class="wrap">
-    <div class="top">
-      <div class="head">
-        <img class="logo" src="./assets/logo-color.svg">
-        <span class="title">ng-alain</span>
-      </div>
-      <div class="desc">武林中最有影响力的《葵花宝典》；欲练神功，挥刀自宫</div>
+  <div class="top">
+    <div class="head">
+      <img class="logo" src="./assets/logo-color.svg">
+      <span class="title">测试系统</span>
     </div>
-    <router-outlet></router-outlet>
-    <global-footer [links]="links">
-      Copyright
-      <i class="anticon anticon-copyright"></i> 2017
-      <a href="//github.com/cipchk" target="_blank">卡色</a>出品
-    </global-footer>
+  </div>
+  <div class="wrap">
+    <div nz-row>
+      <div nz-col nzSpan="8" nzOffset="14">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+  <div class="bottom">
+    <div nz-row>
+      <div nz-col nzSpan="8" nzOffset="12">
+        <i class="anticon anticon-copyright"></i> 2018
+        <a href="//github.com/cipchk" target="_blank">北脑</a>出品
+      </div>
+    </div>
   </div>
 </div>
