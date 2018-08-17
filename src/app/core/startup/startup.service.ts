@@ -1,7 +1,7 @@
 import { Injectable, Injector, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import {MenuService, SettingsService, TitleService, Menu} from '@delon/theme';
+import {Menu, MenuService, SettingsService, TitleService} from '@delon/theme';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { ACLService } from '@delon/acl';
 import {catchError, map, scan, flatMap} from "rxjs/operators";
@@ -37,16 +37,9 @@ export class StartupService {
       'apikey': `${environment.apiKey}`
     };
 
-    let serialNo: string = '';
-    if (this.cacheService.get('serialNo')) {
-      this.cacheService
-        .get<string>('serialNo')
-        .subscribe(data => serialNo = data);
-    } else {
-      serialNo = uuid();
-      this.cacheService
-        .set('serialNo', serialNo);
-    }
+    let serialNo: string = uuid();
+    this.cacheService
+      .set('serialNo', serialNo);
 
     const tokenData = this.tokenService.get();
     const currentTime = new Date().getTime();
@@ -150,17 +143,18 @@ export class StartupService {
             category: `${environment.category}`,
             session: tokenData.session,
             user: tokenData.user,
-            roles: roles.join(',')
+            ids: roles.join(',')
           }}
       )
       .pipe(
+        flatMap((role: any) => role),
         map((role: Role) => {
           if (role.status !== 'SUCCESS') {
             return throwError(role.status);
           }
+
+          return role.permissions;
         }),
-        flatMap((role: any) => role),
-        map((role: Role) => role.permissions),
         scan((ability, permissions) => {
           for(let permission of permissions) {
             if(ability.indexOf(permission) == -1)
@@ -175,9 +169,7 @@ export class StartupService {
         })
       )
       .subscribe(
-        () => {
-          console.info(this.aclService.data);
-        },
+        () => {},
         (error) => {
           this.injector.get(Router).navigate(['/passport/login']).catch();
           resolve(null);
@@ -190,14 +182,15 @@ export class StartupService {
             .get(
               `${environment.serverUrl}menus\\${environment.appType}`,
               {headers: headers,
-                params: {serialNo: serialNo}}
+                params: {
+                  serialNo: serialNo,
+                  appType: `${environment.appType}`,
+                  category: `${environment.category}`,
+                  session: tokenData.session,
+                  user: tokenData.user,
+                }}
             )
             .pipe(
-              map((menu: any) => {
-                if (menu.status !== 'SUCCESS') {
-                  return throwError(menu.status);
-                }
-              }),
               catchError(error => {
                 this.injector.get(Router).navigate(['/passport/login']).catch();
                 resolve(null);
@@ -205,8 +198,16 @@ export class StartupService {
               })
             )
             .subscribe(
-              (menus: any) => {
+              (menus: Menu[]) => {
                 this.menuService.add(menus);
+              },
+              (error) => {
+                this.injector.get(Router).navigate(['/passport/login']).catch();
+                resolve(null);
+                throwError(error);
+              },
+              () => {
+                this.injector.get(Router).navigate(['/']).catch();
               }
             );
         }
