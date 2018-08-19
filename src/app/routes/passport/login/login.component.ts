@@ -8,7 +8,7 @@ import {
   SocialOpenType,
 } from '@delon/auth';
 import { environment } from '@env/environment';
-import {InitializationService} from "@shared/services/initialization.service";
+import {PassportService} from "@shared/services/general/passport.service";
 
 @Component({
   selector: 'passport-login',
@@ -29,11 +29,11 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     private modalSrv: NzModalService,
     private settingsService: SettingsService,
     private socialService: SocialService,
-    private initializationService: InitializationService
+    private passportService: PassportService
   ) {
     this.form = fb.group({
       userName: [null, [Validators.required, Validators.minLength(5)]],
-      password: [null, Validators.required],
+      password: [null, [Validators.required, Validators.minLength(6)]],
       mobile: [null, [Validators.required, Validators.pattern(/^1\d{10}$/)]],
       captcha: [null, [Validators.required]],
       remember: [true],
@@ -99,7 +99,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     // mock http
     this.loading = true;
 
-    this.initializationService
+    this.passportService
       .login(this.userName.value, this.password.value, this.mobile.value);
 
     this.form.controls["userName"].setValue("");

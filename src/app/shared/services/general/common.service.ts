@@ -32,11 +32,11 @@ export class CommonService {
       headers["Content-Type"] = `${environment.contentType}`;
     }
 
-    if (`${environment.contentType}`) {
+    if (`${environment.accept}`) {
       headers["Accept"] = `${environment.accept}`;
     }
 
-    if (`${environment.contentType}`) {
+    if (`${environment.apiKey}`) {
       headers["apiKey"] = `${environment.apiKey}`;
     }
 

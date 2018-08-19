@@ -29,7 +29,7 @@ export class StartupService {
     private httpClient: HttpClient
   ) { }
 
-  private initial(resolve: any, reject: any) {
+  private initial(resolve: any, reject: any, id?: string) {
     //1、设置headers信息，设置初始流水号
     let headers = {
       'Content-Type': `${environment.contentType}`,
@@ -37,9 +37,15 @@ export class StartupService {
       'apikey': `${environment.apiKey}`
     };
 
-    let serialNo: string = uuid();
-    this.cacheService
-      .set('serialNo', serialNo);
+    let serialNo: string = '';
+
+    if (!id) {
+      serialNo = uuid();
+      this.cacheService
+        .set('serialNo', serialNo);
+    } else {
+      serialNo = id;
+    }
 
     const tokenData = this.tokenService.get();
     const currentTime = new Date().getTime();
@@ -208,23 +214,24 @@ export class StartupService {
               },
               () => {
                 this.injector.get(Router).navigate(['/']).catch();
+                resolve({});
               }
             );
         }
       );
 
-    resolve({});
+    return;
   }
 
 
-  load(): Promise<any> {
+  load(id?: string): Promise<any> {
     // only works with promises
     // https://github.com/angular/angular/issues/15088
     return new Promise((resolve, reject) => {
       // http
       // this.viaHttp(resolve, reject);
       // mock：请勿在生产环境中这么使用，viaMock 单纯只是为了模拟一些数据使脚手架一开始能正常运行
-      this.initial(resolve, reject);
+      this.initial(resolve, reject, id);
     });
   }
 }
