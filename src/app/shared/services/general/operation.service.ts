@@ -3,8 +3,8 @@ import {CommonService} from "@shared/services/general/common.service";
 import {_HttpClient} from "@delon/theme";
 import {environment} from "@env/environment";
 import {Operation} from "@shared/models/operation";
-import {catchError, map} from "rxjs/operators";
-import {throwError} from "rxjs/index";
+import {catchError, map, flatMap} from "rxjs/operators";
+import {Observable, throwError} from "rxjs/index";
 import {NzMessageService} from "ng-zorro-antd";
 import {Router} from "@angular/router";
 import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
@@ -70,5 +70,23 @@ export class OperationService {
           this.router.navigate(['/500']).catch();
         }
       );
+  }
+
+
+  /**
+   * 方法：查询操作记录
+   * @param {Object} condition 条件（用户、开始时间、结束时间）
+   * @return {Observable<Operation>} 操作记录
+   */
+  public queryOperations(condition: Object): Observable<Operation> {
+    return this.httpClient
+      .get(`${environment.serverUrl}operations`,
+        this.commonService.setParams(condition),
+        {headers: CommonService.setHeaders()}
+        )
+      .pipe(
+        flatMap(operation => operation),
+        catchError(error => this.commonService.handleError(error))
+      )
   }
 }

@@ -1,0 +1,7 @@
+<div class="content__title">
+  <h5>展示各类操作记录。</h5>
+</div>
+<nz-card>
+  <sf mode="search" [schema]="searchSchema" (formSubmit)="st.reset($event)" (formReset)="st.reset($event)"></sf>
+  <simple-table #st [data]="operations" [columns]="columns"></simple-table>
+</nz-card>
