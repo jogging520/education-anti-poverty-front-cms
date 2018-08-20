@@ -1,45 +1,75 @@
 <div class="content__title">
   <h5>展示各类业务及系统指标。</h5>
 </div>
-<div nz-row [nzGutter]="24">
-  <div nz-col [nzSpan]="6">
-    <g2-card [title]="'搜索用户数量'" contentHeight="134" [bordered]="true">
-      <number-info subTitle="本周访问" total="12,321" subTotal="17.1" status="up"></number-info>
-      <g2-mini-area line height="45" [data]="visitData"></g2-mini-area>
-    </g2-card>
-  </div>
-  <div nz-col [nzSpan]="6">
-    <g2-card [title]="'访问量'" total="8,846" footer="日访问量 1,234" contentHeight="46" [action]="visitAction" [bordered]="true">
-      <ng-template #visitAction>
+<div nz-row [nzGutter]="24" class="pt-lg">
+  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="6">
+    <g2-card [title]="'总销售额'" total="¥ 126,560" contentHeight="44px" [action]="action1" [footer]="footer1">
+      <ng-template #action1>
         <nz-tooltip [nzTitle]="'指标说明'">
           <i nz-tooltip class="anticon anticon-info-circle-o"></i>
         </nz-tooltip>
       </ng-template>
-      <g2-mini-bar height="46" [data]="visitData"></g2-mini-bar>
+      <trend flag="up" style="display:block; margin-top:2px;">周同比
+        <span class="pl-sm">12%</span>
+      </trend>
+      <trend flag="down">日环比
+        <span class="pl-sm">11%</span>
+      </trend>
+      <ng-template #footer1>
+        <p class="text-truncate mb0">日均销售额
+          <span class="ml-sm">￥12,423</span>
+        </p>
+      </ng-template>
     </g2-card>
   </div>
-  <div nz-col [nzSpan]="6">
-    <g2-card [title]="'线上购物转化率'" total="78%" footer="日访问量 1,234" contentHeight="46"
-             [action]="action" [footer]="footer" [bordered]="true">
-      <ng-template #action>
+  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="6">
+    <g2-card [title]="'访问量'" total={{data.count}} contentHeight="46px" [action]="action2" [footer]="footer2">
+      <ng-template #action2>
         <nz-tooltip [nzTitle]="'指标说明'">
           <i nz-tooltip class="anticon anticon-info-circle-o"></i>
         </nz-tooltip>
       </ng-template>
-      <ng-template #footer>
-        周同比<trend flag="up" style="margin: 0 16px 0 8px; color: rgba(0,0,0,.85)">12%</trend>
-        日环比<trend flag="down" style="margin: 0 0 0 8px; color: rgba(0,0,0,.85)">11%</trend>
+      <g2-mini-area color="#975FE4" height="46" [data]="data.count"></g2-mini-area>
+      <ng-template #footer2>
+        <p class="text-truncate mb0">日访问量
+          <span class="ml-sm">{{data.count}}</span>
+        </p>
       </ng-template>
-      <g2-mini-progress percent="78" strokeWidth="8" target="80"></g2-mini-progress>
     </g2-card>
   </div>
-  <div nz-col [nzSpan]="6">
-    <nz-card style="width:300px;" nzTitle="Card title" [nzExtra]="extraTemplate">
-      <p>{{data}}</p>
-    </nz-card>
-    <ng-template #extraTemplate>
-      <a>More</a>
-    </ng-template>
+  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="6">
+    <g2-card [title]="'支付笔数'" total="6,560" contentHeight="46px" [action]="action3" [footer]="footer3">
+      <ng-template #action3>
+        <nz-tooltip [nzTitle]="'指标说明'">
+          <i nz-tooltip class="anticon anticon-info-circle-o"></i>
+        </nz-tooltip>
+      </ng-template>
+      <g2-mini-bar height="46" [data]="data.count"></g2-mini-bar>
+      <ng-template #footer3>
+        <p class="text-truncate mb0">转化率
+          <span class="ml-sm">60%</span>
+        </p>
+      </ng-template>
+    </g2-card>
+  </div>
+  <div nz-col nzXs="24" nzSm="12" nzMd="12" nzLg="6">
+    <g2-card [title]="'运营活动效果'" total="78%" contentHeight="46px" [action]="action4" [footer]="footer4">
+      <ng-template #action4>
+        <nz-tooltip [nzTitle]="'指标说明'">
+          <i nz-tooltip class="anticon anticon-info-circle-o"></i>
+        </nz-tooltip>
+      </ng-template>
+      <g2-mini-progress height="46" percent="78" strokeWidth="8" target="80" color="#13C2C2"></g2-mini-progress>
+      <ng-template #footer4>
+        <div class="d-flex justify-content-between">
+          <trend flag="up">周同比
+            <span class="pl-sm">12%</span>
+          </trend>
+          <trend flag="down">日环比
+            <span class="pl-sm">11%</span>
+          </trend>
+        </div>
+      </ng-template>
+    </g2-card>
   </div>
 </div>
-

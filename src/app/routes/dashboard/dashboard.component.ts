@@ -6,6 +6,7 @@ import * as format from 'date-fns/format';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.less'],
 })
 export class DashboardComponent implements OnInit {
 
@@ -21,7 +22,7 @@ export class DashboardComponent implements OnInit {
     this.statisticsService
       .stat()
       .subscribe(
-        data => this.data = data,
+        data => this.data = JSON.parse(data),
         error => {
           this.messageService.warning('获取统计数据失败。');
         },
