@@ -2,7 +2,7 @@ import {Inject, Injectable} from '@angular/core';
 import {CommonService} from "@shared/services/general/common.service";
 import {_HttpClient} from "@delon/theme";
 import {environment} from "@env/environment";
-import {Operation} from "@shared/models/operation";
+import {Operation} from "@shared/models/general/operation";
 import {catchError, map, flatMap} from "rxjs/operators";
 import {Observable, throwError} from "rxjs/index";
 import {NzMessageService} from "ng-zorro-antd";
@@ -25,6 +25,7 @@ export class OperationService {
   /**
    * 方法：创建一条业务操作记录
    * @param {string} businessType 业务类型
+   * @param {string} serialNo 流水号
    */
   public createOperation(businessType: string, serialNo?: string): void {
 
@@ -78,7 +79,7 @@ export class OperationService {
    * @param {Object} condition 条件（用户、开始时间、结束时间）
    * @return {Observable<Operation>} 操作记录
    */
-  public queryOperations(condition: Object): Observable<Operation> {
+  public queryOperations(condition?: Object): Observable<Operation> {
     return this.httpClient
       .get(`${environment.serverUrl}operations`,
         this.commonService.setParams(condition),

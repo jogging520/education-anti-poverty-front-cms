@@ -7,8 +7,8 @@ import { ACLService } from '@delon/acl';
 import {catchError, map, scan, flatMap} from "rxjs/operators";
 import {environment} from "@env/environment";
 import {CacheService} from "@delon/cache";
-import {Strategy} from "@shared/models/strategy";
-import {Role} from "@shared/models/role";
+import {Strategy} from "@shared/models/general/strategy";
+import {Role} from "@shared/models/general/role";
 import { v4 as uuid } from 'uuid';
 import {throwError} from "rxjs/index";
 

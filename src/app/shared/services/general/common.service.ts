@@ -75,10 +75,12 @@ export class CommonService {
       params["user"] = tokenData.user;
     }
 
-    Object.keys(originalObject)
-      .forEach((key) => {
-        params[key] = originalObject[key];
-      });
+    if (originalObject) {
+      Object.keys(originalObject)
+        .forEach((key) => {
+          params[key] = originalObject[key];
+        });
+    }
 
     return params;
 
@@ -95,12 +97,13 @@ export class CommonService {
       case 200:
         break;
       case 401:
-        this.router.navigate(['/passport/login']);
+        this.router.navigate(['/passport/login']).catch();
         break;
       case 500:
         console.warn('系统调用服务发生未可知错误，可能是后端问题，请联系管理员检查。', error);
         this.messageService.error('系统调用服务发生未可知错误，可能是后端问题，请联系管理员检查。');
-        this.router.navigate(['/500']);
+        this.router.navigate(['/500']).catch();
+        break;
       default:
         console.warn('系统发生未可知错误，请联系管理员检查。', error);
         this.messageService.error('系统发生未可知错误，请联系管理员检查。');
