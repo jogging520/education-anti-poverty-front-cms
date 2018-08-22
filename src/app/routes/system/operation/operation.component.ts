@@ -11,6 +11,7 @@ import {Strategy} from "@shared/models/general/strategy";
 import {UserService} from "@shared/services/general/user.service";
 import {User} from "@shared/models/general/user";
 import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
+import {SystemOperationViewComponent} from "./view/view.component";
 
 @Component({
   selector: 'app-system-operation',
@@ -84,7 +85,7 @@ export class SystemOperationComponent implements OnInit {
     {
       title: '',
       buttons: [
-        { text: '详情', type: 'static' }
+        { text: '详情', type: 'static', component: SystemOperationViewComponent, click: 'reload' }
         // { text: '查看', click: (item: any) => `/form/${item.id}` },
         // { text: '编辑', type: 'static', component: FormEditComponent, click: 'reload' },
       ]
