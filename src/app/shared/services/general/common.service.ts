@@ -46,10 +46,10 @@ export class CommonService {
 
   /**
    * 方法：根据token中保存的公共信息，形成params对象
-   * @param {Object} originalObject 原始对象
+   * @param {Object} parameters 原始对象
    * @returns {Object} 增加了公共信息后的对象
    */
-  public setParams(originalObject?: Object): Object {
+  public setParams(parameters?: Object): Object {
 
     let params = {};
 
@@ -75,10 +75,11 @@ export class CommonService {
       params["user"] = tokenData.user;
     }
 
-    if (originalObject) {
-      Object.keys(originalObject)
+    if (parameters) {
+      Object.keys(parameters)
         .forEach((key) => {
-          params[key] = originalObject[key];
+        if (parameters[key] != null)
+          params[key] = parameters[key];
         });
     }
 
@@ -178,5 +179,21 @@ export class CommonService {
 
     return jsEncrypt.decrypt(content);
 
+  }
+
+  /**
+   * 方法：获取当前时间的值
+   * @return {number} 当前时间
+   */
+  public static currentDate(): number {
+     return new Date().getTime();
+  }
+
+  /**
+   * 方法：获取前一天时间的值
+   * @return {number} 前一天时间
+   */
+  public static lastDate(): number {
+     return new Date().getTime() - 86400000;
   }
 }

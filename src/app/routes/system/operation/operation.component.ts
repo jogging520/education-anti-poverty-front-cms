@@ -1,10 +1,16 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import { ModalHelper } from '@delon/theme';
 import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
 import {OperationService} from "@shared/services/general/operation.service";
 import {Operation} from "@shared/models/general/operation";
 import {NzMessageService} from "ng-zorro-antd";
 import {tap} from "rxjs/operators";
+import {CommonService} from "@shared/services/general/common.service";
+import {StrategyService} from "@shared/services/general/strategy.service";
+import {Strategy} from "@shared/models/general/strategy";
+import {UserService} from "@shared/services/general/user.service";
+import {User} from "@shared/models/general/user";
+import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
 
 @Component({
   selector: 'app-system-operation',
@@ -12,52 +18,60 @@ import {tap} from "rxjs/operators";
 })
 export class SystemOperationComponent implements OnInit {
 
-  condition: any = {};
-
-  appTypes = [
-    { index: 0, text: 'CMS管理后端系统', value: 'cms', type: 'default', checked: false },
-    { index: 1, text: 'APP', value: 'app', type: 'processing', checked: false },
-    { index: 2, text: '微信系统', value: 'wct', type: 'success', checked: false },
-    { index: 3, text: '大屏系统', value: 'led', type: 'error', checked: false },
-  ];
-
-  businessTypes = [
-    { index: 0, text: '学校', value: 'school', type: 'default', checked: false },
-    { index: 1, text: '学生', value: 'student', type: 'processing', checked: false },
-    { index: 2, text: '家庭', value: 'family', type: 'success', checked: false },
-  ];
-
+  //查询组合条件
+  conditions: any = {};
+  //渠道类型（应用类型）
+  channelTypes = [];
+  //业务类型
+  businessTypes = [];
+  //全量用户
+  users = [];
+  //操作记录数据
   operations: Operation[] = [];
+  //加载中状态
   loading = false;
 
   @ViewChild('st') st: SimpleTableComponent;
   columns: SimpleTableColumn[] = [
     { title: '操作编号', index: 'id' },
-    { title: '用户编号', index: 'user' },
+    { title: '操作人员',
+      index: 'user',
+      format: (operation: Operation) => {
+        let formattedUser = '';
+
+        this.users
+          .forEach((user, index, array) => {
+            if (operation.user.toLocaleUpperCase() === user.value.toLocaleUpperCase())
+              formattedUser = user.text;
+          });
+
+        return formattedUser;
+      }
+    },
     { title: '渠道类型',
       index: 'appType',
       format: (operation: Operation) => {
-      let formattedAppType = '';
+        let formattedAppType = '';
 
-      switch(operation.appType) {
-        case 'cms': formattedAppType = '后端管理系统'; break;
-        case 'app': formattedAppType = 'APP'; break;
-        default: formattedAppType = operation.appType;
+        this.channelTypes
+          .forEach((channelType, index, array) => {
+          if (operation.appType.toLocaleUpperCase() === channelType.value.toLocaleUpperCase())
+            formattedAppType = channelType.text;
+          });
+
+        return formattedAppType;
       }
-
-      return formattedAppType;
-    }
-      },
+    },
     { title: '业务类型',
       index: 'businessType',
       format: (operation: Operation) => {
         let formattedBusinessType = '';
 
-        switch(operation.businessType) {
-          case 'LOGIN': formattedBusinessType = '登录'; break;
-          case 'LOGOUT': formattedBusinessType = '登出'; break;
-          default: formattedBusinessType = operation.businessType;
-        }
+        this.businessTypes
+          .forEach((businessType, index, array) => {
+            if (operation.businessType.toLocaleUpperCase() === businessType.value.toLocaleUpperCase())
+              formattedBusinessType = businessType.text;
+          });
 
         return formattedBusinessType;
       }
@@ -70,6 +84,7 @@ export class SystemOperationComponent implements OnInit {
     {
       title: '',
       buttons: [
+        { text: '详情', type: 'static' }
         // { text: '查看', click: (item: any) => `/form/${item.id}` },
         // { text: '编辑', type: 'static', component: FormEditComponent, click: 'reload' },
       ]
@@ -78,43 +93,140 @@ export class SystemOperationComponent implements OnInit {
 
   constructor(private modal: ModalHelper,
               public messageService: NzMessageService,
-              private operationService: OperationService
-  ) { }
+              @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService,
+              private commonService: CommonService,
+              private operationService: OperationService,
+              private strategyService: StrategyService,
+              private userService: UserService
+  ) {
+    this.queryChannelTypes();
+    this.queryBusinessTypes();
+    this.queryUsers();
+  }
 
   ngOnInit() {
+    this.queryDefaultOperations();
+  }
+
+  /**
+   * 方法：默认初始化查询操作记录
+   */
+  private queryDefaultOperations(): void {
+    this.conditions.fromCreateTime = CommonService.lastDate();
+    this.conditions.toCreateTime = CommonService.currentDate();
     this.queryOperations();
   }
 
-  queryOperations(): void {
+  /**
+   * 方法：获取应用类型枚举值
+   */
+  private queryChannelTypes(): void {
+    this.strategyService
+      .queryStrategies('appTypes')
+      .pipe(tap())
+      .subscribe((strategy: Strategy) => {
+          if (strategy.status === 'SUCCESS' && strategy.parameters) {
+            Object.keys(strategy.parameters)
+              .forEach((key) => {
+                if (strategy.parameters[key] != null)
+                  this.channelTypes.push({'text': strategy.parameters[key], 'value': key});
+              });
+          }
+        },
+        () => {
+          this.messageService.warning('获取应用类型数据失败。');
+        }
+      );
+  }
+
+  /**
+   * 方法：获取应用类型枚举值
+   */
+  private queryBusinessTypes(): void {
+    this.strategyService
+      .queryStrategies('businessTypes')
+      .pipe(tap())
+      .subscribe((strategy: Strategy) => {
+          if (strategy.status === 'SUCCESS' && strategy.parameters) {
+            Object.keys(strategy.parameters)
+              .forEach((key) => {
+                if (strategy.parameters[key] != null)
+                  this.businessTypes.push({'text': strategy.parameters[key], 'value': key});
+              });
+          }
+        },
+        () => {
+          this.messageService.warning('获取业务类型数据失败。');
+        }
+      );
+  }
+
+  /**
+   * 方法：获取全量用户信息
+   */
+  private queryUsers(): void {
+
+    const tokenData = this.tokenService.get();
+
+    this.userService
+      .queryUsers()
+      .pipe(tap())
+      .subscribe((user: User) => {
+          if (user.status === 'SUCCESS') {
+            this.users.push({'text': decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))), 'value': user.id});
+          }
+        },
+        () => {
+          this.messageService.warning('获取用户数据失败。');
+        },
+        () => {
+          if (tokenData.roles && tokenData.roles.indexOf('admin') > -1) {
+            this.users.push({'text': '全部', 'value': 'ffffffffffffffffffffffff'});
+          }
+        });
+  }
+
+  /**
+   * 方法：根据组合条件查询操作记录
+   */
+  private queryOperations(): void {
     let data = [];
 
     this.loading = true;
 
     this.operationService
-      .queryOperations(this.condition)
-      .pipe(tap(() => this.loading = false))
+      .queryOperations(this.conditions)
+      .pipe(tap())
       .subscribe((operation: Operation) => {
           if (operation.status === 'SUCCESS') {
             data.push(operation);
           }},
         () => {
           this.messageService.warning('获取操作记录数据失败。');
+          this.loading = false;
         },
         () => {
           this.operations = data;
+          this.loading = false;
         }
       )
   }
 
-  onOk(event: any) {
-    this.condition.fromCreateTime = event[0];
-    this.condition.toCreateTime = event[1];
-    console.log(this.condition);
+  /**
+   * 方法：createTime时间提取器点击确认后的事件
+   * @param event 事件
+   */
+  private onCreateTimeOk(event: any): void {
+    this.conditions.fromCreateTime = event[0];
+    this.conditions.toCreateTime = event[1];
   }
 
-  onChange(event: any) {
-    this.condition.fromCreateTime = event[0];
-    this.condition.toCreateTime = event[1];
-    console.log(this.condition);
+  /**
+   * 方法：createTime时间提取器时间变更后的事件
+   * @param event 事件
+   */
+  private onCreateTimeChange(event: any): void {
+    this.conditions.fromCreateTime = event[0];
+    this.conditions.toCreateTime = event[1];
   }
 }

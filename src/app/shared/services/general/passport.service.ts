@@ -85,8 +85,8 @@ export class PassportService {
 
           return this.httpClient
             .get(
-              `${environment.serverUrl}users`,
-              this.commonService.setParams({user: token.user, id: token.user}),
+              `${environment.serverUrl}users\\${token.user}`,
+              this.commonService.setParams({user: token.user}),
               {headers: CommonService.setHeaders()}
             )
             .pipe(

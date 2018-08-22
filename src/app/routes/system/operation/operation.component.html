@@ -4,27 +4,37 @@
 <nz-card [nzBordered]="false">
   <form nz-form [nzLayout]="'inline'" (ngSubmit)="queryOperations()" class="search__form">
     <nz-row [nzGutter]="{ md: 8, lg: 24, xl: 48 }">
-      <nz-col nzMd="6" nzSm="24">
+      <nz-col nzMd="8" nzSm="24">
         <nz-form-item>
           <nz-form-label nzFor="appTypes">渠道类型</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="condition.appType" name="appTypes" id="appTypes" [nzPlaceHolder]="'请选择渠道类型'" [nzShowSearch]="true">
-              <nz-option *ngFor="let i of appTypes" [nzLabel]="i.text" [nzValue]="i.value"></nz-option>
+            <nz-select [(ngModel)]="conditions.channelType" name="channelTypes" id="channelTypes" [nzPlaceHolder]="'请选择渠道类型'" [nzShowSearch]="true">
+              <nz-option *ngFor="let i of channelTypes" [nzLabel]="i.text" [nzValue]="i.value"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
       </nz-col>
-      <nz-col nzMd="6" nzSm="24">
+      <nz-col nzMd="8" nzSm="24">
         <nz-form-item>
           <nz-form-label nzFor="businessTypes">业务类型</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="condition.businessType" name="businessTypes" id="businessTypes" [nzPlaceHolder]="'请选择业务类型'" [nzShowSearch]="true">
+            <nz-select [(ngModel)]="conditions.businessType" name="businessTypes" id="businessTypes" [nzPlaceHolder]="'请选择业务类型'" [nzShowSearch]="true">
               <nz-option *ngFor="let i of businessTypes" [nzLabel]="i.text" [nzValue]="i.value"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
       </nz-col>
-      <nz-col nzMd="6" nzSm="24">
+      <nz-col nzMd="8" nzSm="24">
+        <nz-form-item>
+          <nz-form-label nzFor="users">操作人员</nz-form-label>
+          <nz-form-control>
+            <nz-select [(ngModel)]="conditions.user" name="users" id="users" [nzPlaceHolder]="'请选择操作人员'" [nzShowSearch]="true">
+              <nz-option *ngFor="let i of users" [nzLabel]="i.text" [nzValue]="i.value"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </nz-col>
+      <nz-col nzMd="8" nzSm="24">
         <nz-form-item>
           <nz-form-label nzFor="createTime">更新日期</nz-form-label>
           <nz-form-control>
@@ -32,23 +42,23 @@
               [nzShowTime]="{ nzFormat: 'HH:mm' }"
               nzFormat="yyyy-MM-dd HH:mm"
               [nzPlaceHolder]="[ '开始日期', '结束日期' ]"
-              (ngModelChange)="onChange($event)"
-              (nzOnOk)="onOk($event)"
+              (ngModelChange)="onCreateTimeChange($event)"
+              (nzOnOk)="onCreateTimeOk($event)"
             ></nz-range-picker>
           </nz-form-control>
         </nz-form-item>
       </nz-col>
-      <nz-col nzMd="6" nzSm="24">
+      <nz-col nzMd="8" nzSm="24">
         <nz-form-item>
-          <nz-form-label nzFor="serialNo">流水编号</nz-form-label>
+          <nz-form-label nzFor="id">流水编号</nz-form-label>
           <nz-form-control>
-            <input nz-input [(ngModel)]="condition.serialNo" name="serialNo" placeholder="请输入流水编号" id="serialNo">
+            <input nz-input [(ngModel)]="conditions.id" name="id" placeholder="请输入流水编号" id="id">
           </nz-form-control>
         </nz-form-item>
       </nz-col>
-      <nz-col [nzSpan]="4" [nzOffset]="20">
+      <nz-col nzMd="8" nzSm="24">
         <button nz-button type="submit" [nzType]="'primary'" [nzLoading]="loading">查询</button>
-        <button nz-button type="reset" (click)="queryOperations()" class="mx-sm">重置</button>
+        <button nz-button type="reset" (click)="queryDefaultOperations()" class="mx-sm">重置</button>
       </nz-col>
     </nz-row>
   </form>
@@ -56,7 +66,7 @@
     <nz-alert [nzType]="'info'" [nzShowIcon]="true" [nzMessage]="message">
       <ng-template #message>
         总记录
-        <strong class="text-primary">{{operations.length}}</strong> 项
+        <strong class="text-primary">{{operations.length}}</strong> 条。
       </ng-template>
     </nz-alert>
   </div>
