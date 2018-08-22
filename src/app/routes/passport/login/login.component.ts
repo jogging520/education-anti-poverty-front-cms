@@ -107,7 +107,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     this.userName.markAsDirty();
     this.password.markAsDirty();
 
-    this.loading = false;
+    //this.loading = false;
     /*
     setTimeout(() => {
       this.loading = false;

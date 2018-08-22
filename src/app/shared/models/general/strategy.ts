@@ -4,7 +4,7 @@ export class Strategy {
   name: string;
   appType?: string;
   category?: string;
-  parameters?: any;
+  parameters?: object;
   createTime?: string;
   timestamp?: string;
   status?: string;

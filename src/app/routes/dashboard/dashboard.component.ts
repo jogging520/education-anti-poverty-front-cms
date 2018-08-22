@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {StatisticsService} from "@shared/services/business/statistics.service";
 import {NzMessageService} from "ng-zorro-antd";
 import * as format from 'date-fns/format';
+import {Statistics} from "@shared/models/business/statistics";
 
 @Component({
   selector: 'app-dashboard',
@@ -10,7 +11,7 @@ import * as format from 'date-fns/format';
 })
 export class DashboardComponent implements OnInit {
 
-  data: any;
+  data: Statistics = {};
   visitData: any[] = [];
 
   constructor(
@@ -22,7 +23,9 @@ export class DashboardComponent implements OnInit {
     this.statisticsService
       .stat()
       .subscribe(
-        data => this.data = JSON.parse(data),
+        data => {
+          this.data = JSON.parse(data);
+        },
         error => {
           this.messageService.warning('获取统计数据失败。');
         },

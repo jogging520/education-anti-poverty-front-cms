@@ -10,4 +10,5 @@ export class Operation {
   timestamp?: string;
   status: string;
   description: string;
+  children?: Operation[];
 }

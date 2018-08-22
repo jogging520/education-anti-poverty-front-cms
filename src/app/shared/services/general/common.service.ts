@@ -46,10 +46,10 @@ export class CommonService {
 
   /**
    * 方法：根据token中保存的公共信息，形成params对象
-   * @param {Object} originalObject 原始对象
+   * @param {Object} parameters 原始对象
    * @returns {Object} 增加了公共信息后的对象
    */
-  public setParams(originalObject?: Object): Object {
+  public setParams(parameters?: Object): Object {
 
     let params = {};
 
@@ -75,10 +75,13 @@ export class CommonService {
       params["user"] = tokenData.user;
     }
 
-    Object.keys(originalObject)
-      .forEach((key) => {
-        params[key] = originalObject[key];
-      });
+    if (parameters) {
+      Object.keys(parameters)
+        .forEach((key) => {
+        if (parameters[key] != null)
+          params[key] = parameters[key];
+        });
+    }
 
     return params;
 
@@ -95,12 +98,13 @@ export class CommonService {
       case 200:
         break;
       case 401:
-        this.router.navigate(['/passport/login']);
+        this.router.navigate(['/passport/login']).catch();
         break;
       case 500:
         console.warn('系统调用服务发生未可知错误，可能是后端问题，请联系管理员检查。', error);
         this.messageService.error('系统调用服务发生未可知错误，可能是后端问题，请联系管理员检查。');
-        this.router.navigate(['/500']);
+        this.router.navigate(['/500']).catch();
+        break;
       default:
         console.warn('系统发生未可知错误，请联系管理员检查。', error);
         this.messageService.error('系统发生未可知错误，请联系管理员检查。');
@@ -175,5 +179,21 @@ export class CommonService {
 
     return jsEncrypt.decrypt(content);
 
+  }
+
+  /**
+   * 方法：获取当前时间的值
+   * @return {number} 当前时间
+   */
+  public static currentDate(): number {
+     return new Date().getTime();
+  }
+
+  /**
+   * 方法：获取前一天时间的值
+   * @return {number} 前一天时间
+   */
+  public static lastDate(): number {
+     return new Date().getTime() - 86400000;
   }
 }

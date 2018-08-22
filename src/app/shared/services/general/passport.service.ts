@@ -1,6 +1,6 @@
 import {Inject, Injectable, Optional} from '@angular/core';
 import {BehaviorSubject, ReplaySubject, throwError} from "rxjs/index";
-import {User} from "@shared/models/user";
+import {User} from "@shared/models/general/user";
 import {_HttpClient, SettingsService} from "@delon/theme";
 import {CommonService} from "@shared/services/general/common.service";
 import {Router} from "@angular/router";
@@ -9,7 +9,7 @@ import {StartupService} from "@core/startup/startup.service";
 import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
 import {mergeMap, catchError, map} from "rxjs/operators";
 import {environment} from "@env/environment";
-import {Token} from "@shared/models/token";
+import {Token} from "@shared/models/general/token";
 import {OperationService} from "@shared/services/general/operation.service";
 import {CacheService} from "@delon/cache";
 
@@ -85,8 +85,8 @@ export class PassportService {
 
           return this.httpClient
             .get(
-              `${environment.serverUrl}users`,
-              this.commonService.setParams({user: token.user, id: token.user}),
+              `${environment.serverUrl}users\\${token.user}`,
+              this.commonService.setParams({user: token.user}),
               {headers: CommonService.setHeaders()}
             )
             .pipe(
