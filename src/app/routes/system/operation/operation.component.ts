@@ -1,18 +1,13 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { ModalHelper } from '@delon/theme';
 import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
 import {OperationService} from "@shared/services/general/operation.service";
 import {Operation} from "@shared/models/general/operation";
 import {NzMessageService} from "ng-zorro-antd";
-import {tap} from "rxjs/operators";
+import {tap, map} from "rxjs/operators";
 import {CommonService} from "@shared/services/general/common.service";
-import {StrategyService} from "@shared/services/general/strategy.service";
-import {Strategy} from "@shared/models/general/strategy";
-import {UserService} from "@shared/services/general/user.service";
-import {User} from "@shared/models/general/user";
-import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
 import {SystemOperationViewComponent} from "./view/view.component";
-import { forkJoin } from 'rxjs';
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-system-operation',
@@ -95,64 +90,21 @@ export class SystemOperationComponent implements OnInit {
 
   constructor(private modal: ModalHelper,
               public messageService: NzMessageService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService,
-              private commonService: CommonService,
-              private operationService: OperationService,
-              private strategyService: StrategyService,
-              private userService: UserService
-  ) {}
+              private activatedRoute: ActivatedRoute,
+              private operationService: OperationService
+  ) {
+    this.activatedRoute
+      .data
+      .pipe(map(data => data.operationParams))
+      .subscribe((data) => {
+      this.channelTypes = data.channelTypes;
+      this.businessTypes = data.businessTypes;
+      this.users = data.users;
+      });
+  }
 
   ngOnInit() {
-    const tokenData = this.tokenService.get();
-
-    forkJoin(
-      this.strategyService.queryStrategies('appTypes'),
-      this.strategyService.queryStrategies('businessTypes'),
-      this.userService.queryUsers()
-      )
-      .pipe(tap())
-      .subscribe(
-        (data) => {
-          let originalAppTypes: Strategy = data[0];
-          let originalBusinessTypes: Strategy = data[1];
-          let originalUsers: User[] = data[2];
-
-          console.log(data);
-          console.log(originalUsers);
-
-          if (originalAppTypes.status === 'SUCCESS' && originalAppTypes.parameters) {
-            Object.keys(originalAppTypes.parameters)
-              .forEach((key) => {
-                if (originalAppTypes.parameters[key])
-                  this.channelTypes.push({'text': originalAppTypes.parameters[key], 'value': key});
-              });
-          }
-
-          if (originalBusinessTypes.status === 'SUCCESS' && originalBusinessTypes.parameters) {
-            Object.keys(originalBusinessTypes.parameters)
-              .forEach((key) => {
-                if (originalBusinessTypes.parameters[key])
-                  this.businessTypes.push({'text': originalBusinessTypes.parameters[key], 'value': key});
-              });
-          }
-
-          originalUsers.forEach((user: User) => {
-            console.log(user);
-            if (user.status === 'SUCCESS') {
-              this.users.push({'text': decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))), 'value': user.id});
-            }
-          })
-        },
-        () => {
-          this.messageService.warning('获取基础数据失败。');
-        },
-        () => {
-          if (tokenData.roles && tokenData.roles.indexOf('admin') > -1) {
-            this.users.push({'text': '全部', 'value': 'ffffffffffffffffffffffff'});
-          }
-
-          this.queryDefaultOperations();
-        })
+    this.queryDefaultOperations();
   }
 
   /**
