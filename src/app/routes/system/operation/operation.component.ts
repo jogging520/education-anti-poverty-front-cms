@@ -12,6 +12,7 @@ import {UserService} from "@shared/services/general/user.service";
 import {User} from "@shared/models/general/user";
 import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
 import {SystemOperationViewComponent} from "./view/view.component";
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-system-operation',
@@ -83,7 +84,7 @@ export class SystemOperationComponent implements OnInit {
       sorter: (a: any, b: any) => a.createTime - b.createTime,
     },
     {
-      title: '',
+      title: '操作',
       buttons: [
         { text: '详情', type: 'static', component: SystemOperationViewComponent, click: 'reload' }
         // { text: '查看', click: (item: any) => `/form/${item.id}` },
@@ -99,14 +100,59 @@ export class SystemOperationComponent implements OnInit {
               private operationService: OperationService,
               private strategyService: StrategyService,
               private userService: UserService
-  ) {
-    this.queryChannelTypes();
-    this.queryBusinessTypes();
-    this.queryUsers();
-  }
+  ) {}
 
   ngOnInit() {
-    this.queryDefaultOperations();
+    const tokenData = this.tokenService.get();
+
+    forkJoin(
+      this.strategyService.queryStrategies('appTypes'),
+      this.strategyService.queryStrategies('businessTypes'),
+      this.userService.queryUsers()
+      )
+      .pipe(tap())
+      .subscribe(
+        (data) => {
+          let originalAppTypes: Strategy = data[0];
+          let originalBusinessTypes: Strategy = data[1];
+          let originalUsers: User[] = data[2];
+
+          console.log(data);
+          console.log(originalUsers);
+
+          if (originalAppTypes.status === 'SUCCESS' && originalAppTypes.parameters) {
+            Object.keys(originalAppTypes.parameters)
+              .forEach((key) => {
+                if (originalAppTypes.parameters[key])
+                  this.channelTypes.push({'text': originalAppTypes.parameters[key], 'value': key});
+              });
+          }
+
+          if (originalBusinessTypes.status === 'SUCCESS' && originalBusinessTypes.parameters) {
+            Object.keys(originalBusinessTypes.parameters)
+              .forEach((key) => {
+                if (originalBusinessTypes.parameters[key])
+                  this.businessTypes.push({'text': originalBusinessTypes.parameters[key], 'value': key});
+              });
+          }
+
+          originalUsers.forEach((user: User) => {
+            console.log(user);
+            if (user.status === 'SUCCESS') {
+              this.users.push({'text': decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))), 'value': user.id});
+            }
+          })
+        },
+        () => {
+          this.messageService.warning('获取基础数据失败。');
+        },
+        () => {
+          if (tokenData.roles && tokenData.roles.indexOf('admin') > -1) {
+            this.users.push({'text': '全部', 'value': 'ffffffffffffffffffffffff'});
+          }
+
+          this.queryDefaultOperations();
+        })
   }
 
   /**
@@ -116,75 +162,6 @@ export class SystemOperationComponent implements OnInit {
     this.conditions.fromCreateTime = CommonService.lastDate();
     this.conditions.toCreateTime = CommonService.currentDate();
     this.queryOperations();
-  }
-
-  /**
-   * 方法：获取应用类型枚举值
-   */
-  private queryChannelTypes(): void {
-    this.strategyService
-      .queryStrategies('appTypes')
-      .pipe(tap())
-      .subscribe((strategy: Strategy) => {
-          if (strategy.status === 'SUCCESS' && strategy.parameters) {
-            Object.keys(strategy.parameters)
-              .forEach((key) => {
-                if (strategy.parameters[key] != null)
-                  this.channelTypes.push({'text': strategy.parameters[key], 'value': key});
-              });
-          }
-        },
-        () => {
-          this.messageService.warning('获取应用类型数据失败。');
-        }
-      );
-  }
-
-  /**
-   * 方法：获取应用类型枚举值
-   */
-  private queryBusinessTypes(): void {
-    this.strategyService
-      .queryStrategies('businessTypes')
-      .pipe(tap())
-      .subscribe((strategy: Strategy) => {
-          if (strategy.status === 'SUCCESS' && strategy.parameters) {
-            Object.keys(strategy.parameters)
-              .forEach((key) => {
-                if (strategy.parameters[key] != null)
-                  this.businessTypes.push({'text': strategy.parameters[key], 'value': key});
-              });
-          }
-        },
-        () => {
-          this.messageService.warning('获取业务类型数据失败。');
-        }
-      );
-  }
-
-  /**
-   * 方法：获取全量用户信息
-   */
-  private queryUsers(): void {
-
-    const tokenData = this.tokenService.get();
-
-    this.userService
-      .queryUsers()
-      .pipe(tap())
-      .subscribe((user: User) => {
-          if (user.status === 'SUCCESS') {
-            this.users.push({'text': decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))), 'value': user.id});
-          }
-        },
-        () => {
-          this.messageService.warning('获取用户数据失败。');
-        },
-        () => {
-          if (tokenData.roles && tokenData.roles.indexOf('admin') > -1) {
-            this.users.push({'text': '全部', 'value': 'ffffffffffffffffffffffff'});
-          }
-        });
   }
 
   /**

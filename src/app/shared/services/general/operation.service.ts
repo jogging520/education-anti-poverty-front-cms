@@ -26,8 +26,9 @@ export class OperationService {
    * 方法：创建一条业务操作记录
    * @param {string} businessType 业务类型
    * @param {string} serialNo 流水号
+   * @return {Observable<Operation>} 创建的操作记录流
    */
-  public createOperation(businessType: string, serialNo?: string): void {
+  public createOperation(businessType: string, serialNo?: string): Observable<Operation> {
 
     const tokenData = this.tokenService.get();
     let id: string = '';
@@ -49,27 +50,14 @@ export class OperationService {
       description: 'auto created from front.'
     };
 
-    this.httpClient
+    return this.httpClient
       .post(`${environment.serverUrl}operations`,
         operation,
         this.commonService.setParams({}),
         {headers: CommonService.setHeaders()}
         )
       .pipe(
-        map((operation: Operation) => {
-          if (operation.status !== 'SUCCESS') {
-            return throwError(new Error(operation.status));
-          }
-
-          return operation;
-        }),
-        catchError(error => this.commonService.handleError(error)))
-      .subscribe(
-        () => {},
-        () => {
-          this.messageService.error('创建操作记录失败，请联系后台管理员处理。');
-          this.router.navigate(['/500']).catch();
-        }
+        catchError(error => this.commonService.handleError(error))
       );
   }
 

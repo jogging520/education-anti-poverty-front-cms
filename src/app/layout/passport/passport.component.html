@@ -4,8 +4,8 @@
     <span class="title">测试系统</span>
   </div>
   <div class="wrap">
-    <div nz-row [nzGutter]="24">
-      <div nz-col nzSpan="8" nzOffset="14">
+    <div nz-row nzType="flex" nzJustify="center" [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 }">
+      <div nz-col nzSpan="12" [nzPush]="5">
         <router-outlet></router-outlet>
       </div>
     </div>

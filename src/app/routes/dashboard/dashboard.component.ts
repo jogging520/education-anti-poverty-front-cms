@@ -3,6 +3,7 @@ import {StatisticsService} from "@shared/services/business/statistics.service";
 import {NzMessageService} from "ng-zorro-antd";
 import * as format from 'date-fns/format';
 import {Statistics} from "@shared/models/business/statistics";
+import {tap} from "rxjs/operators";
 
 @Component({
   selector: 'app-dashboard',
@@ -22,9 +23,10 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.statisticsService
       .stat()
+      .pipe(tap())
       .subscribe(
         data => {
-          this.data = JSON.parse(data);
+          this.data = data;
         },
         error => {
           this.messageService.warning('获取统计数据失败。');

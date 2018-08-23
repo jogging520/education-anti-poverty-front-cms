@@ -20,14 +20,13 @@ export class UserService {
    * 方法：获取全量用户信息
    * @return {Observable<User>}
    */
-  public queryUsers(): Observable<User> {
+  public queryUsers(): Observable<User[]> {
     return this.httpClient
       .get(`${environment.serverUrl}users`,
         this.commonService.setParams({}),
         {headers: CommonService.setHeaders()}
         )
       .pipe(
-        flatMap((strategy: any) => strategy),
         catchError(error => this.commonService.handleError(error))
       );
   }

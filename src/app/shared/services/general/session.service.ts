@@ -12,11 +12,12 @@ import {environment} from "@env/environment";
 import {Token} from "@shared/models/general/token";
 import {OperationService} from "@shared/services/general/operation.service";
 import {CacheService} from "@delon/cache";
+import {Operation} from "@shared/models/general/operation";
 
 @Injectable({
   providedIn: 'root'
 })
-export class PassportService {
+export class SessionService {
 
   private currentUserSubject = new BehaviorSubject<User>(new User());
   public currentUser = this.currentUserSubject.asObservable();
@@ -125,12 +126,26 @@ export class PassportService {
       )
       .subscribe(
         () => {
-          this.operationService.createOperation('LOGIN', this.commonService.getSerialNo());
           this.reuseTabService.clear();
           this.startupService.load(this.commonService.getSerialNo()).catch();
         },
         () => {
           this.router.navigate(['/passport/login']).catch();
+        },
+        () => {
+          this.operationService
+            .createOperation('LOGIN', this.commonService.getSerialNo())
+            .pipe(
+              map((operation: Operation) => {
+                if (operation.status !== 'SUCCESS') {
+                  return throwError(new Error(operation.status));
+                }
+
+                return operation;
+              }),
+              catchError(error => this.commonService.handleError(error))
+            )
+            .subscribe();
         }
       )
   }
@@ -140,24 +155,45 @@ export class PassportService {
    */
   public logout() {
 
-    this.operationService.createOperation('LOGOUT', this.commonService.setSerialNo());
+    this.commonService.setSerialNo();
 
-    this.httpClient
-      .delete(`${environment.serverUrl}sessions`,
-        this.commonService.setParams({}),
-        {headers: CommonService.setHeaders()}
-        )
+    this.operationService
+      .createOperation('LOGOUT', this.commonService.setSerialNo())
       .pipe(
+        map((operation: Operation) => {
+          if (operation.status !== 'SUCCESS') {
+            return throwError(new Error(operation.status));
+          }
+
+          return operation;
+        }),
         catchError(error => this.commonService.handleError(error))
       )
       .subscribe(
-        () => {
-          this.purgeAuth();
-        },
+        () => {},
         () => {
           this.router.navigate(['/passport/login']).catch();
-        }
-      )
+        },
+        () => {
+          this.commonService.setSerialNo();
+
+          this.httpClient
+            .delete(`${environment.serverUrl}sessions`,
+              this.commonService.setParams({}),
+              {headers: CommonService.setHeaders()}
+            )
+            .pipe(
+              catchError(error => this.commonService.handleError(error))
+            )
+            .subscribe(
+              () => {
+                this.purgeAuth();
+              },
+              () => {
+                this.router.navigate(['/passport/login']).catch();
+              }
+            );
+        });
   }
 
   /**
