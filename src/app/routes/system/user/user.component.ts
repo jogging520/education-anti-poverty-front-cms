@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { _HttpClient } from '@delon/theme';
 import {NzMessageService} from "ng-zorro-antd";
 import {User} from "@shared/models/general/user";
 import {UserService} from "@shared/services/general/user.service";
@@ -18,6 +17,65 @@ export class SystemUserComponent implements OnInit {
     categories: [],
     owners: ['zxx'],
   };
+
+  tabs: any[] = [
+    {
+      key: 'gansu',
+      tab: '甘肃省',
+    },
+    {
+      key: 'lanzhou',
+      tab: '兰州',
+    },
+    {
+      key: 'dingxi',
+      tab: '定西',
+    },
+    {
+      key: 'pingliang',
+      tab: '平凉',
+    },
+    {
+      key: 'qingyang',
+      tab: '庆阳',
+    },
+    {
+      key: 'jiuquan',
+      tab: '酒泉',
+    },
+    {
+      key: 'jiayuguan',
+      tab: '嘉峪关',
+    },
+    {
+      key: 'wuwei',
+      tab: '武威',
+    },
+    {
+      key: 'jinchang',
+      tab: '金昌',
+    },
+    {
+      key: 'linxia',
+      tab: '临夏',
+    },
+    {
+      key: 'longnan',
+      tab: '陇南',
+    },
+    {
+      key: 'baiyin',
+      tab: '白银',
+    },
+    {
+      key: 'tianshui',
+      tab: '天水',
+    },
+    {
+      key: 'gannan',
+      tab: '甘南',
+    }
+  ];
 
   users: User[] = [];
 

@@ -1,20 +1,22 @@
-<div class="content__title">
-  <h5>查询、新建操作者。</h5>
-</div>
-<nz-card [nzBordered]="false">
+<page-header #ph [autoTitle]="false" [autoBreadcrumb]="false" >
   <div class="text-center">
     <nz-input-group nzSearch nzSize="large" [nzSuffix]="suffixButton" style="width: 520px;">
       <input type="text" nz-input placeholder="请输入">
       <ng-template #suffixButton>
-        <button nz-button nzType="primary" nzSize="large" nzSearch>搜索</button>
+        <button nz-button nzType="primary" nzSize="large" nzSearch>Search</button>
       </ng-template>
     </nz-input-group>
   </div>
-</nz-card>
+  <ng-template #tab>
+    <nz-tabset [nzSelectedIndex]="pos">
+      <nz-tab *ngFor="let i of tabs" [nzTitle]="i.tab" (click)="to(i)"></nz-tab>
+    </nz-tabset>
+  </ng-template>
+</page-header>
 <nz-list [nzLoading]="loading" [nzRenderItem]="item" [nzDataSource]="users" [nzGrid]="{gutter: 24, lg: 6, md: 8, sm: 12, xs: 24 }">
   <ng-template #item let-item>
     <nz-list-item>
-      <nz-card class="ant-card__body-nopadding">
+      <nz-card [nzHoverable]="true" class="ant-card__body-nopadding">
         <div class="half-float half-float-md">
           <img src="./assets/tmp/img/half-float-bg-1.jpg">
           <div class="half-float-bottom rounded-circle bg-grey-lighter">
