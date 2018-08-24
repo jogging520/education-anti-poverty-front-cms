@@ -128,7 +128,7 @@ export class SystemOperationComponent implements OnInit {
       .queryOperations(this.conditions)
       .pipe(tap())
       .subscribe((operation: Operation) => {
-          if (operation.status === 'SUCCESS') {
+          if (operation.status === 'ACTIVE') {
             data.push(operation);
           }},
         () => {

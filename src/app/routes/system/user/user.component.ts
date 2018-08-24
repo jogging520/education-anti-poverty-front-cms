@@ -49,7 +49,7 @@ export class SystemUserComponent implements OnInit {
       .pipe(tap())
       .subscribe((users: User[]) => {
           users.forEach((user: User) => {
-            if (user.status === 'SUCCESS') {
+            if (user.status === 'ACTIVE') {
               user.realName = decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName))));
               this.users.push(user);
             }

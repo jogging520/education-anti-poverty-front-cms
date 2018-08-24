@@ -25,7 +25,7 @@ export class UserResolver implements Resolve<any> {
           let originalUsers: User[] = data;
 
           originalUsers.forEach((user: User) => {
-            if (user.status === 'SUCCESS') {
+            if (user.status === 'ACTIVE') {
               user.realName = decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName))));
               users.push(user);
             }

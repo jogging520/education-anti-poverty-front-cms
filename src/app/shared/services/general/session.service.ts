@@ -95,7 +95,7 @@ export class SessionService {
 
                 this.tokenService.clear();
 
-                if (user.status !== 'SUCCESS') {
+                if (user.status !== 'ACTIVE') {
                   return throwError(user.status);
                 }
 
