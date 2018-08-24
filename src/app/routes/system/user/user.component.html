@@ -1,25 +1,31 @@
 <div class="content__title">
   <h5>查询、新建操作者。</h5>
 </div>
-<nz-list [nzLoading]="loading" [nzRenderItem]="item" [nzDataSource]="list" [nzGrid]="{gutter: 24, lg: 6, md: 8, sm: 12, xs: 24 }">
+<nz-card [nzBordered]="false">
+  <div class="text-center">
+    <nz-input-group nzSearch nzSize="large" [nzSuffix]="suffixButton" style="width: 520px;">
+      <input type="text" nz-input placeholder="请输入">
+      <ng-template #suffixButton>
+        <button nz-button nzType="primary" nzSize="large" nzSearch>搜索</button>
+      </ng-template>
+    </nz-input-group>
+  </div>
+</nz-card>
+<nz-list [nzLoading]="loading" [nzRenderItem]="item" [nzDataSource]="users" [nzGrid]="{gutter: 24, lg: 6, md: 8, sm: 12, xs: 24 }">
   <ng-template #item let-item>
     <nz-list-item>
-      <nz-card nzHoverable [nzCover]="cover">
-        <ng-template #cover>
-          <img alt="{{item.title}}" src="{{item.cover}}">
-        </ng-template>
-        <nz-card-meta [nzTitle]="nzTitle" [nzDescription]="item.subDescription">
-          <ng-template #nzTitle>
-            <a (click)="msg.success('标题：' + item.id);">{{item.title}}</a>
-          </ng-template>
-        </nz-card-meta>
-        <div class="card-item-content">
-          <span class="text-grey">{{item.updatedAt | _date:'fn'}}</span>
-          <avatar-list size="mini">
-            <avatar-list-item *ngFor="let m of item.members" [src]="m.avatar" [tips]="m.name"></avatar-list-item>
-          </avatar-list>
+      <div nz-row [nzType]="'flex'" [nzJustify]="'center'" [nzAlign]="'middle'" class="rounded-md bg-blue">
+        <div nz-col nzSpan="16">
+          <img class="img-fluid align-middle" src="{{item.avatar}}" alt="" />
         </div>
-      </nz-card>
+        <div nz-col nzSpan="8" class="text-white text-center">
+          <h2 class="h1 text-white mb0">{{item.realName}}</h2>
+          <div class="py-sm">{{item.description}}</div>
+          <i class="fa fa-sun-o fa-2x"></i>
+        </div>
+      </div>
+
     </nz-list-item>
   </ng-template>
 </nz-list>
+
