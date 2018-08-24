@@ -1,17 +1,13 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { ModalHelper } from '@delon/theme';
 import { SimpleTableColumn, SimpleTableComponent } from '@delon/abc';
 import {OperationService} from "@shared/services/general/operation.service";
 import {Operation} from "@shared/models/general/operation";
 import {NzMessageService} from "ng-zorro-antd";
-import {tap} from "rxjs/operators";
+import {tap, map} from "rxjs/operators";
 import {CommonService} from "@shared/services/general/common.service";
-import {StrategyService} from "@shared/services/general/strategy.service";
-import {Strategy} from "@shared/models/general/strategy";
-import {UserService} from "@shared/services/general/user.service";
-import {User} from "@shared/models/general/user";
-import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
 import {SystemOperationViewComponent} from "./view/view.component";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-system-operation',
@@ -83,7 +79,7 @@ export class SystemOperationComponent implements OnInit {
       sorter: (a: any, b: any) => a.createTime - b.createTime,
     },
     {
-      title: '',
+      title: '操作',
       buttons: [
         { text: '详情', type: 'static', component: SystemOperationViewComponent, click: 'reload' }
         // { text: '查看', click: (item: any) => `/form/${item.id}` },
@@ -94,15 +90,17 @@ export class SystemOperationComponent implements OnInit {
 
   constructor(private modal: ModalHelper,
               public messageService: NzMessageService,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService,
-              private commonService: CommonService,
-              private operationService: OperationService,
-              private strategyService: StrategyService,
-              private userService: UserService
+              private activatedRoute: ActivatedRoute,
+              private operationService: OperationService
   ) {
-    this.queryChannelTypes();
-    this.queryBusinessTypes();
-    this.queryUsers();
+    this.activatedRoute
+      .data
+      .pipe(map(data => data.operationParams))
+      .subscribe((data) => {
+      this.channelTypes = data.channelTypes;
+      this.businessTypes = data.businessTypes;
+      this.users = data.users;
+      });
   }
 
   ngOnInit() {
@@ -116,75 +114,6 @@ export class SystemOperationComponent implements OnInit {
     this.conditions.fromCreateTime = CommonService.lastDate();
     this.conditions.toCreateTime = CommonService.currentDate();
     this.queryOperations();
-  }
-
-  /**
-   * 方法：获取应用类型枚举值
-   */
-  private queryChannelTypes(): void {
-    this.strategyService
-      .queryStrategies('appTypes')
-      .pipe(tap())
-      .subscribe((strategy: Strategy) => {
-          if (strategy.status === 'SUCCESS' && strategy.parameters) {
-            Object.keys(strategy.parameters)
-              .forEach((key) => {
-                if (strategy.parameters[key] != null)
-                  this.channelTypes.push({'text': strategy.parameters[key], 'value': key});
-              });
-          }
-        },
-        () => {
-          this.messageService.warning('获取应用类型数据失败。');
-        }
-      );
-  }
-
-  /**
-   * 方法：获取应用类型枚举值
-   */
-  private queryBusinessTypes(): void {
-    this.strategyService
-      .queryStrategies('businessTypes')
-      .pipe(tap())
-      .subscribe((strategy: Strategy) => {
-          if (strategy.status === 'SUCCESS' && strategy.parameters) {
-            Object.keys(strategy.parameters)
-              .forEach((key) => {
-                if (strategy.parameters[key] != null)
-                  this.businessTypes.push({'text': strategy.parameters[key], 'value': key});
-              });
-          }
-        },
-        () => {
-          this.messageService.warning('获取业务类型数据失败。');
-        }
-      );
-  }
-
-  /**
-   * 方法：获取全量用户信息
-   */
-  private queryUsers(): void {
-
-    const tokenData = this.tokenService.get();
-
-    this.userService
-      .queryUsers()
-      .pipe(tap())
-      .subscribe((user: User) => {
-          if (user.status === 'SUCCESS') {
-            this.users.push({'text': decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))), 'value': user.id});
-          }
-        },
-        () => {
-          this.messageService.warning('获取用户数据失败。');
-        },
-        () => {
-          if (tokenData.roles && tokenData.roles.indexOf('admin') > -1) {
-            this.users.push({'text': '全部', 'value': 'ffffffffffffffffffffffff'});
-          }
-        });
   }
 
   /**
