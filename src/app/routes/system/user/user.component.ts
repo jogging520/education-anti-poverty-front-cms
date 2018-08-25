@@ -125,4 +125,8 @@ export class SystemUserComponent implements OnInit {
     this.loading = false;
   }
 
+  public search(): void {
+    this.messageService.warning('马野演示');
+  }
+
 }
