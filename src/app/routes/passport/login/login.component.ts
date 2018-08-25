@@ -102,10 +102,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     this.sessionService
       .login(this.userName.value, this.password.value, this.mobile.value);
 
-    this.form.controls["userName"].setValue("");
-    this.form.controls["password"].setValue("");
-    this.userName.markAsDirty();
-    this.password.markAsDirty();
+    this.resetForm();
 
     //this.loading = false;
     /*
@@ -137,6 +134,15 @@ export class UserLoginComponent implements OnInit, OnDestroy {
       this.router.navigate(['/']);
     }, 1000);
     */
+  }
+
+  private resetForm(): void {
+    this.form.reset();
+
+    for (const key in this.form.controls) {
+      this.form.controls[key].markAsPristine();
+      this.form.controls[key].updateValueAndValidity();
+    }
   }
 
   // region: social

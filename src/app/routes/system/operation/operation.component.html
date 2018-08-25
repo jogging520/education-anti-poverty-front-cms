@@ -1,6 +1,6 @@
-<div class="content__title">
+<page-header #ph [autoTitle]="false" [autoBreadcrumb]="false" >
   <h5>展示各类业务操作记录。</h5>
-</div>
+</page-header>
 <nz-card [nzBordered]="false">
   <form nz-form [nzLayout]="'inline'" (ngSubmit)="queryOperations()" class="search__form">
     <nz-row [nzGutter]="{ md: 8, lg: 24, xl: 48 }">
