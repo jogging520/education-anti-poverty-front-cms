@@ -38,7 +38,7 @@ export class OperationResolver implements Resolve<any> {
           let originalUsers: User[] = data[2];
           let operationParams = {channelTypes: [], businessTypes: [], users: []};
 
-          if (originalAppTypes.status === 'SUCCESS' && originalAppTypes.parameters) {
+          if (originalAppTypes.status === 'ACTIVE' && originalAppTypes.parameters) {
             Object.keys(originalAppTypes.parameters)
               .forEach((key) => {
                 if (originalAppTypes.parameters[key])
@@ -46,7 +46,7 @@ export class OperationResolver implements Resolve<any> {
               });
           }
 
-          if (originalBusinessTypes.status === 'SUCCESS' && originalBusinessTypes.parameters) {
+          if (originalBusinessTypes.status === 'ACTIVE' && originalBusinessTypes.parameters) {
             Object.keys(originalBusinessTypes.parameters)
               .forEach((key) => {
                 if (originalBusinessTypes.parameters[key])
@@ -55,7 +55,7 @@ export class OperationResolver implements Resolve<any> {
           }
 
           originalUsers.forEach((user: User) => {
-            if (user.status === 'SUCCESS') {
+            if (user.status === 'ACTIVE') {
               operationParams.users.push({'text': decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))), 'value': user.id});
             }
           });

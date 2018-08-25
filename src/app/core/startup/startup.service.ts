@@ -71,7 +71,7 @@ export class StartupService {
       )
       .pipe(
         map((strategy: Strategy) => {
-          if (strategy.status !== 'SUCCESS') {
+          if (strategy.status !== 'ACTIVE') {
             return throwError(strategy.status);
           }
         }),
@@ -109,7 +109,7 @@ export class StartupService {
       )
       .pipe(
         map((strategy: Strategy) => {
-          if (strategy.status !== 'SUCCESS') {
+          if (strategy.status !== 'ACTIVE') {
             return throwError(strategy.status);
           }
         }),
@@ -155,7 +155,7 @@ export class StartupService {
       .pipe(
         flatMap((role: any) => role),
         map((role: Role) => {
-          if (role.status !== 'SUCCESS') {
+          if (role.status !== 'ACTIVE') {
             return throwError(role.status);
           }
 
