@@ -5,6 +5,7 @@ import {UserService} from "@shared/services/general/user.service";
 import {tap, map} from "rxjs/operators";
 import {CommonService} from "@shared/services/general/common.service";
 import {ActivatedRoute} from "@angular/router";
+import {TranslatorService} from "@shared/services/general/translator.service";
 
 @Component({
   selector: 'app-system-user',
@@ -81,11 +82,14 @@ export class SystemUserComponent implements OnInit {
 
   loading = false;
 
+  queryCondition: string = '';
+
 
 
   constructor(private activatedRoute: ActivatedRoute,
               public messageService: NzMessageService,
               private commonService: CommonService,
+              private translatorService: TranslatorService,
               private userService: UserService) {
     this.activatedRoute
       .data
@@ -126,7 +130,10 @@ export class SystemUserComponent implements OnInit {
   }
 
   public search(): void {
-    this.messageService.warning('马野演示');
+    this.messageService.warning(this.queryCondition);
+    console.log(this.translatorService.getFirstChar(this.queryCondition));
+    console.log(this.translatorService.getFullChars(this.queryCondition));
+    console.log(this.translatorService.getCamelChars(this.queryCondition));
   }
 
 }
