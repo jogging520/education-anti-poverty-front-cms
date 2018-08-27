@@ -70,12 +70,14 @@ export class StartupService {
           }}
       )
       .pipe(
+        flatMap((strategy: any) => strategy),
         map((strategy: Strategy) => {
           if (strategy.status !== 'ACTIVE') {
             return throwError(strategy.status);
           }
+
+          return strategy;
         }),
-        flatMap((strategy: any) => strategy),
         catchError(error => {
           this.injector.get(Router).navigate(['/passport/login']).catch();
           resolve(null);
@@ -108,12 +110,14 @@ export class StartupService {
           }}
       )
       .pipe(
+        flatMap((strategy: any) => strategy),
         map((strategy: Strategy) => {
           if (strategy.status !== 'ACTIVE') {
             return throwError(strategy.status);
           }
+
+          return strategy;
         }),
-        flatMap((strategy: any) => strategy),
         catchError(error => {
           this.injector.get(Router).navigate(['/passport/login']).catch();
           resolve(null);

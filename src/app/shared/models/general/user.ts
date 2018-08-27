@@ -12,7 +12,7 @@ export class User {
   permissions?: number[];
   affiliations: {
     type?: string;
-    organization?: string;
+    organization?: string[];
   }[] = [{}];
   mobiles: string[];
   emails?: string[];

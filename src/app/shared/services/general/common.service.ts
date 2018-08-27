@@ -78,7 +78,7 @@ export class CommonService {
     if (parameters) {
       Object.keys(parameters)
         .forEach((key) => {
-        if (parameters[key] != null)
+        if (parameters[key])
           params[key] = parameters[key];
         });
     }
@@ -159,6 +159,9 @@ export class CommonService {
     if (isTemporary) {
       jsEncrypt.setPublicKey(`${environment.temporaryPublicKey}`);
     } else {
+      if (!this.tokenService.get() || !this.tokenService.get().downPublicKey)
+        return false;
+
       jsEncrypt.setPublicKey(this.tokenService.get().downPublicKey);
     }
 
@@ -174,6 +177,9 @@ export class CommonService {
    public decrypt(content: string): string|any  {
 
     let jsEncrypt: JSEncrypt = new JSEncrypt();
+
+    if (!this.tokenService.get() || !this.tokenService.get().upPrivateKey)
+      return false;
 
     jsEncrypt.setPrivateKey(this.tokenService.get().upPrivateKey);
 
