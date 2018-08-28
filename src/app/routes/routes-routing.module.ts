@@ -27,7 +27,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent, data: { title: '仪表盘', titleI18n: 'dashboard', guard: 80100001 }, canLoad: [ ACLGuard ]},
       // 业务子模块
-      { path: 'system', loadChildren: './system/system.module#SystemModule', canLoad: [ ACLGuard ], data: { title: '系统管理', guard: 50100001 } }
+      { path: 'system', loadChildren: './system/system.module#SystemModule', canLoad: [ ACLGuard ], data: { guard: 50100001 } }
     ]
   },
   // 全屏布局

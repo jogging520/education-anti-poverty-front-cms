@@ -219,7 +219,7 @@ export class CommonService {
     let org: Organization|Region;
 
     if (organization.children) {
-      for (var child of organization.children) {
+      for (let child of organization.children) {
         org = this.locate(child, code);
 
         if (org)
@@ -252,7 +252,7 @@ export class CommonService {
     }
 
     if (organization.children) {
-      for (var child of organization.children) {
+      for (let child of organization.children) {
         option.children.push(this.transform(child));
       }
     }
