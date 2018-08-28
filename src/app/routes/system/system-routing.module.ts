@@ -4,6 +4,8 @@ import { SystemOperationComponent } from './operation/operation.component';
 import { SystemUserComponent } from './user/user.component';
 import {OperationResolver} from "@shared/resolvers/system/operation.resolver";
 import {UserResolver} from "@shared/resolvers/system/user.resolver";
+import {OrganizationResolver} from "@shared/resolvers/system/organization.resolver";
+import {RegionResolver} from "@shared/resolvers/system/region.resolver";
 
 const routes: Routes = [
   { path: 'operation',
@@ -12,7 +14,7 @@ const routes: Routes = [
   },
   { path: 'user',
     component: SystemUserComponent,
-    resolve: {userParams: UserResolver}
+    resolve: {userParams: UserResolver, organizationParams: OrganizationResolver, regionParams: RegionResolver}
   }];
 
 @NgModule({

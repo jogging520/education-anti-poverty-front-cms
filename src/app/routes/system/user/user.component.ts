@@ -6,6 +6,8 @@ import {tap, map} from "rxjs/operators";
 import {CommonService} from "@shared/services/general/common.service";
 import {ActivatedRoute} from "@angular/router";
 import {TranslatorService} from "@shared/services/general/translator.service";
+import {Organization} from "@shared/models/general/organization";
+import {Region} from "@shared/models/general/region";
 
 @Component({
   selector: 'app-system-user',
@@ -19,66 +21,13 @@ export class SystemUserComponent implements OnInit {
     owners: ['zxx'],
   };
 
-  tabs: any[] = [
-    {
-      key: 'gansu',
-      tab: '甘肃省',
-    },
-    {
-      key: 'lanzhou',
-      tab: '兰州',
-    },
-    {
-      key: 'dingxi',
-      tab: '定西',
-    },
-    {
-      key: 'pingliang',
-      tab: '平凉',
-    },
-    {
-      key: 'qingyang',
-      tab: '庆阳',
-    },
-    {
-      key: 'jiuquan',
-      tab: '酒泉',
-    },
-    {
-      key: 'jiayuguan',
-      tab: '嘉峪关',
-    },
-    {
-      key: 'wuwei',
-      tab: '武威',
-    },
-    {
-      key: 'jinchang',
-      tab: '金昌',
-    },
-    {
-      key: 'linxia',
-      tab: '临夏',
-    },
-    {
-      key: 'longnan',
-      tab: '陇南',
-    },
-    {
-      key: 'baiyin',
-      tab: '白银',
-    },
-    {
-      key: 'tianshui',
-      tab: '天水',
-    },
-    {
-      key: 'gannan',
-      tab: '甘南',
-    }
-  ];
+  tabs: any[] = [];
 
   users: User[] = [];
+  organizationOptions:any  = [] ;
+  regionOptions:any  = [] ;
+  selectedOrganization: any[];
+  selectedRegion: any[];
 
   loading = false;
 
@@ -93,9 +42,18 @@ export class SystemUserComponent implements OnInit {
               private userService: UserService) {
     this.activatedRoute
       .data
-      .pipe(map(data => data.userParams))
+      .pipe(map(data => data))
       .subscribe((data) => {
-        this.users = data;
+        this.users = data.userParams;
+
+        let organization: Organization = data.organizationParams;
+        let region: Region = data.regionParams;
+
+        this.organizationOptions.push(this.commonService.transform(this.commonService.locate(organization, 'EDU9')));
+        this.regionOptions.push(this.commonService.transform(this.commonService.locate(region, '9')));
+
+        this.locate(region, 'PROVINCE');
+        this.locate(region, 'CITY');
       });
   }
 
@@ -124,7 +82,7 @@ export class SystemUserComponent implements OnInit {
         () => {
           this.loading = false;
         }
-        )
+      )
 
     this.loading = false;
   }
@@ -134,6 +92,33 @@ export class SystemUserComponent implements OnInit {
     console.log(this.translatorService.getFirstChar(this.queryCondition));
     console.log(this.translatorService.getFullChars(this.queryCondition));
     console.log(this.translatorService.getCamelChars(this.queryCondition));
+  }
+
+  onChanges(event: any): void {
+    console.log(this.organizationOptions);
+    console.log(this.selectedOrganization);
+    console.log(event);
+  }
+
+
+  public locate(region: Region, level: string): Region {
+    if(region.level === level)
+    {
+      this.tabs.push({key: region.code, tab: region.name});
+    }
+
+    let reg: Region;
+
+    if (region.children) {
+      for (var child of region.children) {
+        reg = this.locate(child, level);
+
+        if (reg)
+          return reg;
+      }
+    }
+
+    return null;
   }
 
 }
