@@ -102,8 +102,7 @@ export class SystemUserComponent implements OnInit {
 
 
   public locate(region: Region, level: string): Region {
-    if(region.level === level)
-    {
+    if(region.level === level) {
       this.tabs.push({key: region.code, tab: region.name});
     }
 

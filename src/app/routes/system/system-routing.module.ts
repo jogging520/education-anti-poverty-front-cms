@@ -18,7 +18,10 @@ const routes: Routes = [
     resolve: {userParams: UserResolver, organizationParams: OrganizationResolver, regionParams: RegionResolver}
   }
   ,
-  { path: 'privilege', component: SystemPrivilegeComponent }];
+  { path: 'privilege',
+    component: SystemPrivilegeComponent,
+    resolve: {regionParams: RegionResolver}
+  }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
