@@ -7,6 +7,22 @@
       </ng-template>
     </nz-input-group>
   </div>
+  <div>
+    <nz-cascader
+      nzChangeOnSelect
+      [nzPlaceHolder]="'请选择组织机构'"
+      [nzOptions]="organizationOptions"
+      [(ngModel)]="selectedOrganization"
+      (ngModelChange)="onChanges($event)">
+    </nz-cascader>
+    <nz-cascader
+      nzChangeOnSelect
+      [nzPlaceHolder]="'请选择区域'"
+      [nzOptions]="regionOptions"
+      [(ngModel)]="selectedRegion"
+      (ngModelChange)="onChanges($event)">
+    </nz-cascader>
+  </div>
   <ng-template #tab>
     <nz-tabset [nzSelectedIndex]="pos">
       <nz-tab *ngFor="let i of tabs" [nzTitle]="i.tab" (click)="to(i)"></nz-tab>
