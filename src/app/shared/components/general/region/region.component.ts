@@ -15,6 +15,9 @@ export class RegionComponent implements OnInit {
   @Output() region: EventEmitter<number> = new EventEmitter();
   @Output() center: EventEmitter<number[]> = new EventEmitter();
 
+  defaultRegion: number = 9;
+  defaultCenter:number[] = [103.719156, 36.115523];
+
   regionOptions:any  = [] ;
   selectedRegion: any[];
 
@@ -30,10 +33,20 @@ export class RegionComponent implements OnInit {
       });
   }
 
-  onChanges(event: any): void {
-    this.region.emit(this.selectedRegion[this.selectedRegion.length-1]);
+  onClear(event: any): void {
+    this.region.emit(this.defaultRegion);
+    this.center.emit(this.defaultCenter);
+  }
 
-    this.queryRegionLongitudeAndLatitude(this.selectedRegion[this.selectedRegion.length-1]);
+  onChanges(event: any): void {
+    if (event) {
+      this.region.emit(this.selectedRegion[this.selectedRegion.length-1]);
+
+      this.queryRegionLongitudeAndLatitude(this.selectedRegion[this.selectedRegion.length-1]);
+    } else {
+      this.region.emit(this.defaultRegion);
+      this.center.emit(this.defaultCenter);
+    }
   }
 
 
@@ -97,7 +110,10 @@ export class RegionComponent implements OnInit {
       .subscribe((region: Region) => {
         let locatedRegion: Region = this.locate(region, code);
 
-        this.center.emit([locatedRegion.longitude, locatedRegion.latitude])
+        if (locatedRegion)
+          this.center.emit([locatedRegion.longitude, locatedRegion.latitude]);
+        else
+          this.center.emit(this.defaultCenter);
       })
   }
 }

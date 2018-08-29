@@ -38,10 +38,16 @@ export class SystemUserComponent implements OnInit {
   constructor(public messageService: NzMessageService,
               private router: Router,
               private cacheService: CacheService,
+              private activatedRoute: ActivatedRoute,
               private commonService: CommonService,
               private translatorService: TranslatorService,
               private userService: UserService) {
-
+    this.activatedRoute
+      .data
+      .pipe(map(data => data.userParams))
+      .subscribe((data) => {
+        this.users = data;
+      });
   }
 
   ngOnInit() {
@@ -107,6 +113,6 @@ export class SystemUserComponent implements OnInit {
   }
 
   private createUser(): void {
-    this.router.navigate(['/business/user-creation']).catch();
+    this.router.navigate(['/system/user-creation']).catch();
   }
 }
