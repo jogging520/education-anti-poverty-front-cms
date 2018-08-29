@@ -29,7 +29,7 @@ export class SystemPrivilegeComponent implements OnInit {
 
         let region: Region = data.regionParams;
 
-        this.regionOptions.push(this.commonService.transform(this.commonService.locate(region, '9')));
+        this.regionOptions.push(this.commonService.transformToOption(this.commonService.locate(region, '9')));
       });
   }
 

@@ -235,7 +235,7 @@ export class CommonService {
    * @param {Organization|Region} organization 组织机构
    * @return {Option} 级联选择器的选项
    */
-  public transform(organization: Organization|Region): Option {
+  public transformToOption(organization: Organization|Region): Option {
 
     if(!organization)
       return null;
@@ -253,7 +253,7 @@ export class CommonService {
 
     if (organization.children) {
       for (let child of organization.children) {
-        option.children.push(this.transform(child));
+        option.children.push(this.transformToOption(child));
       }
     }
 

@@ -1,15 +1,15 @@
-<page-header>
-  <ng-template #action>
-    <button (click)="add()" nz-button nzType="primary">新建</button>
-  </ng-template>
+<page-header [autoTitle]="false" [autoBreadcrumb]="false">
   <nz-cascader
     nzChangeOnSelect
+    [nzSize]="'large'"
     [nzPlaceHolder]="'请选择区域'"
     [nzOptions]="regionOptions"
     [(ngModel)]="selectedRegion"
-    (ngModelChange)="onChanges($event)">
+    (ngModelChange)="onChanges($event)"
+    style="width: 100%"
+  >
   </nz-cascader>
 </page-header>
-<nz-card>
-  <ngx-amap class="demo-map" [resizeEnable]="true" [center]="center" [zoom]="12"></ngx-amap>
+<nz-card class="ant-card__body-nopadding">
+  <ngx-amap class="demo-map" [resizeEnable]="true" [center]="center" [zoom]="11"></ngx-amap>
 </nz-card>

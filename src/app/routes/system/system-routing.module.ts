@@ -7,6 +7,8 @@ import {UserResolver} from "@shared/resolvers/general/user.resolver";
 import {OrganizationResolver} from "@shared/resolvers/general/organization.resolver";
 import {RegionResolver} from "@shared/resolvers/general/region.resolver";
 import { SystemPrivilegeComponent } from './privilege/privilege.component';
+import { SystemUserCreationComponent } from './user/creation/creation.component';
+import { SystemUserDetailComponent } from './user/detail/detail.component';
 
 const routes: Routes = [
   { path: 'operation',
@@ -21,7 +23,9 @@ const routes: Routes = [
   { path: 'privilege',
     component: SystemPrivilegeComponent,
     resolve: {regionParams: RegionResolver}
-  }];
+  },
+  { path: 'user-creation', component: SystemUserCreationComponent, data: { title: '新建用户' } },
+  { path: 'userDetail', component: SystemUserDetailComponent }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

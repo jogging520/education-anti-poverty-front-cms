@@ -4,15 +4,23 @@ import {User} from "@shared/models/general/user";
 import {UserService} from "@shared/services/general/user.service";
 import {tap, map} from "rxjs/operators";
 import {CommonService} from "@shared/services/general/common.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {TranslatorService} from "@shared/services/general/translator.service";
 import {Organization} from "@shared/models/general/organization";
 import {Region} from "@shared/models/general/region";
+import { bounce } from 'ngx-animate';
+import {transition, trigger, useAnimation} from "@angular/animations";
+import {flip, jackInTheBox, tada, zoomIn} from "ngx-animate/lib";
 
 @Component({
   selector: 'app-system-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.less'],
+  animations: [
+    trigger('zoomIn', [transition('* => *', useAnimation(zoomIn,
+      {params: { timing: 5, delay: 0 }
+      }))])
+  ],
 })
 export class SystemUserComponent implements OnInit {
   q: any = {
@@ -37,6 +45,7 @@ export class SystemUserComponent implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute,
               public messageService: NzMessageService,
+              private router: Router,
               private commonService: CommonService,
               private translatorService: TranslatorService,
               private userService: UserService) {
@@ -49,11 +58,11 @@ export class SystemUserComponent implements OnInit {
         let organization: Organization = data.organizationParams;
         let region: Region = data.regionParams;
 
-        this.organizationOptions.push(this.commonService.transform(this.commonService.locate(organization, 'EDU9')));
-        this.regionOptions.push(this.commonService.transform(this.commonService.locate(region, '9')));
+        this.organizationOptions.push(this.commonService.transformToOption(this.commonService.locate(organization, 'EDU9')));
+        this.regionOptions.push(this.commonService.transformToOption(this.commonService.locate(region, '9')));
 
-        this.locate(region, 'PROVINCE');
-        this.locate(region, 'CITY');
+        this.locateToSpecifiedLevel(region, 'PROVINCE');
+        this.locateToSpecifiedLevel(region, 'CITY');
       });
   }
 
@@ -101,7 +110,7 @@ export class SystemUserComponent implements OnInit {
   }
 
 
-  public locate(region: Region, level: string): Region {
+  private locateToSpecifiedLevel(region: Region, level: string): Region {
     if(region.level === level) {
       this.tabs.push({key: region.code, tab: region.name});
     }
@@ -110,7 +119,7 @@ export class SystemUserComponent implements OnInit {
 
     if (region.children) {
       for (var child of region.children) {
-        reg = this.locate(child, level);
+        reg = this.locateToSpecifiedLevel(child, level);
 
         if (reg)
           return reg;
@@ -120,4 +129,7 @@ export class SystemUserComponent implements OnInit {
     return null;
   }
 
+  private createUser(): void {
+    this.router.navigate(['/system/user-creation']).catch();
+  }
 }

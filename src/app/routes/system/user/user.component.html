@@ -7,22 +7,38 @@
       </ng-template>
     </nz-input-group>
   </div>
+  <br/>
   <div>
-    <nz-cascader
-      nzChangeOnSelect
-      [nzPlaceHolder]="'请选择组织机构'"
-      [nzOptions]="organizationOptions"
-      [(ngModel)]="selectedOrganization"
-      (ngModelChange)="onChanges($event)">
-    </nz-cascader>
-    <nz-cascader
-      nzChangeOnSelect
-      [nzPlaceHolder]="'请选择区域'"
-      [nzOptions]="regionOptions"
-      [(ngModel)]="selectedRegion"
-      (ngModelChange)="onChanges($event)">
-    </nz-cascader>
+    <nz-row [nzGutter]="{ md: 8, lg: 24, xl: 48 }">
+      <nz-col nzMd="8" nzSm="24">
+        <button nz-button nzType="primary" nzSize="large" (click)="createUser()">新建用户</button>
+      </nz-col>
+    </nz-row>
   </div>
+  <br/>
+  <div>
+    <nz-row [nzGutter]="{ md: 8, lg: 24, xl: 48 }">
+      <nz-col nzMd="8" nzSm="24">
+        <nz-cascader
+          nzChangeOnSelect
+          [nzPlaceHolder]="'请选择组织机构'"
+          [nzOptions]="organizationOptions"
+          [(ngModel)]="selectedOrganization"
+          (ngModelChange)="onChanges($event)">
+        </nz-cascader>
+      </nz-col>
+      <nz-col nzMd="8" nzSm="24">
+        <nz-cascader
+          nzChangeOnSelect
+          [nzPlaceHolder]="'请选择区域'"
+          [nzOptions]="regionOptions"
+          [(ngModel)]="selectedRegion"
+          (ngModelChange)="onChanges($event)">
+        </nz-cascader>
+      </nz-col>
+    </nz-row>
+  </div>
+
   <ng-template #tab>
     <nz-tabset [nzSelectedIndex]="pos">
       <nz-tab *ngFor="let i of tabs" [nzTitle]="i.tab" (click)="to(i)"></nz-tab>
@@ -32,7 +48,7 @@
 <nz-list [nzLoading]="loading" [nzRenderItem]="item" [nzDataSource]="users" [nzGrid]="{gutter: 24, lg: 6, md: 8, sm: 12, xs: 24 }">
   <ng-template #item let-item>
     <nz-list-item>
-      <nz-card [nzHoverable]="true" class="ant-card__body-nopadding">
+      <nz-card [nzHoverable]="true" class="ant-card__body-nopadding" [@zoomIn]="zoomIn">
         <div class="half-float half-float-md">
           <img src="./assets/tmp/img/half-float-bg-1.jpg">
           <div class="half-float-bottom rounded-circle bg-grey-lighter">
