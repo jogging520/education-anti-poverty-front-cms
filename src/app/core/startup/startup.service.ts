@@ -11,6 +11,8 @@ import {Strategy} from "@shared/models/general/strategy";
 import {Role} from "@shared/models/general/role";
 import { v4 as uuid } from 'uuid';
 import {throwError} from "rxjs/index";
+import {Region} from "@shared/models/general/region";
+import {Organization} from "@shared/models/general/organization";
 
 /**
  * 用于应用启动时
@@ -57,9 +59,9 @@ export class StartupService {
       return;
     }
 
-    //3、获取应用程序相关信息并设置
+    //3、获取应用程序相关信息、错误码相关信息等基础策略信息并设置
     this.httpClient
-      .get(`${environment.serverUrl}strategies\\application`,
+      .get(`${environment.serverUrl}strategies`,
         {headers: headers,
           params: {
             serialNo: serialNo,
@@ -67,6 +69,7 @@ export class StartupService {
             category: `${environment.category}`,
             session: tokenData.session,
             user: tokenData.user,
+            types: ['application', 'errorcode'].join(',')
           }}
       )
       .pipe(
@@ -86,8 +89,14 @@ export class StartupService {
       )
       .subscribe(
         (strategy: Strategy) => {
-          this.settingService.setApp({name: strategy.name, description: strategy.description});
-          this.titleService.suffix = strategy.name;
+          if (strategy.type === 'application') {
+            this.settingService.setApp({name: strategy.name, description: strategy.description});
+            this.titleService.suffix = strategy.name;
+          }
+
+          if (strategy.type === 'errorcode') {
+            this.cacheService.set('errorcode', strategy.parameters);
+          }
         },
         (error) => {
           this.injector.get(Router).navigate(['/passport/login']).catch();
@@ -96,27 +105,26 @@ export class StartupService {
         }
       );
 
-    //4、获取错误码相关信息，并缓存
-    this.cacheService.remove('errorcode');
+    //4、获取区域信息数据并设置
     this.httpClient
-      .get(`${environment.serverUrl}strategies\\errorcode`,
+      .get(`${environment.serverUrl}organizations\\regions`,
         {headers: headers,
           params: {
             serialNo: serialNo,
             appType: `${environment.appType}`,
             category: `${environment.category}`,
             session: tokenData.session,
-            user: tokenData.user,
+            user: tokenData.user
           }}
       )
       .pipe(
-        flatMap((strategy: any) => strategy),
-        map((strategy: Strategy) => {
-          if (strategy.status !== 'ACTIVE') {
-            return throwError(strategy.status);
+        flatMap((region: any) => region),
+        map((region: Region) => {
+          if (region.status !== 'ACTIVE') {
+            return throwError(region.status);
           }
 
-          return strategy;
+          return region;
         }),
         catchError(error => {
           this.injector.get(Router).navigate(['/passport/login']).catch();
@@ -125,8 +133,8 @@ export class StartupService {
         })
       )
       .subscribe(
-        (strategy: Strategy) => {
-          this.cacheService.set('errorcode', strategy.parameters);
+        (region: Region) => {
+            this.cacheService.set('region', region);
         },
         (error) => {
           this.injector.get(Router).navigate(['/passport/login']).catch();
@@ -135,7 +143,45 @@ export class StartupService {
         }
       );
 
-    //5、获取角色权限信息，并设置；获取菜单相关信息并设置（必须在权限读取完之后设置菜单）
+    //5、获取组织机构数据并设置
+    this.httpClient
+      .get(`${environment.serverUrl}organizations`,
+        {headers: headers,
+          params: {
+            serialNo: serialNo,
+            appType: `${environment.appType}`,
+            category: `${environment.category}`,
+            session: tokenData.session,
+            user: tokenData.user
+          }}
+      )
+      .pipe(
+        flatMap((organization: any) => organization),
+        map((organization: Organization) => {
+          if (organization.status !== 'ACTIVE') {
+            return throwError(organization.status);
+          }
+
+          return organization;
+        }),
+        catchError(error => {
+          this.injector.get(Router).navigate(['/passport/login']).catch();
+          resolve(null);
+          return throwError(error);
+        })
+      )
+      .subscribe(
+        (organization: Organization) => {
+          this.cacheService.set('organization', organization);
+        },
+        (error) => {
+          this.injector.get(Router).navigate(['/passport/login']).catch();
+          resolve(null);
+          throwError(error);
+        }
+      );
+
+    //6、获取角色权限信息，并设置；获取菜单相关信息并设置（必须在权限读取完之后设置菜单）
     this.aclService.removeAbility(this.aclService.data.abilities);
     this.aclService.removeRole(this.aclService.data.roles);
     this.menuService.clear();

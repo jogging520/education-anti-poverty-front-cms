@@ -1,14 +1,6 @@
 <page-header [autoTitle]="false" [autoBreadcrumb]="false">
-  <nz-cascader
-    nzChangeOnSelect
-    [nzSize]="'large'"
-    [nzPlaceHolder]="'请选择区域'"
-    [nzOptions]="regionOptions"
-    [(ngModel)]="selectedRegion"
-    (ngModelChange)="onChanges($event)"
-    style="width: 100%"
-  >
-  </nz-cascader>
+  <app-nb-region code="9" (region)="onRegion($event)" (center)="onCenter($event)"></app-nb-region>
+  <app-nb-organization code="EDU9" (organization)="onOrganization($event)"></app-nb-organization>
 </page-header>
 <nz-card class="ant-card__body-nopadding">
   <ngx-amap class="demo-map" [resizeEnable]="true" [center]="center" [zoom]="11"></ngx-amap>

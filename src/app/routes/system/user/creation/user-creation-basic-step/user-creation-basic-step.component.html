@@ -1,18 +1,11 @@
-<form nz-form [formGroup]="form" (ngSubmit)="submit()">
-  <nz-form-item>
-    <nz-form-label nzSpan="5" nzRequired>用户类型</nz-form-label>
-    <nz-form-control [nzSpan]="19">
-      <nz-select formControlName="type">
-        <nz-option *ngFor="let i of types" [nzLabel]="i.text" [nzValue]="i.value"></nz-option>
-      </nz-select>
-    </nz-form-control>
-  </nz-form-item>
+<form nz-form [formGroup]="formGroup" (ngSubmit)="submit()">
   <nz-form-item>
     <nz-form-label nzSpan="5" nzRequired>用户姓名</nz-form-label>
     <nz-form-control [nzSpan]="19">
       <input nz-input formControlName="name" id="name" placeholder="请输入用户名">
       <ng-container *ngIf="name.dirty || name.touched">
         <nz-form-explain *ngIf="name.errors?.required">请输入用户名</nz-form-explain>
+        <nz-form-explain *ngIf="name.errors?.minlength">用户名至少8个字符以上</nz-form-explain>
       </ng-container>
     </nz-form-control>
   </nz-form-item>
@@ -22,6 +15,7 @@
       <input nz-input formControlName="realName" id="realName" placeholder="请输入用户真实姓名">
       <ng-container *ngIf="realName.dirty || realName.touched">
         <nz-form-explain *ngIf="realName.errors?.required">请输入真实姓名</nz-form-explain>
+        <nz-form-explain *ngIf="realName.errors?.minlength">真实姓名至少2个字符以上</nz-form-explain>
       </ng-container>
     </nz-form-control>
   </nz-form-item>
@@ -72,7 +66,7 @@
   </nz-form-item>
   <nz-form-item>
     <nz-form-control nzSpan="19" nzOffset="5">
-      <button nz-button nzType="primary" [disabled]="form.invalid">下一步</button>
+      <button nz-button nzType="primary" [disabled]="formGroup.invalid">下一步</button>
     </nz-form-control>
   </nz-form-item>
 </form>

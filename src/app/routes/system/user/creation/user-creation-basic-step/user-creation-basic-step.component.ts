@@ -9,26 +9,18 @@ import {UserCreationStepService} from "@shared/services/step/user-creation-step.
 })
 export class UserCreationBasicStepComponent implements OnInit {
 
-  types: any[] = [
-    {text: '普通', value: 'COMMON'},
-    {text: '特殊', value: 'SPECIAL'}
-  ];
+  formGroup: FormGroup;
 
-  form: FormGroup;
-
-  constructor(private fb: FormBuilder,
+  constructor(private formBuilder: FormBuilder,
               public item: UserCreationStepService) { }
 
   ngOnInit() {
-    this.form = this.fb.group({
-      type: [
-        'COMMON', Validators.compose([Validators.required])
-      ],
+    this.formGroup = this.formBuilder.group({
       name: [
-        null, Validators.compose([Validators.required])
+        null, Validators.compose([Validators.required, Validators.minLength(8)])
       ],
       realName: [
-        null, Validators.compose([Validators.required])
+        null, Validators.compose([Validators.required, Validators.minLength(2)])
       ],
       pay_account: [
         null,
@@ -50,35 +42,31 @@ export class UserCreationBasicStepComponent implements OnInit {
         ]),
       ],
     });
-    this.form.patchValue(this.item);
-  }
-
-  get type() {
-    return this.form.controls['type'];
+    this.formGroup.patchValue(this.item);
   }
 
   get name() {
-    return this.form.controls['name'];
+    return this.formGroup.controls['name'];
   }
 
   get realName() {
-    return this.form.controls['realName'];
+    return this.formGroup.controls['realName'];
   }
 
   get pay_account() {
-    return this.form.controls['pay_account'];
+    return this.formGroup.controls['pay_account'];
   }
   get receiver_type() {
-    return this.form.controls['receiver_type'];
+    return this.formGroup.controls['receiver_type'];
   }
   get receiver_account() {
-    return this.form.controls['receiver_account'];
+    return this.formGroup.controls['receiver_account'];
   }
   get receiver_name() {
-    return this.form.controls['receiver_name'];
+    return this.formGroup.controls['receiver_name'];
   }
   get amount() {
-    return this.form.controls['amount'];
+    return this.formGroup.controls['amount'];
   }
 
   private submit(): void {

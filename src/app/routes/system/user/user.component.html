@@ -16,28 +16,6 @@
     </nz-row>
   </div>
   <br/>
-  <div>
-    <nz-row [nzGutter]="{ md: 8, lg: 24, xl: 48 }">
-      <nz-col nzMd="8" nzSm="24">
-        <nz-cascader
-          nzChangeOnSelect
-          [nzPlaceHolder]="'请选择组织机构'"
-          [nzOptions]="organizationOptions"
-          [(ngModel)]="selectedOrganization"
-          (ngModelChange)="onChanges($event)">
-        </nz-cascader>
-      </nz-col>
-      <nz-col nzMd="8" nzSm="24">
-        <nz-cascader
-          nzChangeOnSelect
-          [nzPlaceHolder]="'请选择区域'"
-          [nzOptions]="regionOptions"
-          [(ngModel)]="selectedRegion"
-          (ngModelChange)="onChanges($event)">
-        </nz-cascader>
-      </nz-col>
-    </nz-row>
-  </div>
 
   <ng-template #tab>
     <nz-tabset [nzSelectedIndex]="pos">

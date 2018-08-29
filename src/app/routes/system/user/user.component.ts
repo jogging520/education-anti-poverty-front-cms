@@ -11,6 +11,7 @@ import {Region} from "@shared/models/general/region";
 import { bounce } from 'ngx-animate';
 import {transition, trigger, useAnimation} from "@angular/animations";
 import {flip, jackInTheBox, tada, zoomIn} from "ngx-animate/lib";
+import {CacheService} from "@delon/cache";
 
 @Component({
   selector: 'app-system-user',
@@ -30,44 +31,26 @@ export class SystemUserComponent implements OnInit {
   };
 
   tabs: any[] = [];
-
   users: User[] = [];
-  organizationOptions:any  = [] ;
-  regionOptions:any  = [] ;
-  selectedOrganization: any[];
-  selectedRegion: any[];
-
   loading = false;
-
   queryCondition: string = '';
 
-
-
-  constructor(private activatedRoute: ActivatedRoute,
-              public messageService: NzMessageService,
+  constructor(public messageService: NzMessageService,
               private router: Router,
+              private cacheService: CacheService,
               private commonService: CommonService,
               private translatorService: TranslatorService,
               private userService: UserService) {
-    this.activatedRoute
-      .data
-      .pipe(map(data => data))
-      .subscribe((data) => {
-        this.users = data.userParams;
 
-        let organization: Organization = data.organizationParams;
-        let region: Region = data.regionParams;
-
-        this.organizationOptions.push(this.commonService.transformToOption(this.commonService.locate(organization, 'EDU9')));
-        this.regionOptions.push(this.commonService.transformToOption(this.commonService.locate(region, '9')));
-
-        this.locateToSpecifiedLevel(region, 'PROVINCE');
-        this.locateToSpecifiedLevel(region, 'CITY');
-      });
   }
 
   ngOnInit() {
-    //this.getUsers();
+    this.cacheService
+      .get<Region>('region')
+      .subscribe(region => {
+        this.locateToSpecifiedLevel(region, 'PROVINCE');
+        this.locateToSpecifiedLevel(region, 'CITY');
+      });
   }
 
   private getUsers() {
@@ -103,12 +86,6 @@ export class SystemUserComponent implements OnInit {
     console.log(this.translatorService.getCamelChars(this.queryCondition));
   }
 
-  onChanges(event: any): void {
-    console.log(this.organizationOptions);
-    console.log(this.selectedOrganization);
-    console.log(event);
-  }
-
 
   private locateToSpecifiedLevel(region: Region, level: string): Region {
     if(region.level === level) {
@@ -130,6 +107,6 @@ export class SystemUserComponent implements OnInit {
   }
 
   private createUser(): void {
-    this.router.navigate(['/system/user-creation']).catch();
+    this.router.navigate(['/business/user-creation']).catch();
   }
 }

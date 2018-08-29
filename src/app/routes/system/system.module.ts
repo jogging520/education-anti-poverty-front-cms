@@ -5,7 +5,6 @@ import { SystemOperationComponent } from './operation/operation.component';
 import { SystemOperationViewComponent } from './operation/view/view.component';
 import { SystemUserComponent } from './user/user.component';
 import { SystemPrivilegeComponent } from './privilege/privilege.component';
-import { NgxAmapModule } from 'ngx-amap';
 import { SystemUserCreationComponent } from './user/creation/creation.component';
 import { SystemUserDetailComponent } from './user/detail/detail.component';
 import { UserCreationBasicStepComponent } from './user/creation/user-creation-basic-step/user-creation-basic-step.component';
@@ -25,10 +24,7 @@ const COMPONENTS_NOROUNT = [
 @NgModule({
   imports: [
     SharedModule,
-    SystemRoutingModule,
-    NgxAmapModule.forRoot({
-      apiKey: '1d54cf0e4dac3ed6da30cbad7627dcdd'
-    })
+    SystemRoutingModule
   ],
   declarations: [
     ...COMPONENTS,
