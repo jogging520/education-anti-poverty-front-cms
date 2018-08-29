@@ -4,15 +4,24 @@ import {User} from "@shared/models/general/user";
 import {UserService} from "@shared/services/general/user.service";
 import {tap, map} from "rxjs/operators";
 import {CommonService} from "@shared/services/general/common.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {TranslatorService} from "@shared/services/general/translator.service";
 import {Organization} from "@shared/models/general/organization";
 import {Region} from "@shared/models/general/region";
+import { bounce } from 'ngx-animate';
+import {transition, trigger, useAnimation} from "@angular/animations";
+import {flip, jackInTheBox, tada, zoomIn} from "ngx-animate/lib";
+import {CacheService} from "@delon/cache";
 
 @Component({
   selector: 'app-system-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.less'],
+  animations: [
+    trigger('zoomIn', [transition('* => *', useAnimation(zoomIn,
+      {params: { timing: 5, delay: 0 }
+      }))])
+  ],
 })
 export class SystemUserComponent implements OnInit {
   q: any = {
@@ -22,43 +31,32 @@ export class SystemUserComponent implements OnInit {
   };
 
   tabs: any[] = [];
-
   users: User[] = [];
-  organizationOptions:any  = [] ;
-  regionOptions:any  = [] ;
-  selectedOrganization: any[];
-  selectedRegion: any[];
-
   loading = false;
-
   queryCondition: string = '';
 
-
-
-  constructor(private activatedRoute: ActivatedRoute,
-              public messageService: NzMessageService,
+  constructor(public messageService: NzMessageService,
+              private router: Router,
+              private cacheService: CacheService,
+              private activatedRoute: ActivatedRoute,
               private commonService: CommonService,
               private translatorService: TranslatorService,
               private userService: UserService) {
     this.activatedRoute
       .data
-      .pipe(map(data => data))
+      .pipe(map(data => data.userParams))
       .subscribe((data) => {
-        this.users = data.userParams;
-
-        let organization: Organization = data.organizationParams;
-        let region: Region = data.regionParams;
-
-        this.organizationOptions.push(this.commonService.transform(this.commonService.locate(organization, 'EDU9')));
-        this.regionOptions.push(this.commonService.transform(this.commonService.locate(region, '9')));
-
-        this.locate(region, 'PROVINCE');
-        this.locate(region, 'CITY');
+        this.users = data;
       });
   }
 
   ngOnInit() {
-    //this.getUsers();
+    this.cacheService
+      .get<Region>('region')
+      .subscribe(region => {
+        this.locateToSpecifiedLevel(region, 'PROVINCE');
+        this.locateToSpecifiedLevel(region, 'CITY');
+      });
   }
 
   private getUsers() {
@@ -94,14 +92,8 @@ export class SystemUserComponent implements OnInit {
     console.log(this.translatorService.getCamelChars(this.queryCondition));
   }
 
-  onChanges(event: any): void {
-    console.log(this.organizationOptions);
-    console.log(this.selectedOrganization);
-    console.log(event);
-  }
 
-
-  public locate(region: Region, level: string): Region {
+  private locateToSpecifiedLevel(region: Region, level: string): Region {
     if(region.level === level) {
       this.tabs.push({key: region.code, tab: region.name});
     }
@@ -110,7 +102,7 @@ export class SystemUserComponent implements OnInit {
 
     if (region.children) {
       for (var child of region.children) {
-        reg = this.locate(child, level);
+        reg = this.locateToSpecifiedLevel(child, level);
 
         if (reg)
           return reg;
@@ -120,4 +112,7 @@ export class SystemUserComponent implements OnInit {
     return null;
   }
 
+  private createUser(): void {
+    this.router.navigate(['/system/user-creation']).catch();
+  }
 }

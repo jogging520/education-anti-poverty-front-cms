@@ -1,15 +1,7 @@
-<page-header>
-  <ng-template #action>
-    <button (click)="add()" nz-button nzType="primary">新建</button>
-  </ng-template>
-  <nz-cascader
-    nzChangeOnSelect
-    [nzPlaceHolder]="'请选择区域'"
-    [nzOptions]="regionOptions"
-    [(ngModel)]="selectedRegion"
-    (ngModelChange)="onChanges($event)">
-  </nz-cascader>
+<page-header [autoTitle]="false" [autoBreadcrumb]="false">
+  <app-nb-region code="9" (region)="onRegion($event)" (center)="onCenter($event)"></app-nb-region>
+  <app-nb-organization code="EDU9" (organization)="onOrganization($event)"></app-nb-organization>
 </page-header>
-<nz-card>
-  <ngx-amap class="demo-map" [resizeEnable]="true" [center]="center" [zoom]="12"></ngx-amap>
+<nz-card class="ant-card__body-nopadding">
+  <ngx-amap class="demo-map" [resizeEnable]="true" [center]="center" [zoom]="11"></ngx-amap>
 </nz-card>

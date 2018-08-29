@@ -13,36 +13,21 @@ import {OrganizationService} from "@shared/services/general/organization.service
 })
 export class SystemPrivilegeComponent implements OnInit {
 
-  regionOptions:any  = [] ;
-  selectedRegion: any[];
   center:any = [103.719156, 36.115523];
 
   constructor(private http: _HttpClient,
               private modal: ModalHelper,
-              private activatedRoute: ActivatedRoute,
               private commonService: CommonService,
-              private organizationService: OrganizationService) {
-    this.activatedRoute
-      .data
-      .pipe(map(data => data))
-      .subscribe((data) => {
-
-        let region: Region = data.regionParams;
-
-        this.regionOptions.push(this.commonService.transform(this.commonService.locate(region, '9')));
-      });
-  }
+              private organizationService: OrganizationService) { }
 
   ngOnInit() { }
 
   onChanges(event: any): void {
-    console.log(this.regionOptions);
-    console.log(this.selectedRegion);
     console.log(event);
 
-    console.log(this.selectedRegion[this.selectedRegion.length-1]);
+    //console.log(this.selectedRegion[this.selectedRegion.length-1]);
 
-    this.queryRegionLongitudeAndLatitude(this.selectedRegion[this.selectedRegion.length-1]);
+    //this.queryRegionLongitudeAndLatitude(this.selectedRegion[this.selectedRegion.length-1]);
 
     console.log(this.center);
   }
@@ -75,5 +60,18 @@ export class SystemPrivilegeComponent implements OnInit {
     }
 
     return null;
+  }
+
+  private onRegion(event: any): void {
+    console.log(event);
+  }
+
+  private onCenter(event: any): void {
+    console.log(event);
+    this.center = event;
+  }
+
+  private onOrganization(event: any): void {
+    console.log(event);
   }
 }

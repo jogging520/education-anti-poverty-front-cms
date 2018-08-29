@@ -1,0 +1,15 @@
+<page-header [autoTitle]="false" [autoBreadcrumb]="false" [title]="'新建操作用户'">
+  分步建立用户的各类信息，包括基础信息、密码设定、权限授予等。
+</page-header>
+<nz-card [nzBordered]="false">
+  <nz-steps [(nzCurrent)]="item.step">
+    <nz-step nzTitle="填写基础信息"></nz-step>
+    <nz-step nzTitle="设置密码"></nz-step>
+    <nz-step nzTitle="用户授权"></nz-step>
+    <nz-step nzTitle="完成"></nz-step>
+  </nz-steps>
+  <app-user-creation-basic-step *ngIf="item.step==0"></app-user-creation-basic-step>
+  <app-user-creation-password-step *ngIf="item.step==1"></app-user-creation-password-step>
+  <app-user-creation-privilege-step *ngIf="item.step==2"></app-user-creation-privilege-step>
+  <app-user-creation-other-step *ngIf="item.step==3"></app-user-creation-other-step>
+</nz-card>
