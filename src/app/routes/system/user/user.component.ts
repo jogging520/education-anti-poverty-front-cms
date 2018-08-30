@@ -17,7 +17,7 @@ import {CacheService} from "@delon/cache";
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.less'],
   animations: [
-    trigger('zoomIn', [transition('* => *', useAnimation(zoomIn,
+    trigger('tada', [transition('* => *', useAnimation(tada,
       {params: { timing: 2, delay: 0 }
       }))])
   ],
@@ -117,6 +117,6 @@ export class SystemUserComponent implements OnInit {
   }
 
   private createUser(): void {
-    this.router.navigate(['/system/privilege']).catch();
+    this.router.navigate(['/system/user-creation']).catch();
   }
 }

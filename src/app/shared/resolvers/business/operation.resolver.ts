@@ -27,18 +27,28 @@ export class OperationResolver implements Resolve<any> {
     const tokenData = this.tokenService.get();
 
     return forkJoin(
-      this.strategyService.queryStrategies('appTypes'),
-      this.strategyService.queryStrategies('businessTypes'),
+      this.strategyService.queryStrategies(['appTypes', 'businessTypes']),
       this.userService.queryUsers()
     )
       .pipe(
         map((data) => {
-          let originalAppTypes: Strategy = data[0];
-          let originalBusinessTypes: Strategy = data[1];
-          let originalUsers: User[] = data[2];
+          let strategies: Strategy[] =  data[0];
+          let originalUsers: User[] = data[1];
+          let originalAppTypes: Strategy;
+          let originalBusinessTypes: Strategy;
           let operationParams = {channelTypes: [], businessTypes: [], users: []};
 
-          if (originalAppTypes.status === 'ACTIVE' && originalAppTypes.parameters) {
+          strategies.forEach((strategy) => {
+            if (strategy.type === 'appTypes') {
+              originalAppTypes = strategy;
+            }
+
+            if (strategy.type === 'businessTypes') {
+              originalBusinessTypes = strategy;
+            }
+          });
+
+          if (originalAppTypes && originalAppTypes.status === 'ACTIVE' && originalAppTypes.parameters) {
             Object.keys(originalAppTypes.parameters)
               .forEach((key) => {
                 if (originalAppTypes.parameters[key])
@@ -46,7 +56,7 @@ export class OperationResolver implements Resolve<any> {
               });
           }
 
-          if (originalBusinessTypes.status === 'ACTIVE' && originalBusinessTypes.parameters) {
+          if (originalBusinessTypes && originalBusinessTypes.status === 'ACTIVE' && originalBusinessTypes.parameters) {
             Object.keys(originalBusinessTypes.parameters)
               .forEach((key) => {
                 if (originalBusinessTypes.parameters[key])
@@ -54,11 +64,13 @@ export class OperationResolver implements Resolve<any> {
               });
           }
 
-          originalUsers.forEach((user: User) => {
-            if (user.status === 'ACTIVE') {
-              operationParams.users.push({'text': decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))), 'value': user.id});
-            }
-          });
+          if (originalUsers) {
+            originalUsers.forEach((user: User) => {
+              if (user.status === 'ACTIVE') {
+                operationParams.users.push({'text': decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))), 'value': user.id});
+              }
+            });
+          }
 
           if (tokenData.roles && tokenData.roles.indexOf('admin') > -1) {
             operationParams.users.push({'text': '全部', 'value': 'ffffffffffffffffffffffff'});

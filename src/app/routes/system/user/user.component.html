@@ -1,4 +1,6 @@
 <page-header #ph [autoTitle]="false" [autoBreadcrumb]="false" >
+  <h4>展示查询操作员信息。</h4>
+  <br/>
   <div class="text-center">
     <nz-input-group nzSearch nzSize="large" [nzSuffix]="suffixButton" style="width: 520px;">
       <input type="text" nz-input placeholder="请输入" [(ngModel)]="queryCondition">
@@ -24,7 +26,7 @@
         <nz-list [nzLoading]="loading" [nzRenderItem]="item" [nzDataSource]="users | userRegion: tab.key" [nzGrid]="{gutter: 24, lg: 6, md: 8, sm: 12, xs: 24 }">
           <ng-template #item let-item>
             <nz-list-item>
-              <nz-card [nzHoverable]="true" class="ant-card__body-nopadding" [@zoomIn]="zoomIn">
+              <nz-card [nzHoverable]="true" class="ant-card__body-nopadding" [@tada]="tada">
                 <div class="half-float half-float-md">
                   <img src="./assets/tmp/img/half-float-bg-1.jpg">
                   <div class="half-float-bottom rounded-circle bg-grey-lighter">
