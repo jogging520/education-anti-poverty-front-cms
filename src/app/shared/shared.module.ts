@@ -14,6 +14,8 @@ import { CountdownModule } from 'ngx-countdown';
 import { RegionComponent } from './components/general/region/region.component';
 import { OrganizationComponent } from './components/general/organization/organization.component';
 import { NgxAmapModule } from 'ngx-amap';
+import {UserRegionPipe} from "@shared/pipes/business/user-region.pipe";
+import { ShowAuthedDirective } from './directives/show-authed.directive';
 
 const THIRDMODULES = [
   NgZorroAntdModule,
@@ -23,7 +25,8 @@ const THIRDMODULES = [
 
 // topCode: your componets & directives
 const COMPONENTS = [RegionComponent, OrganizationComponent];
-const DIRECTIVES = [];
+const DIRECTIVES = [ShowAuthedDirective];
+const PIPES = [UserRegionPipe];
 // endregion
 
 @NgModule({
@@ -46,6 +49,8 @@ const DIRECTIVES = [];
     // your components
     ...COMPONENTS,
     ...DIRECTIVES,
+    ...PIPES,
+    ...DIRECTIVES
   ],
   exports: [
     CommonModule,
@@ -61,7 +66,8 @@ const DIRECTIVES = [];
     ...THIRDMODULES,
     // your components
     ...COMPONENTS,
-    ...DIRECTIVES
+    ...DIRECTIVES,
+    ...PIPES
   ]
 })
 export class SharedModule { }

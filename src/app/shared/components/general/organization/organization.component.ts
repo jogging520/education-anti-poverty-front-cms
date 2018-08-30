@@ -64,7 +64,7 @@ export class OrganizationComponent implements OnInit {
     if (!organization || !code)
       return null;
 
-    if (organization.code === code || code === '0')
+    if (organization.code === code)
       return organization;
 
     let org: Organization;

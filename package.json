@@ -46,6 +46,7 @@
     "ng-zorro-antd": "^1.4.0",
     "ngx-amap": "^2.1.1",
     "ngx-animate": "^1.0.1",
+    "npm": "^6.4.1",
     "prettier": "^1.12.1",
     "prettier-stylelint": "^0.4.2",
     "rxjs": "^6.2.2",
