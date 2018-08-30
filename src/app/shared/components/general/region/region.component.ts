@@ -75,7 +75,10 @@ export class RegionComponent implements OnInit {
    * @return {Organization} 定位到的区域
    */
   private locate(region: Region, code: string): Region {
-    if(region.code === code || code === '0')
+    if (!region || !code)
+      return null;
+
+    if(region.code === code)
       return region;
 
     let reg: Region;

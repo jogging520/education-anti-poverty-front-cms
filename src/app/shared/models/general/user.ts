@@ -11,9 +11,9 @@ export class User {
   roles: string[];
   permissions?: number[];
   affiliations: {
-    type?: string;
-    organization?: string[];
-  }[] = [{}];
+    common: string[];
+    default: string[];
+  };
   mobiles: string[];
   emails?: string[];
   wechates?: string[];

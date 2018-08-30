@@ -58,7 +58,12 @@ export class SystemUserComponent implements OnInit {
       });
   }
 
-  private getUsers() {
+  private setRegionCode(event: any): void {
+    console.log(event);
+  }
+
+  private getUsers(regionCode: string): void {
+
     this.loading = true;
 
     this.userService
