@@ -13,7 +13,7 @@ import {OrganizationService} from "@shared/services/general/organization.service
 })
 export class SystemPrivilegeComponent implements OnInit {
 
-  center:any = [103.719156, 36.115523];
+  center: number[] = [103.719156, 36.115523];
 
   constructor(private http: _HttpClient,
               private modal: ModalHelper,
@@ -22,56 +22,17 @@ export class SystemPrivilegeComponent implements OnInit {
 
   ngOnInit() { }
 
-  onChanges(event: any): void {
-    console.log(event);
 
-    //console.log(this.selectedRegion[this.selectedRegion.length-1]);
-
-    //this.queryRegionLongitudeAndLatitude(this.selectedRegion[this.selectedRegion.length-1]);
-
-    console.log(this.center);
-  }
-
-  private queryRegionLongitudeAndLatitude(code: string): void {
-    this.organizationService
-      .queryRegions()
-      .subscribe((region: Region) => {
-        let locatedRegion: Region = this.locate(region, code);
-        this.center = [];
-        this.center.push(locatedRegion.longitude, locatedRegion.latitude);
-      })
-  }
-
-
-  private locate(region: Region, code: string): Region {
-    if(region.code === code) {
-      return region;
-    }
-
-    let reg: Region;
-
-    if (region.children) {
-      for (var child of region.children) {
-        reg = this.locate(child, code);
-
-        if (reg)
-          return reg;
-      }
-    }
-
-    return null;
-  }
-
-  private onRegion(event: any): void {
+  private onRegionCode(event: any): void {
     console.log(event);
   }
 
-  private onCenter(event: any): void {
+  private onRegionCenter(event: any): void {
     console.log(event);
     this.center = event;
   }
 
-  private onOrganization(event: any): void {
+  private onOrganizationCode(event: any): void {
     console.log(event);
   }
 }

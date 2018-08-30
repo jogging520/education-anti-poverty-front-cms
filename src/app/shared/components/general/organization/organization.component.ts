@@ -10,10 +10,16 @@ import {CacheService} from "@delon/cache";
 })
 export class OrganizationComponent implements OnInit {
 
-  @Input() code: string;
-  @Output() organization: EventEmitter<number> = new EventEmitter();
+  //输入的顶级组织机构编码
+  @Input() topCode: string;
+  //输入的默认的组织机构编码
+  @Input() defaultCode: string;
+  //输出的选中的组织机构编码
+  @Output() code: EventEmitter<string> = new EventEmitter();
 
-  organizationOptions:any  = [] ;
+  //组织机构属性
+  organizationOptions: any[]  = [] ;
+  //选择的组织机构
   selectedOrganization: any[];
 
   constructor(
@@ -24,13 +30,28 @@ export class OrganizationComponent implements OnInit {
     this.cacheService
       .get<Organization>('organization')
       .subscribe(organization => {
-        this.organizationOptions.push(this.transform(this.locate(organization, this.code)));
+        let options = this.transform(this.locate(organization, this.topCode));
+
+        if (options)
+          this.organizationOptions.push(options);
       });
 
   }
 
+  /**
+   * 方法：级联列表清空时候的事件处理
+   * @param event 事件
+   */
+  onClear(event: any): void {
+    this.code.emit(this.defaultCode);
+  }
+
+  /**
+   * 方法：级联列表改变时候的事件处理
+   * @param event 事件
+   */
   onChanges(event: any): void {
-    this.organization.emit(this.selectedOrganization[this.selectedOrganization.length-1]);
+    this.code.emit(this.selectedOrganization[this.selectedOrganization.length-1]);
   }
 
   /**
@@ -40,7 +61,10 @@ export class OrganizationComponent implements OnInit {
    * @return {Organization} 定位到的组织机构
    */
   private locate(organization: Organization, code: string): Organization {
-    if(organization.code === code || code === '0')
+    if (!organization || !code)
+      return null;
+
+    if (organization.code === code || code === '0')
       return organization;
 
     let org: Organization;
@@ -76,9 +100,7 @@ export class OrganizationComponent implements OnInit {
       option.isLeaf = true;
 
       return option;
-    }
-
-    if (organization.children) {
+    } else {
       for (let child of organization.children) {
         option.children.push(this.transform(child));
       }

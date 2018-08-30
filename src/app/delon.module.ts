@@ -24,7 +24,7 @@ import * as MOCKDATA from '../../_mock';
 import { environment } from '@env/environment';
 const MOCKMODULE = !environment.production ? [DelonMockModule.forRoot({ data: MOCKDATA })] : [];
 
-// region: global config functions
+// topCode: global config functions
 
 import { AdPageHeaderConfig } from '@delon/abc';
 export function pageHeaderConfig(): AdPageHeaderConfig {

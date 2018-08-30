@@ -8,7 +8,7 @@ import { DelonABCModule } from '@delon/abc';
 import { DelonACLModule } from '@delon/acl';
 import { DelonFormModule } from '@delon/form';
 
-// region: third libs
+// topCode: third libs
 import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { CountdownModule } from 'ngx-countdown';
 import { RegionComponent } from './components/general/region/region.component';
@@ -21,7 +21,7 @@ const THIRDMODULES = [
 ];
 // endregion
 
-// region: your componets & directives
+// topCode: your componets & directives
 const COMPONENTS = [RegionComponent, OrganizationComponent];
 const DIRECTIVES = [];
 // endregion
