@@ -172,7 +172,7 @@ export class StartupService {
       )
       .subscribe(
         (organization: Organization) => {
-          this.cacheService.set('organization', organization);
+          this.cacheService.set('code', organization);
         },
         (error) => {
           this.injector.get(Router).navigate(['/passport/login']).catch();

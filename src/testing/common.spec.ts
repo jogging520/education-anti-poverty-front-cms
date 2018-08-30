@@ -30,14 +30,14 @@ export const setUpTestBed = (moduleDef: TestModuleMetadata) => {
       resetTestingModule();
       preventAngularFromResetting();
 
-      // region: schemas
+      // topCode: schemas
       if (!moduleDef.schemas) {
         moduleDef.schemas = [];
       }
       moduleDef.schemas.push(CUSTOM_ELEMENTS_SCHEMA);
       // endregion
 
-      // region: imports
+      // topCode: imports
       if (!moduleDef.imports) {
         moduleDef.imports = [];
       }
@@ -49,7 +49,7 @@ export const setUpTestBed = (moduleDef: TestModuleMetadata) => {
       moduleDef.imports.push(DelonAuthModule.forRoot());
       // endregion
 
-      // region: providers
+      // topCode: providers
       if (!moduleDef.providers) {
         moduleDef.providers = [];
       }

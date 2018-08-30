@@ -11,15 +11,23 @@ import {CacheService} from "@delon/cache";
 })
 export class RegionComponent implements OnInit {
 
-  @Input() code: string;
-  @Output() region: EventEmitter<number> = new EventEmitter();
+  //输入的顶级区域编码
+  @Input() topCode: string;
+  //输入的默认的区域编码
+  @Input() defaultCode: string;
+  //输入的默认的中心经纬度
+  @Input() defaultCenter: number[];
+  //输出的选中的区域编码
+  @Output() code: EventEmitter<string> = new EventEmitter();
+  //输出的选中的中心经纬度
   @Output() center: EventEmitter<number[]> = new EventEmitter();
 
-  defaultRegion: number = 9;
-  defaultCenter:number[] = [103.719156, 36.115523];
-
-  regionOptions:any  = [] ;
+  //区域属性
+  regionOptions: any[]  = [];
+  //选择的区域
   selectedRegion: any[];
+  //选择的经纬度
+  selectedCenter: number[];
 
   constructor(
     private cacheService: CacheService
@@ -29,34 +37,44 @@ export class RegionComponent implements OnInit {
     this.cacheService
       .get<Region>('region')
       .subscribe(region => {
-        this.regionOptions.push(this.transform(this.locate(region, this.code)));
+        let options = this.transform(this.locate(region, this.topCode));
+
+        if (options)
+          this.regionOptions.push(options);
       });
   }
 
+  /**
+   * 方法：级联列表清空时候的事件处理
+   * @param event 事件
+   */
   onClear(event: any): void {
-    this.region.emit(this.defaultRegion);
+    this.code.emit(this.defaultCode);
     this.center.emit(this.defaultCenter);
   }
 
+  /**
+   * 方法：级联列表改变时候的事件处理
+   * @param event 事件
+   */
   onChanges(event: any): void {
     if (event) {
-      this.region.emit(this.selectedRegion[this.selectedRegion.length-1]);
-
-      this.queryRegionLongitudeAndLatitude(this.selectedRegion[this.selectedRegion.length-1]);
+      this.getLongitudeAndLatitude(this.selectedRegion[this.selectedRegion.length-1]);
+      this.code.emit(this.selectedRegion[this.selectedRegion.length-1]);
+      this.center.emit(this.selectedCenter);
     } else {
-      this.region.emit(this.defaultRegion);
+      this.code.emit(this.defaultCode);
       this.center.emit(this.defaultCenter);
     }
   }
 
-
   /**
    * 方法：根据编号递归查找具体的区域位置
-   * @param {region} region 区域
+   * @param {code} region 区域编码
    * @param {string} code 编码
    * @return {Organization} 定位到的区域
    */
-  public locate(region: Region, code: string): Region {
+  private locate(region: Region, code: string): Region {
     if(region.code === code || code === '0')
       return region;
 
@@ -76,10 +94,10 @@ export class RegionComponent implements OnInit {
 
   /**
    * 方法：将region转换成option（级联选择器）
-   * @param {Region} organization 区域
+   * @param {Region} region 区域
    * @return {Option} 级联选择器的选项
    */
-  public transform(region: Region): Option {
+  private transform(region: Region): Option {
 
     if(!region)
       return null;
@@ -93,9 +111,7 @@ export class RegionComponent implements OnInit {
       option.isLeaf = true;
 
       return option;
-    }
-
-    if (region.children) {
+    } else {
       for (let child of region.children) {
         option.children.push(this.transform(child));
       }
@@ -104,16 +120,20 @@ export class RegionComponent implements OnInit {
     return option;
   }
 
-  private queryRegionLongitudeAndLatitude(code: string): void {
+  /**
+   * 方法：获取经纬度
+   * @param {string} code 区域编码
+   */
+  private getLongitudeAndLatitude(code: string): void {
     this.cacheService
       .get<Region>('region')
       .subscribe((region: Region) => {
         let locatedRegion: Region = this.locate(region, code);
 
         if (locatedRegion)
-          this.center.emit([locatedRegion.longitude, locatedRegion.latitude]);
+          this.selectedCenter = [locatedRegion.longitude, locatedRegion.latitude];
         else
-          this.center.emit(this.defaultCenter);
+          this.selectedCenter = this.defaultCenter;
       })
   }
 }

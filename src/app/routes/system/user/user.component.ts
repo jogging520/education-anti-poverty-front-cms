@@ -6,7 +6,6 @@ import {tap, map} from "rxjs/operators";
 import {CommonService} from "@shared/services/general/common.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {TranslatorService} from "@shared/services/general/translator.service";
-import {Organization} from "@shared/models/general/organization";
 import {Region} from "@shared/models/general/region";
 import { bounce } from 'ngx-animate';
 import {transition, trigger, useAnimation} from "@angular/animations";
@@ -19,7 +18,7 @@ import {CacheService} from "@delon/cache";
   styleUrls: ['./user.component.less'],
   animations: [
     trigger('zoomIn', [transition('* => *', useAnimation(zoomIn,
-      {params: { timing: 5, delay: 0 }
+      {params: { timing: 2, delay: 0 }
       }))])
   ],
 })
@@ -80,7 +79,7 @@ export class SystemUserComponent implements OnInit {
         () => {
           this.loading = false;
         }
-      )
+      );
 
     this.loading = false;
   }
@@ -101,7 +100,7 @@ export class SystemUserComponent implements OnInit {
     let reg: Region;
 
     if (region.children) {
-      for (var child of region.children) {
+      for (let child of region.children) {
         reg = this.locateToSpecifiedLevel(child, level);
 
         if (reg)
@@ -113,6 +112,6 @@ export class SystemUserComponent implements OnInit {
   }
 
   private createUser(): void {
-    this.router.navigate(['/system/user-creation']).catch();
+    this.router.navigate(['/system/privilege']).catch();
   }
 }

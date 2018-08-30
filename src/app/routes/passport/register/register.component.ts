@@ -77,7 +77,7 @@ export class UserRegisterComponent implements OnDestroy {
     return null;
   }
 
-  // region: fields
+  // topCode: fields
 
   get mail() {
     return this.form.controls.mail;
@@ -97,7 +97,7 @@ export class UserRegisterComponent implements OnDestroy {
 
   // endregion
 
-  // region: get captcha
+  // topCode: get captcha
 
   count = 0;
   interval$: any;

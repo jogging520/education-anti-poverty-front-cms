@@ -45,7 +45,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
 
   }
 
-  // region: fields
+  // topCode: fields
 
   get userName() {
     return this.form.controls.userName;
@@ -66,7 +66,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     this.type = ret.index;
   }
 
-  // region: get captcha
+  // topCode: get captcha
 
   count = 0;
   interval$: any;
@@ -145,7 +145,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     }
   }
 
-  // region: social
+  // topCode: social
 
   open(type: string, openType: SocialOpenType = 'href') {
     let url = ``;
