@@ -34,7 +34,6 @@ export class SessionService {
     private startupService: StartupService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService,
     private settingService: SettingsService,
-    private cacheService: CacheService,
     private commonService: CommonService,
     private operationService: OperationService
   ) { }

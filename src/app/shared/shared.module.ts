@@ -15,6 +15,7 @@ import { RegionComponent } from './components/general/region/region.component';
 import { OrganizationComponent } from './components/general/organization/organization.component';
 import { NgxAmapModule } from 'ngx-amap';
 import {UserRegionPipe} from "@shared/pipes/business/user-region.pipe";
+import { ShowAuthedDirective } from './directives/show-authed.directive';
 
 const THIRDMODULES = [
   NgZorroAntdModule,
@@ -24,7 +25,7 @@ const THIRDMODULES = [
 
 // topCode: your componets & directives
 const COMPONENTS = [RegionComponent, OrganizationComponent];
-const DIRECTIVES = [];
+const DIRECTIVES = [ShowAuthedDirective];
 const PIPES = [UserRegionPipe];
 // endregion
 
@@ -48,7 +49,8 @@ const PIPES = [UserRegionPipe];
     // your components
     ...COMPONENTS,
     ...DIRECTIVES,
-    ...PIPES
+    ...PIPES,
+    ...DIRECTIVES
   ],
   exports: [
     CommonModule,

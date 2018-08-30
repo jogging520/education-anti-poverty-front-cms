@@ -1,14 +1,15 @@
 import { SettingsService } from '@delon/theme';
-import {Component, OnDestroy, Inject, Optional, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import {
   SocialService,
-  SocialOpenType,
+  SocialOpenType
 } from '@delon/auth';
 import { environment } from '@env/environment';
 import {SessionService} from "@shared/services/general/session.service";
+import {CommonService} from "@shared/services/general/common.service";
 
 @Component({
   selector: 'passport-login',
@@ -29,8 +30,12 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     private modalSrv: NzModalService,
     private settingsService: SettingsService,
     private socialService: SocialService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private commonService: CommonService
   ) {
+
+    this.commonService.clear();
+
     this.form = fb.group({
       userName: [null, [Validators.required, Validators.minLength(5)]],
       password: [null, [Validators.required, Validators.minLength(6)]],

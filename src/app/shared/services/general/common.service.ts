@@ -7,6 +7,9 @@ import {Observable, throwError} from "rxjs/index";
 import {HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {environment} from "@env/environment";
 import { v4 as uuid } from 'uuid';
+import {ACLService} from "@delon/acl";
+import {MenuService} from "@delon/theme";
+import {ReuseTabService} from "@delon/abc";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +20,10 @@ export class CommonService {
     public messageService: NzMessageService,
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private aclService: ACLService,
+    private menuService: MenuService,
+    private reuseTabService: ReuseTabService
   ) {}
 
   /**
@@ -203,4 +209,11 @@ export class CommonService {
      return new Date().getTime() - 86400000;
   }
 
+  public clear(): void {
+    this.reuseTabService.clear();
+    this.tokenService.clear();
+    this.aclService.removeAbility(this.aclService.data.abilities);
+    this.aclService.removeRole(this.aclService.data.roles);
+    this.menuService.clear();
+  }
 }
