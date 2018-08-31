@@ -12,6 +12,7 @@ import {environment} from "@env/environment";
 import {Token} from "@shared/models/general/token";
 import {OperationService} from "@shared/services/general/operation.service";
 import {Operation} from "@shared/models/general/operation";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +59,7 @@ export class SessionService {
 
     this.httpClient
       .post(
-        `${environment.serverUrl}login`,
+        `${environment.serverUrl}${GeneralConstants.CONSTANT_SHARED_ROUTE_PATH_LOGIN}`,
         null,
         this.commonService.setParams({
           userName: encryptedUserName,
@@ -67,7 +68,7 @@ export class SessionService {
         {headers: CommonService.setHeaders()})
       .pipe(
         map((token: Token) => {
-          if (token.status !== 'SUCCESS') {
+          if (token.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_TOKEN_STATUS_SUCCESS) {
             return throwError(new Error(token.status));
           }
 
@@ -78,13 +79,13 @@ export class SessionService {
           return token;
         }),
         mergeMap((token: Token) => {
-          if (token.status !== 'SUCCESS') {
+          if (token.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_TOKEN_STATUS_SUCCESS) {
             return throwError(new Error(token.status));
           }
 
           return this.httpClient
             .get(
-              `${environment.serverUrl}users\\${token.user}`,
+              `${environment.serverUrl}${GeneralConstants.CONSTANT_SHARED_ROUTE_PATH_USER}\\${token.user}`,
               this.commonService.setParams({user: token.user}),
               {headers: CommonService.setHeaders()}
             )
@@ -93,7 +94,7 @@ export class SessionService {
 
                 this.tokenService.clear();
 
-                if (user.status !== 'ACTIVE') {
+                if (user.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_USER_STATUS_ACTIVE) {
                   return throwError(user.status);
                 }
 
@@ -128,14 +129,15 @@ export class SessionService {
           this.startupService.load(this.commonService.getSerialNo()).catch();
         },
         () => {
-          this.router.navigate(['/passport/login']).catch();
+          this.router.navigate([GeneralConstants.CONSTANT_SHARED_ROUTE_LOGIN]).catch();
         },
         () => {
           this.operationService
-            .createOperation('LOGIN', this.commonService.getSerialNo())
+            .createOperation(GeneralConstants.CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_LOGIN,
+              this.commonService.getSerialNo())
             .pipe(
               map((operation: Operation) => {
-                if (operation.status !== 'SUCCESS') {
+                if (operation.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_STATUS_SUCCESS) {
                   return throwError(new Error(operation.status));
                 }
 
@@ -152,14 +154,12 @@ export class SessionService {
    * 方法：登出
    */
   public logout() {
-
-    this.commonService.setSerialNo();
-
     this.operationService
-      .createOperation('LOGOUT', this.commonService.setSerialNo())
+      .createOperation(GeneralConstants.CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_LOGOUT,
+        this.commonService.setSerialNo())
       .pipe(
         map((operation: Operation) => {
-          if (operation.status !== 'SUCCESS') {
+          if (operation.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_STATUS_SUCCESS) {
             return throwError(new Error(operation.status));
           }
 
@@ -170,13 +170,13 @@ export class SessionService {
       .subscribe(
         () => {},
         () => {
-          this.router.navigate(['/passport/login']).catch();
+          this.router.navigate([GeneralConstants.CONSTANT_SHARED_ROUTE_LOGIN]).catch();
         },
         () => {
           this.commonService.setSerialNo();
 
           this.httpClient
-            .delete(`${environment.serverUrl}sessions`,
+            .delete(`${environment.serverUrl}${GeneralConstants.CONSTANT_SHARED_ROUTE_PATH_SESSIONS}`,
               this.commonService.setParams({}),
               {headers: CommonService.setHeaders()}
             )
@@ -187,8 +187,12 @@ export class SessionService {
               () => {
                 this.purgeAuth();
               },
+              (error) => {
+                console.log(error);
+                this.router.navigate([GeneralConstants.CONSTANT_SHARED_ROUTE_LOGIN]).catch();
+              },
               () => {
-                this.router.navigate(['/passport/login']).catch();
+                this.purgeAuth();
               }
             );
         });
@@ -209,6 +213,6 @@ export class SessionService {
   private purgeAuth() {
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
-    this.reuseTabService.clear();
+    this.commonService.clear();
   }
 }

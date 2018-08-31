@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {NzMessageService} from "ng-zorro-antd";
 import {User} from "@shared/models/general/user";
 import {UserService} from "@shared/services/general/user.service";
-import {tap, map} from "rxjs/operators";
+import {tap, map, catchError} from "rxjs/operators";
 import {CommonService} from "@shared/services/general/common.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {TranslatorService} from "@shared/services/general/translator.service";
@@ -13,6 +13,9 @@ import {flip, jackInTheBox, tada, zoomIn} from "ngx-animate/lib";
 import {CacheService} from "@delon/cache";
 import * as BusinessConstants from "@shared/constants/business/business-constants";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
+import {OperationService} from "@shared/services/general/operation.service";
+import {Operation} from "@shared/models/general/operation";
+import {throwError} from "rxjs/index";
 
 @Component({
   selector: 'app-system-user',
@@ -42,6 +45,7 @@ export class SystemUserComponent implements OnInit {
               private activatedRoute: ActivatedRoute,
               private commonService: CommonService,
               private translatorService: TranslatorService,
+              private operationService: OperationService,
               private userService: UserService) {
     this.activatedRoute
       .data
@@ -52,12 +56,32 @@ export class SystemUserComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.cacheService
-      .get<Region>(GeneralConstants.CONSTANT_SHARED_CACHE_REGION)
-      .subscribe(region => {
-        this.locateToSpecifiedLevel(region, BusinessConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_USER_LOCATE_PROVINCE);
-        this.locateToSpecifiedLevel(region, BusinessConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_USER_LOCATE_CITY);
-      });
+    this.operationService
+      .createOperation(GeneralConstants.CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_QUERY_USER,
+        this.commonService.setSerialNo())
+      .pipe(
+        map((operation: Operation) => {
+          if (operation.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_STATUS_SUCCESS) {
+            return throwError(new Error(operation.status));
+          }
+
+          return operation;
+        }),
+        catchError(error => this.commonService.handleError(error))
+      )
+      .subscribe(
+        () => {},
+        () => {
+          this.router.navigate([GeneralConstants.CONSTANT_SHARED_ROUTE_LOGIN]).catch();
+        },
+        () => {
+          this.cacheService
+            .get<Region>(GeneralConstants.CONSTANT_SHARED_CACHE_REGION)
+            .subscribe(region => {
+              this.locateToSpecifiedLevel(region, BusinessConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_USER_LOCATE_PROVINCE);
+              this.locateToSpecifiedLevel(region, BusinessConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_USER_LOCATE_CITY);
+            });
+        });
   }
 
   private setRegionCode(event: any): void {
@@ -73,7 +97,7 @@ export class SystemUserComponent implements OnInit {
       .pipe(tap())
       .subscribe((users: User[]) => {
           users.forEach((user: User) => {
-            if (user.status === BusinessConstants.CONSTANT_MODULE_SHARED_MODEL_USER_STATUS_ACTIVE) {
+            if (user.status === GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_USER_STATUS_ACTIVE) {
               user.realName = decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName))));
               this.users.push(user);
             }
