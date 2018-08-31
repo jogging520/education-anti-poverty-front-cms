@@ -10,8 +10,8 @@ import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
 import {mergeMap, catchError, map} from "rxjs/operators";
 import {environment} from "@env/environment";
 import {Token} from "@shared/models/general/token";
-import {OperationService} from "@shared/services/general/operation.service";
 import {Operation} from "@shared/models/general/operation";
+import {OperationService} from "@shared/services/general/operation.service";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Injectable({
@@ -176,7 +176,7 @@ export class SessionService {
           this.commonService.setSerialNo();
 
           this.httpClient
-            .delete(`${environment.serverUrl}${GeneralConstants.CONSTANT_SHARED_ROUTE_PATH_SESSIONS}`,
+            .delete(`${environment.serverUrl}${GeneralConstants.CONSTANT_SHARED_ROUTE_PATH_SESSION}`,
               this.commonService.setParams({}),
               {headers: CommonService.setHeaders()}
             )

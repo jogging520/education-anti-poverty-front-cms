@@ -16,7 +16,10 @@ export const CONSTANT_SHARED_ROUTE_USER_CREATION: string              = '/system
 
 export const CONSTANT_SHARED_ROUTE_PATH_LOGIN: string                 = 'login'; //登录路由的path路径
 export const CONSTANT_SHARED_ROUTE_PATH_USER: string                  = 'users'; //用户路由的path路径
-export const CONSTANT_SHARED_ROUTE_PATH_SESSIONS: string               = 'sessions'; //会话路由的path路径
+export const CONSTANT_SHARED_ROUTE_PATH_SESSION: string               = 'sessions'; //会话路由的path路径
+export const CONSTANT_SHARED_ROUTE_PATH_STRATEGY: string               = 'strategies'; //策略路由的path路径
+export const CONSTANT_SHARED_ROUTE_PATH_ORGANIZATION: string           = 'organizations'; //组织机构路由的path路径
+export const CONSTANT_SHARED_ROUTE_PATH_REGION: string           = 'regions'; //区域路由的path路径
 export const CONSTANT_SHARED_ROUTE_PATH_STATISTICS: string            = 'statistics'; //统计路由的path路径
 
 

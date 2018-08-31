@@ -6,6 +6,7 @@ import {catchError, map, flatMap} from "rxjs/operators";
 import {Organization} from "@shared/models/general/organization";
 import {Region} from "@shared/models/general/region";
 import {CommonService} from "@shared/services/general/common.service";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class OrganizationService {
    */
   public queryOrganizations(): Observable<Organization> {
     return this.httpClient.get(
-      `${environment.serverUrl}organizations`,
+      `${environment.serverUrl}${GeneralConstants.CONSTANT_SHARED_ROUTE_PATH_ORGANIZATION}`,
       this.commonService.setParams({}),
       {headers: CommonService.setHeaders()}
     )
@@ -39,7 +40,9 @@ export class OrganizationService {
    */
   public queryRegions(): Observable<Region> {
     return this.httpClient.get(
-      `${environment.serverUrl}organizations\\regions`,
+      `${environment.serverUrl}
+      ${GeneralConstants.CONSTANT_SHARED_ROUTE_PATH_ORGANIZATION}\\
+      ${GeneralConstants.CONSTANT_SHARED_ROUTE_PATH_REGION}`,
       this.commonService.setParams({}),
       {headers: CommonService.setHeaders()}
     )
