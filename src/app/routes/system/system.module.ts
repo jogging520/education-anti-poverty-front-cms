@@ -17,9 +17,10 @@ const COMPONENTS = [
   SystemUserComponent,
   SystemPrivilegeComponent,
   SystemUserCreationComponent,
-  SystemUserDetailComponent];
-const COMPONENTS_NOROUNT = [
+  SystemUserDetailComponent,
   SystemOperationViewComponent];
+const COMPONENTS_NOROUNT = [
+  ];
 
 @NgModule({
   imports: [
