@@ -5,7 +5,6 @@ import {Observable} from "rxjs/index";
 import {catchError, map} from "rxjs/operators";
 import {User} from "@shared/models/general/user";
 import {Injectable} from "@angular/core";
-import * as BusinessConstants from "@shared/constants/business/business-constants";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Injectable({

@@ -27,7 +27,7 @@ export class AuthenticationGuard implements CanActivate {
       return true;
     }
 
-    this.router.navigate([GeneralConstants.CONSTANT_SHARED_ROUTE_LOGIN]).catch();
+    this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
     return false;
   }
 }

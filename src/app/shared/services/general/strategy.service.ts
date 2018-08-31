@@ -24,7 +24,7 @@ export class StrategyService {
    */
   public queryStrategies(types: string[]): Observable<Strategy[]> {
     return this.httpClient
-      .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_SHARED_ROUTE_PATH_STRATEGY}`,
+      .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_STRATEGY}`,
         this.commonService.setParams({types: types.join(',')}),
         {headers: CommonService.setHeaders()}
         )

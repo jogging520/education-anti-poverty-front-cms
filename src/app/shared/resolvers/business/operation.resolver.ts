@@ -9,7 +9,7 @@ import {catchError, map} from "rxjs/operators";
 import {Strategy} from "@shared/models/general/strategy";
 import {User} from "@shared/models/general/user";
 import {CommonService} from "@shared/services/general/common.service";
-import * as BusinessConstants from "@shared/constants/business/business-constants";
+import * as SystemConstants from "@shared/constants/business/system-constants";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Injectable({
@@ -29,8 +29,8 @@ export class OperationResolver implements Resolve<any> {
     const tokenData = this.tokenService.get();
 
     return forkJoin(
-      this.strategyService.queryStrategies([BusinessConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_APP_TYPES,
-        BusinessConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_BUSINESS_TYPES]),
+      this.strategyService.queryStrategies([SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_APP_TYPES,
+        SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_BUSINESS_TYPES]),
       this.userService.queryUsers()
     )
       .pipe(
@@ -42,11 +42,11 @@ export class OperationResolver implements Resolve<any> {
           let operationParams = {channelTypes: [], businessTypes: [], users: []};
 
           strategies.forEach((strategy) => {
-            if (strategy.type === BusinessConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_APP_TYPES) {
+            if (strategy.type === SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_APP_TYPES) {
               originalAppTypes = strategy;
             }
 
-            if (strategy.type === BusinessConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_BUSINESS_TYPES) {
+            if (strategy.type === SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_BUSINESS_TYPES) {
               originalBusinessTypes = strategy;
             }
           });
@@ -80,8 +80,8 @@ export class OperationResolver implements Resolve<any> {
           }
 
           if (tokenData.roles && tokenData.roles.indexOf('admin') > -1) {
-            operationParams.users.push({'text': BusinessConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_WHOLE_USER_LABEL,
-              'value': BusinessConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_WHOLE_USER_VALUE});
+            operationParams.users.push({'text': SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_WHOLE_USER_LABEL,
+              'value': SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_WHOLE_USER_VALUE});
           }
 
           return operationParams;

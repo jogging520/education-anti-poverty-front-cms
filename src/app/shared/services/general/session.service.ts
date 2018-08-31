@@ -59,7 +59,7 @@ export class SessionService {
 
     this.httpClient
       .post(
-        `${environment.serverUrl}${GeneralConstants.CONSTANT_SHARED_ROUTE_PATH_LOGIN}`,
+        `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_LOGIN}`,
         null,
         this.commonService.setParams({
           userName: encryptedUserName,
@@ -85,7 +85,7 @@ export class SessionService {
 
           return this.httpClient
             .get(
-              `${environment.serverUrl}${GeneralConstants.CONSTANT_SHARED_ROUTE_PATH_USER}\\${token.user}`,
+              `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_USER}\\${token.user}`,
               this.commonService.setParams({user: token.user}),
               {headers: CommonService.setHeaders()}
             )
@@ -129,7 +129,7 @@ export class SessionService {
           this.startupService.load(this.commonService.getSerialNo()).catch();
         },
         () => {
-          this.router.navigate([GeneralConstants.CONSTANT_SHARED_ROUTE_LOGIN]).catch();
+          this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
         },
         () => {
           this.operationService
@@ -170,13 +170,13 @@ export class SessionService {
       .subscribe(
         () => {},
         () => {
-          this.router.navigate([GeneralConstants.CONSTANT_SHARED_ROUTE_LOGIN]).catch();
+          this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
         },
         () => {
           this.commonService.setSerialNo();
 
           this.httpClient
-            .delete(`${environment.serverUrl}${GeneralConstants.CONSTANT_SHARED_ROUTE_PATH_SESSION}`,
+            .delete(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_SESSION}`,
               this.commonService.setParams({}),
               {headers: CommonService.setHeaders()}
             )
@@ -189,7 +189,7 @@ export class SessionService {
               },
               (error) => {
                 console.log(error);
-                this.router.navigate([GeneralConstants.CONSTANT_SHARED_ROUTE_LOGIN]).catch();
+                this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
               },
               () => {
                 this.purgeAuth();

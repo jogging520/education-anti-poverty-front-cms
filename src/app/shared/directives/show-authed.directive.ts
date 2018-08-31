@@ -28,7 +28,7 @@ export class ShowAuthedDirective {
     const tokenData = this.tokenService.get();
 
     if (!tokenData.token && this.condition) {
-      this.router.navigate([GeneralConstants.CONSTANT_SHARED_ROUTE_LOGIN]).catch();
+      this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
     }
 
     this.sessionService
@@ -40,7 +40,7 @@ export class ShowAuthedDirective {
             this.viewContainer.createEmbeddedView(this.templateRef);
           } else {
             this.viewContainer.clear();
-            this.router.navigate([GeneralConstants.CONSTANT_SHARED_ROUTE_LOGIN]).catch();
+            this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
           }
         }
       );

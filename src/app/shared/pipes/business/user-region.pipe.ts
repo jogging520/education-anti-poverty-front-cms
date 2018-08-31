@@ -15,7 +15,7 @@ export class UserRegionPipe implements PipeTransform, OnInit {
 
   ngOnInit() {
     this.cacheService
-      .get<Organization>(GeneralConstants.CONSTANT_SHARED_CACHE_ORGANIZATION)
+      .get<Organization>(GeneralConstants.CONSTANT_COMMON_CACHE_ORGANIZATION)
       .subscribe(organization => {
         this.organization = organization;
       });

@@ -24,7 +24,7 @@ export class OrganizationService {
    */
   public queryOrganizations(): Observable<Organization> {
     return this.httpClient.get(
-      `${environment.serverUrl}${GeneralConstants.CONSTANT_SHARED_ROUTE_PATH_ORGANIZATION}`,
+      `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_ORGANIZATION}`,
       this.commonService.setParams({}),
       {headers: CommonService.setHeaders()}
     )
@@ -41,8 +41,8 @@ export class OrganizationService {
   public queryRegions(): Observable<Region> {
     return this.httpClient.get(
       `${environment.serverUrl}
-      ${GeneralConstants.CONSTANT_SHARED_ROUTE_PATH_ORGANIZATION}\\
-      ${GeneralConstants.CONSTANT_SHARED_ROUTE_PATH_REGION}`,
+      ${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_ORGANIZATION}\\
+      ${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_REGION}`,
       this.commonService.setParams({}),
       {headers: CommonService.setHeaders()}
     )

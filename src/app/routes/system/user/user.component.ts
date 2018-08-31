@@ -11,7 +11,7 @@ import { bounce } from 'ngx-animate';
 import {transition, trigger, useAnimation} from "@angular/animations";
 import {flip, jackInTheBox, tada, zoomIn} from "ngx-animate/lib";
 import {CacheService} from "@delon/cache";
-import * as BusinessConstants from "@shared/constants/business/business-constants";
+import * as SystemConstants from "@shared/constants/business/system-constants";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 import {OperationService} from "@shared/services/general/operation.service";
 import {Operation} from "@shared/models/general/operation";
@@ -72,14 +72,14 @@ export class SystemUserComponent implements OnInit {
       .subscribe(
         () => {},
         () => {
-          this.router.navigate([GeneralConstants.CONSTANT_SHARED_ROUTE_LOGIN]).catch();
+          this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
         },
         () => {
           this.cacheService
-            .get<Region>(GeneralConstants.CONSTANT_SHARED_CACHE_REGION)
+            .get<Region>(GeneralConstants.CONSTANT_COMMON_CACHE_REGION)
             .subscribe(region => {
-              this.locateToSpecifiedLevel(region, BusinessConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_USER_LOCATE_PROVINCE);
-              this.locateToSpecifiedLevel(region, BusinessConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_USER_LOCATE_CITY);
+              this.locateToSpecifiedLevel(region, SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_USER_LOCATE_PROVINCE);
+              this.locateToSpecifiedLevel(region, SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_USER_LOCATE_CITY);
             });
         });
   }
@@ -104,7 +104,7 @@ export class SystemUserComponent implements OnInit {
           })
         },
         () => {
-          this.messageService.warning(BusinessConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_USER_ERROR_GET_DATA);
+          this.messageService.warning(SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_USER_GET_DATA_ERROR);
           this.loading = false;
         },
         () => {
@@ -143,6 +143,6 @@ export class SystemUserComponent implements OnInit {
   }
 
   private createUser(): void {
-    this.router.navigate([GeneralConstants.CONSTANT_SHARED_ROUTE_USER_CREATION]).catch();
+    this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_USER_CREATION]).catch();
   }
 }

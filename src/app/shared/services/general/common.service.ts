@@ -10,6 +10,7 @@ import { v4 as uuid } from 'uuid';
 import {ACLService} from "@delon/acl";
 import {MenuService} from "@delon/theme";
 import {ReuseTabService} from "@delon/abc";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Injectable({
   providedIn: 'root'
@@ -35,15 +36,15 @@ export class CommonService {
     let headers = {};
 
     if (`${environment.contentType}`) {
-      headers["Content-Type"] = `${environment.contentType}`;
+      headers[GeneralConstants.CONSTANT_COMMON_HTTP_HEADER_CONTENT_TYPE] = `${environment.contentType}`;
     }
 
     if (`${environment.accept}`) {
-      headers["Accept"] = `${environment.accept}`;
+      headers[GeneralConstants.CONSTANT_COMMON_HTTP_HEADER_ACCEPT] = `${environment.accept}`;
     }
 
     if (`${environment.apiKey}`) {
-      headers["apiKey"] = `${environment.apiKey}`;
+      headers[GeneralConstants.CONSTANT_COMMON_HTTP_HEADER_API_KEY] = `${environment.apiKey}`;
     }
 
     return new HttpHeaders(headers);
@@ -60,25 +61,25 @@ export class CommonService {
     let params = {};
 
     if (this.getSerialNo()) {
-      params["serialNo"] = this.getSerialNo();
+      params[GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_SERIAL_NO] = this.getSerialNo();
     }
 
     if (`${environment.appType}`) {
-      params["appType"] = `${environment.appType}`;
+      params[GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_APP_TYPE] = `${environment.appType}`;
     }
 
     if (`${environment.category}`) {
-      params["category"] = `${environment.category}`;
+      params[GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_CATEGORY] = `${environment.category}`;
     }
 
     let tokenData = this.tokenService.get();
 
     if (tokenData && tokenData.session) {
-      params["session"] = tokenData.session;
+      params[GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_SESSION] = tokenData.session;
     }
 
     if (tokenData && tokenData.user) {
-      params["user"] = tokenData.user;
+      params[GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_USER] = tokenData.user;
     }
 
     if (parameters) {
@@ -104,16 +105,16 @@ export class CommonService {
       case 200:
         break;
       case 401:
-        this.router.navigate(['/passport/login']).catch();
+        this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
         break;
       case 500:
-        console.warn('系统调用服务发生未可知错误，可能是后端问题，请联系管理员检查。', error);
-        this.messageService.error('系统调用服务发生未可知错误，可能是后端问题，请联系管理员检查。');
-        this.router.navigate(['/500']).catch();
+        console.warn(GeneralConstants.CONSTANT_COMMON_INTERNAL_SERVER_ERROR, error);
+        this.messageService.error(GeneralConstants.CONSTANT_COMMON_INTERNAL_SERVER_ERROR);
+        this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_INTERNAL_SERVER_ERROR]).catch();
         break;
       default:
-        console.warn('系统发生未可知错误，请联系管理员检查。', error);
-        this.messageService.error('系统发生未可知错误，请联系管理员检查。');
+        console.warn(GeneralConstants.CONSTANT_COMMON_DEFAULT_ERROR, error);
+        this.messageService.error(GeneralConstants.CONSTANT_COMMON_DEFAULT_ERROR);
         break;
     }
 
@@ -130,7 +131,7 @@ export class CommonService {
     let serialNo = uuid();
 
     this.cacheService
-      .set('serialNo', serialNo);
+      .set(GeneralConstants.CONSTANT_COMMON_CACHE_SERIAL_NO, serialNo);
 
     return serialNo;
 
@@ -145,7 +146,7 @@ export class CommonService {
     let serialNo = '';
 
     this.cacheService
-      .get<string>('serialNo')
+      .get<string>(GeneralConstants.CONSTANT_COMMON_CACHE_SERIAL_NO)
       .subscribe(data => serialNo = data);
 
     return serialNo;
@@ -206,7 +207,7 @@ export class CommonService {
    * @return {number} 前一天时间
    */
   public static lastDate(): number {
-     return new Date().getTime() - 86400000;
+     return new Date().getTime() - GeneralConstants.CONSTANT_COMMON_YESTERDAY_MICRO_SECOND;
   }
 
   public clear(): void {

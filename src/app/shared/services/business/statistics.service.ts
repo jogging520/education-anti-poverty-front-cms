@@ -19,7 +19,7 @@ export class StatisticsService {
    */
   public stat(): Observable<Statistics> {
     this.webSocket =
-      new WebSocket(`${environment.webSocketUrl}${GeneralConstants.CONSTANT_SHARED_ROUTE_PATH_STATISTICS}`);
+      new WebSocket(`${environment.webSocketUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_STATISTICS}`);
 
     return new Observable(
       observer => {
