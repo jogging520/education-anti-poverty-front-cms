@@ -2,6 +2,7 @@ import {Directive, Inject, Input, TemplateRef, ViewContainerRef} from '@angular/
 import {Router} from "@angular/router";
 import {SessionService} from "@shared/services/general/session.service";
 import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Directive({
   selector: '[showAuthed]'
@@ -27,20 +28,19 @@ export class ShowAuthedDirective {
     const tokenData = this.tokenService.get();
 
     if (!tokenData.token && this.condition) {
-      this.router.navigate(['/passport/login']).catch();
+      this.router.navigate([GeneralConstants.CONSTANT_SHARED_ROUTE_LOGIN]).catch();
     }
 
     this.sessionService
       .isAuthenticated
       .subscribe(
         isAuthenticated => {
-          console.log(isAuthenticated);
 
           if (isAuthenticated && this.condition || !isAuthenticated && !this.condition) {
             this.viewContainer.createEmbeddedView(this.templateRef);
           } else {
             this.viewContainer.clear();
-            this.router.navigate(['/passport/login']).catch();
+            this.router.navigate([GeneralConstants.CONSTANT_SHARED_ROUTE_LOGIN]).catch();
           }
         }
       );

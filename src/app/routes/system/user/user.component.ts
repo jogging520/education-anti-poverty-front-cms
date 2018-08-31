@@ -11,6 +11,8 @@ import { bounce } from 'ngx-animate';
 import {transition, trigger, useAnimation} from "@angular/animations";
 import {flip, jackInTheBox, tada, zoomIn} from "ngx-animate/lib";
 import {CacheService} from "@delon/cache";
+import * as BusinessConstants from "@shared/constants/business/business-constants";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Component({
   selector: 'app-system-user',
@@ -51,10 +53,10 @@ export class SystemUserComponent implements OnInit {
 
   ngOnInit() {
     this.cacheService
-      .get<Region>('region')
+      .get<Region>(GeneralConstants.CONSTANT_SHARED_CACHE_REGION)
       .subscribe(region => {
-        this.locateToSpecifiedLevel(region, 'PROVINCE');
-        this.locateToSpecifiedLevel(region, 'CITY');
+        this.locateToSpecifiedLevel(region, BusinessConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_USER_LOCATE_PROVINCE);
+        this.locateToSpecifiedLevel(region, BusinessConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_USER_LOCATE_CITY);
       });
   }
 
@@ -71,14 +73,14 @@ export class SystemUserComponent implements OnInit {
       .pipe(tap())
       .subscribe((users: User[]) => {
           users.forEach((user: User) => {
-            if (user.status === 'ACTIVE') {
+            if (user.status === BusinessConstants.CONSTANT_MODULE_SHARED_MODEL_USER_STATUS_ACTIVE) {
               user.realName = decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName))));
               this.users.push(user);
             }
           })
         },
         () => {
-          this.messageService.warning('获取操作记录数据失败。');
+          this.messageService.warning(BusinessConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_USER_ERROR_GET_DATA);
           this.loading = false;
         },
         () => {
@@ -117,6 +119,6 @@ export class SystemUserComponent implements OnInit {
   }
 
   private createUser(): void {
-    this.router.navigate(['/system/user-creation']).catch();
+    this.router.navigate([GeneralConstants.CONSTANT_SHARED_ROUTE_USER_CREATION]).catch();
   }
 }

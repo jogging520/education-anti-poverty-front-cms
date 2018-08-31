@@ -3,6 +3,7 @@ import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router} from '
 import { Observable } from 'rxjs';
 import {SessionService} from "@shared/services/general/session.service";
 import {take} from 'rxjs/operators';
+import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class AuthenticationGuard implements CanActivate {
       return true;
     }
 
-    this.router.navigate(['/passport/login']).catch();
+    this.router.navigate([GeneralConstants.CONSTANT_SHARED_ROUTE_LOGIN]).catch();
     return false;
   }
 }
