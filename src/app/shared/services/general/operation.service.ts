@@ -3,11 +3,10 @@ import {CommonService} from "@shared/services/general/common.service";
 import {_HttpClient} from "@delon/theme";
 import {environment} from "@env/environment";
 import {Operation} from "@shared/models/general/operation";
-import {catchError, map, flatMap} from "rxjs/operators";
-import {Observable, throwError} from "rxjs/index";
-import {NzMessageService} from "ng-zorro-antd";
-import {Router} from "@angular/router";
+import {catchError, flatMap} from "rxjs/operators";
+import {Observable} from "rxjs/index";
 import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +15,6 @@ export class OperationService {
 
   constructor(
     private httpClient: _HttpClient,
-    public messageService: NzMessageService,
-    private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService,
     private commonService: CommonService
   ) { }
@@ -40,18 +37,18 @@ export class OperationService {
 
     let operation: Operation = {
       id: id,
-      type: 'COMMON',
+      type: GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_TYPE,
       appType: `${environment.appType}`,
       category: `${environment.category}`,
       user: tokenData.user,
       session: tokenData.session,
       businessType: businessType,
-      status: 'ACTIVE',
-      description: 'auto created from front.'
+      status: GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_STATUS_ACTIVE,
+      description: GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_DESCRIPTION
     };
 
     return this.httpClient
-      .post(`${environment.serverUrl}operations`,
+      .post(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_OPERATION}`,
         operation,
         this.commonService.setParams({}),
         {headers: CommonService.setHeaders()}
@@ -69,7 +66,7 @@ export class OperationService {
    */
   public queryOperations(conditions?: Object): Observable<Operation> {
     return this.httpClient
-      .get(`${environment.serverUrl}operations`,
+      .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_OPERATION}`,
         this.commonService.setParams(conditions),
         {headers: CommonService.setHeaders()}
         )

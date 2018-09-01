@@ -59,6 +59,7 @@ export class StartupService {
       return;
     }
 
+    //TODO 写一个通用的cache存放
     //3、获取应用程序相关信息、错误码相关信息等基础策略信息并设置
     this.httpClient
       .get(`${environment.serverUrl}strategies`,
@@ -172,7 +173,7 @@ export class StartupService {
       )
       .subscribe(
         (organization: Organization) => {
-          this.cacheService.set('code', organization);
+          this.cacheService.set('organization', organization);
         },
         (error) => {
           this.injector.get(Router).navigate(['/passport/login']).catch();

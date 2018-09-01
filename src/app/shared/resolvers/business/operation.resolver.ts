@@ -9,6 +9,8 @@ import {catchError, map} from "rxjs/operators";
 import {Strategy} from "@shared/models/general/strategy";
 import {User} from "@shared/models/general/user";
 import {CommonService} from "@shared/services/general/common.service";
+import * as SystemConstants from "@shared/constants/business/system-constants";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +29,8 @@ export class OperationResolver implements Resolve<any> {
     const tokenData = this.tokenService.get();
 
     return forkJoin(
-      this.strategyService.queryStrategies(['appTypes', 'businessTypes']),
+      this.strategyService.queryStrategies([SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_APP_TYPES,
+        SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_BUSINESS_TYPES]),
       this.userService.queryUsers()
     )
       .pipe(
@@ -39,16 +42,18 @@ export class OperationResolver implements Resolve<any> {
           let operationParams = {channelTypes: [], businessTypes: [], users: []};
 
           strategies.forEach((strategy) => {
-            if (strategy.type === 'appTypes') {
+            if (strategy.type === SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_APP_TYPES) {
               originalAppTypes = strategy;
             }
 
-            if (strategy.type === 'businessTypes') {
+            if (strategy.type === SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_BUSINESS_TYPES) {
               originalBusinessTypes = strategy;
             }
           });
 
-          if (originalAppTypes && originalAppTypes.status === 'ACTIVE' && originalAppTypes.parameters) {
+          if (originalAppTypes &&
+            originalAppTypes.status === GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_STRATEGY_STATUS_ACTIVE &&
+            originalAppTypes.parameters) {
             Object.keys(originalAppTypes.parameters)
               .forEach((key) => {
                 if (originalAppTypes.parameters[key])
@@ -56,7 +61,9 @@ export class OperationResolver implements Resolve<any> {
               });
           }
 
-          if (originalBusinessTypes && originalBusinessTypes.status === 'ACTIVE' && originalBusinessTypes.parameters) {
+          if (originalBusinessTypes &&
+            originalBusinessTypes.status === GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_STRATEGY_STATUS_ACTIVE &&
+            originalBusinessTypes.parameters) {
             Object.keys(originalBusinessTypes.parameters)
               .forEach((key) => {
                 if (originalBusinessTypes.parameters[key])
@@ -66,14 +73,15 @@ export class OperationResolver implements Resolve<any> {
 
           if (originalUsers) {
             originalUsers.forEach((user: User) => {
-              if (user.status === 'ACTIVE') {
+              if (user.status === GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_USER_STATUS_ACTIVE) {
                 operationParams.users.push({'text': decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))), 'value': user.id});
               }
             });
           }
 
           if (tokenData.roles && tokenData.roles.indexOf('admin') > -1) {
-            operationParams.users.push({'text': '全部', 'value': 'ffffffffffffffffffffffff'});
+            operationParams.users.push({'text': SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_WHOLE_USER_LABEL,
+              'value': SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_WHOLE_USER_VALUE});
           }
 
           return operationParams;

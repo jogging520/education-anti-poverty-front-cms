@@ -25,7 +25,7 @@ const routes: Routes = [
     component: LayoutDefaultComponent,
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent, data: { title: '仪表盘', titleI18n: 'dashboard', guard: 80100001 }, canLoad: [ ACLGuard ]},
+      { path: 'dashboard', component: DashboardComponent, canLoad: [ ACLGuard ], data: {guard: 80100001 }},
       // 业务子模块
       { path: 'system', loadChildren: './system/system.module#SystemModule', canLoad: [ ACLGuard ], data: { guard: 50100001 } }
     ]

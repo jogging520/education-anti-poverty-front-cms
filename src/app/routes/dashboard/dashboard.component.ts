@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {StatisticsService} from "@shared/services/business/statistics.service";
 import {NzMessageService} from "ng-zorro-antd";
 import * as format from 'date-fns/format';
@@ -25,11 +25,12 @@ export class DashboardComponent implements OnInit {
       .stat()
       .pipe(tap())
       .subscribe(
-        data => {
+        (data) => {
           this.data = data;
         },
-        error => {
+        (error) => {
           this.messageService.warning('获取统计数据失败。');
+          console.error(error);
         },
         () => {
           this.messageService.warning('统计数据流已经结束。');

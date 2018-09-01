@@ -79,6 +79,11 @@ export class TranslatorService {
     return result;
   }
 
+  /**
+   * 方法：获取首字母
+   * @param {string} str 字符串
+   * @return {string[]} 首字母
+   */
   public getFirstChar(str: string): string[] {
     var chars = new Array(); //保存中间结果的数组
     for(var i = 0, len = str.length; i < len && i < 1; i++) {
@@ -91,6 +96,11 @@ export class TranslatorService {
     return this._getResult(chars);
   }
 
+  /**
+   * 方法：获取驼峰字母集
+   * @param {string} str 字符串
+   * @return {string[]} 驼峰字母集
+   */
   public getCamelChars(str: string): string[] {
     var chars = new Array(); //保存中间结果的数组
     for(var i = 0, len = str.length; i<len; i++) {
@@ -103,6 +113,11 @@ export class TranslatorService {
     return this._getResult(chars);
   }
 
+  /**
+   * 方法：获取全部拼音字母集合
+   * @param {string} str 字符串
+   * @return {string} 拼音字母集合
+   */
   public getFullChars(str: string): string {
     var len = str.length;
     var result = "";

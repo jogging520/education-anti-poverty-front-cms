@@ -2,6 +2,7 @@ import {OnInit, Pipe, PipeTransform} from '@angular/core';
 import {User} from "@shared/models/general/user";
 import {CacheService} from "@delon/cache";
 import {Organization} from "@shared/models/general/organization";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Pipe({
   name: 'userRegion'
@@ -14,7 +15,7 @@ export class UserRegionPipe implements PipeTransform, OnInit {
 
   ngOnInit() {
     this.cacheService
-      .get<Organization>('organization')
+      .get<Organization>(GeneralConstants.CONSTANT_COMMON_CACHE_ORGANIZATION)
       .subscribe(organization => {
         this.organization = organization;
       });
@@ -43,6 +44,12 @@ export class UserRegionPipe implements PipeTransform, OnInit {
     return filteredUsers;
   }
 
+  /**
+   * 方法：根据组织机构编码，获取区域编码
+   * @param {Organization} organization 组织机构
+   * @param {string} code 组织机构编码
+   * @return {string} 组织机构对应的区域编码
+   */
   private getRegion(organization: Organization, code: string): string {
     if (!organization || !code)
       return null;

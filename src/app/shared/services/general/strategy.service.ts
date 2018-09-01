@@ -5,6 +5,7 @@ import {Observable} from "rxjs/index";
 import {Strategy} from "@shared/models/general/strategy";
 import {environment} from "@env/environment";
 import {catchError} from "rxjs/operators";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class StrategyService {
    */
   public queryStrategies(types: string[]): Observable<Strategy[]> {
     return this.httpClient
-      .get(`${environment.serverUrl}strategies`,
+      .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_STRATEGY}`,
         this.commonService.setParams({types: types.join(',')}),
         {headers: CommonService.setHeaders()}
         )

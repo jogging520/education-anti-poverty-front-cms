@@ -4,7 +4,8 @@ import {_HttpClient} from "@delon/theme";
 import {Observable} from "rxjs/index";
 import {User} from "@shared/models/general/user";
 import {environment} from "@env/environment";
-import {catchError, flatMap} from "rxjs/operators";
+import {catchError} from "rxjs/operators";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,7 @@ export class UserService {
    */
   public queryUsers(): Observable<User[]> {
     return this.httpClient
-      .get(`${environment.serverUrl}users`,
+      .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_USER}`,
         this.commonService.setParams({}),
         {headers: CommonService.setHeaders()}
         )

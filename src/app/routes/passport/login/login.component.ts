@@ -34,7 +34,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     private commonService: CommonService
   ) {
 
-    this.commonService.clear();
+    //this.commonService.clear();
 
     this.form = fb.group({
       userName: [null, [Validators.required, Validators.minLength(5)]],
