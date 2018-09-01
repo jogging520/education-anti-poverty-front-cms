@@ -37,14 +37,14 @@ export class OperationService {
 
     let operation: Operation = {
       id: id,
-      type: 'COMMON',
+      type: GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_TYPE,
       appType: `${environment.appType}`,
       category: `${environment.category}`,
       user: tokenData.user,
       session: tokenData.session,
       businessType: businessType,
-      status: 'ACTIVE',
-      description: 'auto created from front.'
+      status: GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_STATUS_ACTIVE,
+      description: GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_DESCRIPTION
     };
 
     return this.httpClient
