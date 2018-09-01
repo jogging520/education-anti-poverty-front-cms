@@ -16,6 +16,7 @@ import { OrganizationComponent } from './components/general/organization/organiz
 import { NgxAmapModule } from 'ngx-amap';
 import {UserRegionPipe} from "@shared/pipes/business/user-region.pipe";
 import { ShowAuthedDirective } from './directives/show-authed.directive';
+import { UserExistsValidatorDirective } from './validators/general/user-exists-validator.directive';
 
 const THIRDMODULES = [
   NgZorroAntdModule,
@@ -50,7 +51,8 @@ const PIPES = [UserRegionPipe];
     ...COMPONENTS,
     ...DIRECTIVES,
     ...PIPES,
-    ...DIRECTIVES
+    ...DIRECTIVES,
+    UserExistsValidatorDirective
   ],
   exports: [
     CommonModule,

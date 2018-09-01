@@ -42,6 +42,10 @@ export const CONSTANT_COMMON_ROUTE_PATH_REGION: string                          
 export const CONSTANT_COMMON_ROUTE_PATH_STATISTICS: string                             = 'statistics'; //统计路由的path路径
 export const CONSTANT_COMMON_ROUTE_PATH_OPERATION: string                              = 'operations'; //操作记录路由的path路径
 
+/**
+ * 权限定义
+ */
+export const CONSTANT_COMMON_PRIVILEGE_COMPONENT_DASHBOARD: number                     = 80100001;
 
 /**
  * 错误描述定义
@@ -76,4 +80,4 @@ export const CONSTANT_MODULE_SHARED_MODEL_TOKEN_STATUS_SUCCESS: string          
 export const CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_LOGIN: string      = 'LOGIN';  //操作记录登录业务类型定义常量
 export const CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_LOGOUT: string     = 'LOGOUT';  //操作记录登出业务类型定义常量
 export const CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_QUERY_USER: string = 'QUERY_USER';  //操作记录查询用户业务类型定义常量
-
+export const CONSTANT_MODULE_SHARED_VALIDATOR_USER_EXIST_DE_BOUNCE_TIME: number        = 1000;  //用户是否存在校验器的等待时间

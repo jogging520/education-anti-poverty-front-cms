@@ -19,13 +19,19 @@ import { Exception404Component } from './exception/404.component';
 import { Exception500Component } from './exception/500.component';
 import {ACLGuard} from "@delon/acl";
 
+import * as GeneralConstants from "@shared/constants/general/general-constants";
+
 const routes: Routes = [
   {
     path: '',
     component: LayoutDefaultComponent,
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardComponent, canLoad: [ ACLGuard ], data: {guard: 80100001 }},
+      { path: 'dashboard',
+        component: DashboardComponent,
+        canLoad: [ ACLGuard ],
+        data: {guard: GeneralConstants.CONSTANT_COMMON_PRIVILEGE_COMPONENT_DASHBOARD }
+      },
       // 业务子模块
       { path: 'system', loadChildren: './system/system.module#SystemModule', canLoad: [ ACLGuard ], data: { guard: 50100001 } }
     ]
