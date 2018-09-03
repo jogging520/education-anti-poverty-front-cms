@@ -28,6 +28,7 @@ const THIRDMODULES = [
 const COMPONENTS = [RegionComponent, OrganizationComponent];
 const DIRECTIVES = [ShowAuthedDirective];
 const PIPES = [UserRegionPipe];
+const VALIDATORS = [UserExistsValidatorDirective];
 // endregion
 
 @NgModule({
@@ -52,7 +53,7 @@ const PIPES = [UserRegionPipe];
     ...DIRECTIVES,
     ...PIPES,
     ...DIRECTIVES,
-    UserExistsValidatorDirective
+    ...VALIDATORS
   ],
   exports: [
     CommonModule,
@@ -69,7 +70,8 @@ const PIPES = [UserRegionPipe];
     // your components
     ...COMPONENTS,
     ...DIRECTIVES,
-    ...PIPES
+    ...PIPES,
+    ...VALIDATORS
   ]
 })
 export class SharedModule { }

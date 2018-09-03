@@ -80,4 +80,4 @@ export const CONSTANT_MODULE_SHARED_MODEL_TOKEN_STATUS_SUCCESS: string          
 export const CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_LOGIN: string      = 'LOGIN';  //操作记录登录业务类型定义常量
 export const CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_LOGOUT: string     = 'LOGOUT';  //操作记录登出业务类型定义常量
 export const CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_QUERY_USER: string = 'QUERY_USER';  //操作记录查询用户业务类型定义常量
-export const CONSTANT_MODULE_SHARED_VALIDATOR_USER_EXIST_DE_BOUNCE_TIME: number        = 1000;  //用户是否存在校验器的等待时间
+export const CONSTANT_MODULE_SHARED_VALIDATOR_USER_EXIST_DE_BOUNCE_TIME: number        = 2000;  //用户是否存在校验器的等待时间

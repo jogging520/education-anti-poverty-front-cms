@@ -5,13 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class UserCreationStepService {
 
-  step: 0 | 1 | 2 | 3 = 1;
+  step: 0 | 1 | 2 | 3 = 0;
 
-  constructor() {
-    this.reset();
-  }
-
-  public reset(): void {
-    this.step = 0;
-  }
+  constructor() { }
 }

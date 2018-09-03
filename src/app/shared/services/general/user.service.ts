@@ -19,12 +19,14 @@ export class UserService {
 
   /**
    * 方法：获取全量用户信息
-   * @return {Observable<User>}
+   * @param {string} id 用户ID编号
+   * @param {string} name 用户名称
+   * @return {Observable<User[]>} 查询到的数据流
    */
-  public queryUsers(): Observable<User[]> {
+  public queryUsers(id?: string, name?: string): Observable<User[]> {
     return this.httpClient
       .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_USER}`,
-        this.commonService.setParams({}),
+        this.commonService.setParams({id: id, name: name}),
         {headers: CommonService.setHeaders()}
         )
       .pipe(

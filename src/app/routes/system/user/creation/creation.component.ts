@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {UserCreationStepService} from "@shared/services/step/user-creation-step.service";
+import {UserCreationStepService} from "../service/user-creation-step.service";
 
 @Component({
   selector: 'app-system-user-creation',
