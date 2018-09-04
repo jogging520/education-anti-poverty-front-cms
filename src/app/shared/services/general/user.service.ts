@@ -19,14 +19,32 @@ export class UserService {
 
   /**
    * 方法：获取全量用户信息
-   * @return {Observable<User>}
+   * @param {string} name 用户名称
+   * @return {Observable<User[]>} 查询到的数据流
    */
-  public queryUsers(): Observable<User[]> {
+  public queryUsers(name?: string): Observable<User[]> {
     return this.httpClient
       .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_USER}`,
-        this.commonService.setParams({}),
+        this.commonService.setParams({name: name}),
         {headers: CommonService.setHeaders()}
         )
+      .pipe(
+        catchError(error => this.commonService.handleError(error))
+      );
+  }
+
+  /**
+   * 方法：获取单个用户信息
+   * @param {string} user 当前登录用户id
+   * @param {string} id 待查询用户id
+   * @return {Observable<User[]>} 查询到的数据流
+   */
+  public queryUserById(user?: string, id?: string): Observable<User> {
+    return this.httpClient
+      .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_USER}\\${id}`,
+        this.commonService.setParams({user: user}),
+        {headers: CommonService.setHeaders()}
+      )
       .pipe(
         catchError(error => this.commonService.handleError(error))
       );

@@ -7,12 +7,13 @@ import {Router} from "@angular/router";
 import {ReuseTabService} from "@delon/abc";
 import {StartupService} from "@core/startup/startup.service";
 import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
-import {mergeMap, catchError, map} from "rxjs/operators";
+import {mergeMap, catchError, map, flatMap} from "rxjs/operators";
 import {environment} from "@env/environment";
 import {Token} from "@shared/models/general/token";
 import {Operation} from "@shared/models/general/operation";
 import {OperationService} from "@shared/services/general/operation.service";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
+import {UserService} from "@shared/services/general/user.service";
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +36,8 @@ export class SessionService {
     @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService,
     private settingService: SettingsService,
     private commonService: CommonService,
-    private operationService: OperationService
+    private operationService: OperationService,
+    private userService: UserService
   ) { }
 
   /**
@@ -83,15 +85,9 @@ export class SessionService {
             return throwError(new Error(token.status));
           }
 
-          return this.httpClient
-            .get(
-              `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_USER}\\${token.user}`,
-              this.commonService.setParams({user: token.user}),
-              {headers: CommonService.setHeaders()}
-            )
+          return this.userService.queryUserById(token.user, token.user)
             .pipe(
-              map(user => {
-
+              map((user: User) => {
                 this.tokenService.clear();
 
                 if (user.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_USER_STATUS_ACTIVE) {
