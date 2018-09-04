@@ -52,7 +52,7 @@ export class UserCreationBasicStepComponent implements OnInit {
         ]),
       ],
     });
-    //this.formGroup.patchValue(this.item, {onlySelf: true, emitEvent: true});
+    this.formGroup.patchValue(this.item, {onlySelf: true, emitEvent: true});
 
     // this.formGroup.controls['nb']
     //   .valueChanges
@@ -99,6 +99,6 @@ export class UserCreationBasicStepComponent implements OnInit {
   }
 
   private printError() {
-    console.log(this.formGroup.controls['nb'].errors);
+    console.log(this.formGroup.controls);
   }
 }

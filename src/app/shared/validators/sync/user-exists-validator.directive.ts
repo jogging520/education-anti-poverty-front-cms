@@ -38,7 +38,7 @@ export class UserExistsValidatorDirective implements AsyncValidator {
             this.commonService.encrypt(btoa(value), false));
 
           this.userService
-            .queryUsers(null, encryptedUserName)
+            .queryUsers(encryptedUserName)
             .pipe(
               tap(),
               flatMap(user => user)
