@@ -66,6 +66,7 @@ export const CONSTANT_COMMON_YESTERDAY_MICRO_SECOND: number                     
 
 //======================shared module======================
 export const CONSTANT_MODULE_SHARED_MODEL_USER_STATUS_ACTIVE: string                   = 'ACTIVE';         //用户类中的正常用户状态定义常量
+export const CONSTANT_MODULE_SHARED_MODEL_USER_STATUS_NOT_EXISTS: string               = 'NOT_EXISTS';         //用户类中的正常用户状态定义常量
 
 export const CONSTANT_MODULE_SHARED_MODEL_STRATEGY_STATUS_ACTIVE: string               = 'ACTIVE';         //策略类中的正常策略状态定义常量
 

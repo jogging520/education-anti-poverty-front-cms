@@ -85,12 +85,11 @@ export class SessionService {
 
           return this.httpClient
             .get(
-              `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_USER}`,
-              this.commonService.setParams({user: token.user, id: token.user}),
+              `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_USER}\\${token.user}`,
+              this.commonService.setParams({user: token.user}),
               {headers: CommonService.setHeaders()}
             )
             .pipe(
-              flatMap(user => user),
               map((user: User) => {
                 this.tokenService.clear();
 

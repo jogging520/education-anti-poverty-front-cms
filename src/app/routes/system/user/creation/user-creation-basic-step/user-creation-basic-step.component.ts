@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {UserExistsValidatorDirective} from "@shared/validators/general/user-exists-validator.directive";
-import {debounceTime, distinctUntilChanged, tap} from "rxjs/internal/operators";
 import {UserCreationStepService} from "../../service/user-creation-step.service";
+import {existingUserValidator} from "@shared/validators/async/user-exists-validator";
+import {CommonService} from "@shared/services/general/common.service";
+import {UserService} from "@shared/services/general/user.service";
 
 @Component({
   selector: 'app-user-creation-basic-step',
@@ -14,7 +15,10 @@ export class UserCreationBasicStepComponent implements OnInit {
   formGroup: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
-              public item: UserCreationStepService) { }
+              public item: UserCreationStepService,
+              private commonService: CommonService,
+              private userService: UserService
+              ) { }
 
   ngOnInit() {
     this.formGroup = this.formBuilder.group({
@@ -25,7 +29,8 @@ export class UserCreationBasicStepComponent implements OnInit {
         null, Validators.compose([Validators.required, Validators.minLength(2)])
       ],
       nb: [
-        null,  Validators.compose([Validators.required, Validators.minLength(6)]),
+        null,  [Validators.required, Validators.minLength(6)],
+          [existingUserValidator(this.commonService, this.userService)],
       ],
       pay_account: [
         null,

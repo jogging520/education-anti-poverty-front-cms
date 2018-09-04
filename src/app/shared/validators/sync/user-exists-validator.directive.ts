@@ -1,5 +1,5 @@
-import { Directive } from '@angular/core';
-import {AbstractControl, NG_VALIDATORS, ValidationErrors, Validator} from "@angular/forms";
+import {Directive, Injectable} from '@angular/core';
+import {AbstractControl, AsyncValidator, NG_VALIDATORS, ValidationErrors} from "@angular/forms";
 import {UserService} from "@shared/services/general/user.service";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 import {CommonService} from "@shared/services/general/common.service";
@@ -7,15 +7,12 @@ import {
   catchError, debounceTime, delay, distinct, distinctUntilChanged, distinctUntilKeyChanged,
   tap, flatMap, map, filter, first, take
 } from "rxjs/internal/operators";
-import {of} from "rxjs/index";
+import {Observable, of} from "rxjs/index";
 import {User} from "@shared/models/general/user";
 
 
-@Directive({
-  selector: '[userExistsValidator]',
-  providers: [{provide: NG_VALIDATORS, useExisting: UserExistsValidatorDirective, multi: true}]
-})
-export class UserExistsValidatorDirective implements Validator {
+@Injectable({ providedIn: 'root' })
+export class UserExistsValidatorDirective implements AsyncValidator {
 
   preValue: string = '';
   isUserExisted: boolean = false;
@@ -23,13 +20,18 @@ export class UserExistsValidatorDirective implements Validator {
   constructor(private userService: UserService,
               private commonService: CommonService) { }
 
-  validate(formControl: AbstractControl): ValidationErrors | null {
-    formControl
+  validate(formControl: AbstractControl):
+    Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
+
+    console.log('-----');
+    return formControl
       .valueChanges
       .pipe(
         debounceTime(GeneralConstants.CONSTANT_MODULE_SHARED_VALIDATOR_USER_EXIST_DE_BOUNCE_TIME),
-        filter((value) => value !== this.preValue))
-      .subscribe((value) => {
+        filter((value) => value !== this.preValue),
+        map((value) => {
+          console.log(value);
+
           this.preValue = value;
 
           let encryptedUserName = encodeURIComponent(
@@ -48,6 +50,8 @@ export class UserExistsValidatorDirective implements Validator {
                   this.isUserExisted = true;
                   //return {userExisted: this.isUserExisted};
                 }
+
+                return null;
               },
               (error) => {catchError(error => this.commonService.handleError(error))},
               () => {
@@ -55,36 +59,9 @@ export class UserExistsValidatorDirective implements Validator {
                 //return {userExisted: this.isUserExisted};
               }
             )
-        },
-        (error) => {catchError(error => this.commonService.handleError(error))},
-        () => {})
-
-    return null;
-
-    //return {userExisted: this.isUserExisted};
-
-    // return control.valueChanges
-    //   .pipe(
-    //     tap(() => console.log(control.value)),
-    //
-    //     debounceTime(GeneralConstants.CONSTANT_MODULE_SHARED_VALIDATOR_USER_EXIST_DE_BOUNCE_TIME),
-    //     distinctUntilChanged(),
-    //     //first(),
-    //     //take(1),
-    //     catchError(error => this.commonService.handleError(error))
-    //   )
-    //   .subscribe((value) => {
-    //   console.log(value)
-    //     },
-    //     () => {catchError(error => this.commonService.handleError(error))},
-    //     () => {
-    //   console.log('---------');
-    //       this.userService
-    //         .queryUsers()
-    //         .pipe(
-    //           catchError(error => this.commonService.handleError(error))
-    //         );
-    //     });
+        }),
+        catchError(error => this.commonService.handleError(error))
+      )
 
   }
 
