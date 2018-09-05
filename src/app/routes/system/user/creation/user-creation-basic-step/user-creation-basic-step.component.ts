@@ -4,20 +4,33 @@ import {UserCreationStepService} from "../../service/user-creation-step.service"
 import {existingUserValidator} from "@shared/validators/async/user-exists-validator";
 import {CommonService} from "@shared/services/general/common.service";
 import {UserService} from "@shared/services/general/user.service";
+import {UploadFile} from "ng-zorro-antd";
+import {environment} from "@env/environment";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
+import {StorageService} from "@shared/services/general/storage.service";
+
 
 @Component({
   selector: 'app-user-creation-basic-step',
   templateUrl: './user-creation-basic-step.component.html',
-  styles: []
+  styleUrls: ['./user-creation-basic-step.component.less'],
 })
 export class UserCreationBasicStepComponent implements OnInit {
 
+  previewImage = '';
+  previewVisible = false;
+  fileList = [];
+  header={};
+
   formGroup: FormGroup;
+
+  pictureUrl: string = `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_STORAGE}`;
 
   constructor(private formBuilder: FormBuilder,
               public item: UserCreationStepService,
               private commonService: CommonService,
-              private userService: UserService
+              private userService: UserService,
+              private storageService: StorageService
               ) { }
 
   ngOnInit() {
@@ -54,16 +67,13 @@ export class UserCreationBasicStepComponent implements OnInit {
     });
     this.formGroup.patchValue(this.item, {onlySelf: true, emitEvent: true});
 
-    // this.formGroup.controls['nb']
-    //   .valueChanges
-    //   .pipe(
-    //     //tap((value) => console.log(value)),
-    //
-    //     debounceTime(2000),
-    //     distinctUntilChanged(),)
-    //   .subscribe((data) => {
-    //   console.log(data);
-    //   })
+    this.pictureUrl = this.storageService.getUploadFileUrl();
+    console.log(this.pictureUrl);
+
+    this.header = {'Content-Type': `${environment.contentType}`,
+      'Accept': `${environment.accept}`,
+    'apiKey': `${environment.apiKey}`};
+    console.log(this.header);
   }
 
   get name() {
@@ -100,5 +110,10 @@ export class UserCreationBasicStepComponent implements OnInit {
 
   private printError() {
     console.log(this.formGroup.controls);
+  }
+
+  handlePreview = (file: UploadFile) => {
+    this.previewImage = file.url || file.thumbUrl;
+    this.previewVisible = true;
   }
 }

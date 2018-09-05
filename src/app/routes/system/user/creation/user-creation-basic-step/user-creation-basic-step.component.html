@@ -20,7 +20,7 @@
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <nz-form-label nzSpan="5" nzRequired>用户姓名</nz-form-label>
+    <nz-form-label nzSpan="5" nzRequired>测试NB</nz-form-label>
     <nz-form-control [nzSpan]="19" >
       <input nz-input formControlName="nb" id="nb" placeholder="nb">
       <button nz-button nzType="primary" (click)="printError()">测试</button>
@@ -29,6 +29,30 @@
         <nz-form-explain *ngIf="nb.errors?.minlength">真实姓名至少6个字符以上</nz-form-explain>
         <nz-form-explain *ngIf="nb.errors?.userExists">该用户已经存在</nz-form-explain>
       </ng-container>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzSpan="5" nzRequired>付款账户</nz-form-label>
+    <nz-form-control [nzSpan]="19">
+      <div class="clearfix">
+        <nz-upload
+          nzAction="{{pictureUrl}}"
+          nzListType="picture-card"
+          [(nzFileList)]="fileList"
+          [nzShowButton]="fileList.length < 1"
+          [nzFileType]="image/png"
+          [nzSize]="100"
+          [nzHeaders]="header"
+          [nzPreview]="handlePreview">
+          <i class="anticon anticon-plus"></i>
+          <div class="ant-upload-text">Upload</div>
+        </nz-upload>
+        <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="'图片测试'" (nzOnCancel)="previewVisible=false">
+          <ng-template #modalContent>
+            <img [src]="previewImage" [ngStyle]="{ 'width': '100%' }" />
+          </ng-template>
+        </nz-modal>
+      </div>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>

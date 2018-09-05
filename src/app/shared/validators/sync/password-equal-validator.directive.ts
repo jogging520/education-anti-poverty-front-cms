@@ -1,5 +1,5 @@
 import {Directive, forwardRef} from '@angular/core';
-import {AsyncValidator, FormGroup, NG_VALIDATORS, ValidationErrors} from "@angular/forms";
+import {AsyncValidator, FormGroup, NG_VALIDATORS, ValidationErrors, Validator} from "@angular/forms";
 
 @Directive({
   selector: '[nb-validatePasswordEqual]',
@@ -11,7 +11,7 @@ import {AsyncValidator, FormGroup, NG_VALIDATORS, ValidationErrors} from "@angul
     }
   ]
 })
-export class PasswordEqualValidatorDirective implements AsyncValidator {
+export class PasswordEqualValidatorDirective implements Validator {
 
   constructor() { }
 
