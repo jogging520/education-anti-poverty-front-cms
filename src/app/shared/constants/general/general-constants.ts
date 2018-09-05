@@ -41,6 +41,7 @@ export const CONSTANT_COMMON_ROUTE_PATH_ORGANIZATION: string                    
 export const CONSTANT_COMMON_ROUTE_PATH_REGION: string                                 = 'regions'; //区域路由的path路径
 export const CONSTANT_COMMON_ROUTE_PATH_STATISTICS: string                             = 'statistics'; //统计路由的path路径
 export const CONSTANT_COMMON_ROUTE_PATH_OPERATION: string                              = 'operations'; //操作记录路由的path路径
+export const CONSTANT_COMMON_ROUTE_PATH_STORAGE: string                                = 'storage'; //存储路由的path路径
 
 /**
  * 权限定义
