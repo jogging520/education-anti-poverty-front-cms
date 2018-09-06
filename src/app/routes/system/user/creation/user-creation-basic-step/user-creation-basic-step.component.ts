@@ -8,6 +8,7 @@ import {UploadFile} from "ng-zorro-antd";
 import {environment} from "@env/environment";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 import {StorageService} from "@shared/services/general/storage.service";
+import {EMPTY, Subscription} from "rxjs/index";
 
 
 @Component({
@@ -115,5 +116,12 @@ export class UserCreationBasicStepComponent implements OnInit {
   handlePreview = (file: UploadFile) => {
     this.previewImage = file.url || file.thumbUrl;
     this.previewVisible = true;
+  }
+
+  customRequest = ({ onSuccess, onError, file }) => {
+    console.log(file.name);
+    this.storageService
+      .uploadFile(file)
+      .subscribe();
   }
 }

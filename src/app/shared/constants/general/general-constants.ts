@@ -15,6 +15,7 @@ export const CONSTANT_COMMON_HTTP_PARAM_PUBLIC_APP_TYPE: string                 
 export const CONSTANT_COMMON_HTTP_PARAM_PUBLIC_CATEGORY: string                        = 'category';    //HTTP请求参数中公共类别（企业）定义常量
 export const CONSTANT_COMMON_HTTP_PARAM_PUBLIC_SESSION: string                         = 'session';    //HTTP请求参数中公共会话编号定义常量
 export const CONSTANT_COMMON_HTTP_PARAM_PUBLIC_USER: string                            = 'user';    //HTTP请求参数中公共用户编号定义常量
+export const CONSTANT_COMMON_HTTP_PARAM_PUBLIC_TOKEN: string                           = 'token';    //HTTP请求参数中公共令牌定义常量
 
 /**
  * CACHE 缓存常量定义
@@ -53,7 +54,7 @@ export const CONSTANT_COMMON_PRIVILEGE_COMPONENT_DASHBOARD: number              
  */
 export const CONSTANT_COMMON_INTERNAL_SERVER_ERROR: string                             = '系统调用服务发生未可知错误，可能是后端问题，请联系管理员检查。';         //http应答500服务器内部错误描述的定义常量
 export const CONSTANT_COMMON_DEFAULT_ERROR: string                                     = '系统发生未可知错误，请联系管理员检查。';         //http应答默认错误描述的定义常量
-
+export const CONSTANT_COMMON_CORS_ERROR: string                                        = '未可知错误，大部分是由于后端不支持CORS或无效配置引起'; //http应答CORS错误
 
 
 /**

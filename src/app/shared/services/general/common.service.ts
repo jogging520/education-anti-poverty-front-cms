@@ -27,11 +27,12 @@ export class CommonService {
     private reuseTabService: ReuseTabService
   ) {}
 
+
   /**
    * 方法：设置http请求header部分
    * @returns {HttpHeaders} http请求头
    */
-  public static setHeaders(): HttpHeaders {
+  public setHeaders(): HttpHeaders {
 
     let headers = {};
 
@@ -45,6 +46,12 @@ export class CommonService {
 
     if (`${environment.apiKey}`) {
       headers[GeneralConstants.CONSTANT_COMMON_HTTP_HEADER_API_KEY] = `${environment.apiKey}`;
+    }
+
+    let tokenData = this.tokenService.get();
+
+    if (tokenData && tokenData.token) {
+      headers[GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_TOKEN] = tokenData.token;
     }
 
     return new HttpHeaders(headers);

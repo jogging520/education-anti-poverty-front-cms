@@ -25,8 +25,7 @@ export class UserService {
   public queryUsers(name?: string): Observable<User[]> {
     return this.httpClient
       .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_USER}`,
-        this.commonService.setParams({name: name}),
-        {headers: CommonService.setHeaders()}
+        this.commonService.setParams({name: name})
         )
       .pipe(
         catchError(error => this.commonService.handleError(error))
@@ -42,8 +41,7 @@ export class UserService {
   public queryUserById(user?: string, id?: string): Observable<User> {
     return this.httpClient
       .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_USER}\\${id}`,
-        this.commonService.setParams({user: user}),
-        {headers: CommonService.setHeaders()}
+        this.commonService.setParams({user: user})
       )
       .pipe(
         catchError(error => this.commonService.handleError(error))

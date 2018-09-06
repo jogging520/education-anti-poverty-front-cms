@@ -1,5 +1,5 @@
 import { NgModule, LOCALE_ID, APP_INITIALIZER, Injector } from '@angular/core';
-import { HttpClient, HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DelonModule } from './delon.module';
@@ -17,6 +17,7 @@ registerLocaleData(localeZh);
 
 // @delon/form: JSON Schema form
 import { JsonSchemaModule } from '@shared/json-schema/json-schema.module';
+import {DefaultInterceptor} from "@core/net/default.interceptor";
 
 export function StartupServiceFactory(startupService: StartupService): Function {
   return () => startupService.load();
@@ -40,7 +41,8 @@ export function StartupServiceFactory(startupService: StartupService): Function 
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'zh-Hans' },
-    { provide: HTTP_INTERCEPTORS, useClass: SimpleInterceptor, multi: true},
+    //{ provide: HTTP_INTERCEPTORS, useClass: SimpleInterceptor, multi: true},
+    { provide: HTTP_INTERCEPTORS, useClass: DefaultInterceptor, multi: true },
     StartupService,
     {
       provide: APP_INITIALIZER,
