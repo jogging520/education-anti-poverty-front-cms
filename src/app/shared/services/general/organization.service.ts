@@ -38,9 +38,7 @@ export class OrganizationService {
    */
   public queryRegions(): Observable<Region> {
     return this.httpClient.get(
-      `${environment.serverUrl}
-      ${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_ORGANIZATION}\\
-      ${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_REGION}`
+      `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_REGION}`
     )
       .pipe(
         flatMap((regions: Region[]) => regions),

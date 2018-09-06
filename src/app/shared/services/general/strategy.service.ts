@@ -25,7 +25,7 @@ export class StrategyService {
   public queryStrategies(types: string[]): Observable<Strategy[]> {
     return this.httpClient
       .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_STRATEGY}`,
-        {types: types.join(',')}
+        {types: types.join(GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_SEPARATOR)}
         )
       .pipe(
         catchError(error => this.commonService.handleError(error))

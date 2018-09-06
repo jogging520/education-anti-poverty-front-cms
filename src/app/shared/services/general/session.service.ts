@@ -7,7 +7,7 @@ import {Router} from "@angular/router";
 import {ReuseTabService} from "@delon/abc";
 import {StartupService} from "@core/startup/startup.service";
 import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
-import {mergeMap, catchError, map, flatMap} from "rxjs/operators";
+import {mergeMap, catchError, map} from "rxjs/operators";
 import {environment} from "@env/environment";
 import {Token} from "@shared/models/general/token";
 import {Operation} from "@shared/models/general/operation";
