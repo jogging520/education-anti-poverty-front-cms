@@ -32,6 +32,14 @@
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
+    <label class="btn btn-default">
+      <input type="file" (change)="selectFile($event)">
+    </label>
+
+    <button class="btn btn-success" [disabled]="!selectedFiles"
+            (click)="upload()">Upload</button>
+  </nz-form-item>
+  <nz-form-item>
     <nz-form-label nzSpan="5" nzRequired>付款账户</nz-form-label>
     <nz-form-control [nzSpan]="19">
       <div class="clearfix">

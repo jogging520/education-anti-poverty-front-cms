@@ -76,7 +76,7 @@ export class DefaultInterceptor implements HttpInterceptor {
             GeneralConstants.CONSTANT_COMMON_CORS_ERROR,
             event,
           );
-          this.msg.error(event.message);
+          this.msg.error(GeneralConstants.CONSTANT_COMMON_CORS_ERROR);
         }
         break;
     }
@@ -117,7 +117,7 @@ export class DefaultInterceptor implements HttpInterceptor {
 
     const newReq = req.clone({
       url: req.url,
-      headers: this.commonService.setHeaders(),
+      headers: this.commonService.setHeaders(req.url),
       params: newReqParams
     });
 

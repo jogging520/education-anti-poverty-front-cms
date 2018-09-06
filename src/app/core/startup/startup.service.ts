@@ -97,8 +97,7 @@ export class StartupService {
 
     //4、获取区域信息数据并设置
     this.httpClient
-      .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_REGION}`,
-        {params: {}}
+      .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_REGION}`
       )
       .pipe(
         flatMap((region: any) => region),
@@ -128,8 +127,7 @@ export class StartupService {
 
     //5、获取组织机构数据并设置
     this.httpClient
-      .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_ORGANIZATION}`,
-        {}
+      .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_ORGANIZATION}`
       )
       .pipe(
         flatMap((organization: any) => organization),

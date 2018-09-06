@@ -8,7 +8,7 @@ import {UploadFile} from "ng-zorro-antd";
 import {environment} from "@env/environment";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 import {StorageService} from "@shared/services/general/storage.service";
-import {EMPTY, Subscription} from "rxjs/index";
+import {FileUploader} from "ng2-file-upload";
 
 
 @Component({
@@ -21,11 +21,21 @@ export class UserCreationBasicStepComponent implements OnInit {
   previewImage = '';
   previewVisible = false;
   fileList = [];
-  header={};
+
+  selectedFiles: FileList
+  currentFileUpload: File
 
   formGroup: FormGroup;
 
-  pictureUrl: string = `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_STORAGE}`;
+  pictureUrl: string = `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_STORAGE}?type=picture`;
+
+
+  public uploader:FileUploader = new FileUploader({
+    url: this.pictureUrl,
+    method: "POST",
+    itemAlias: "uploadedfile",
+    autoUpload: true
+  });
 
   constructor(private formBuilder: FormBuilder,
               public item: UserCreationStepService,
@@ -68,13 +78,6 @@ export class UserCreationBasicStepComponent implements OnInit {
     });
     this.formGroup.patchValue(this.item, {onlySelf: true, emitEvent: true});
 
-    this.pictureUrl = this.storageService.getUploadFileUrl();
-    console.log(this.pictureUrl);
-
-    this.header = {'Content-Type': `${environment.contentType}`,
-      'Accept': `${environment.accept}`,
-    'apiKey': `${environment.apiKey}`};
-    console.log(this.header);
   }
 
   get name() {
@@ -123,5 +126,37 @@ export class UserCreationBasicStepComponent implements OnInit {
     this.storageService
       .uploadFile(file)
       .subscribe();
+  }
+
+  selectedFileOnChanged(event:any) {
+    // 打印文件选择名称
+    console.log(event.target.value);
+  }
+
+  uploadFile() {
+    // 上传
+    this.uploader.queue[0].onSuccess = function (response, status, headers) {
+      // 上传文件成功
+      if (status == 200) {
+        // 上传文件后获取服务器返回的数据
+        let tempRes = JSON.parse(response);
+      } else {
+        // 上传文件后获取服务器返回的数据错误
+        alert("");
+      }
+    };
+    this.uploader.queue[0].upload(); // 开始上传
+  }
+
+  selectFile(event) {
+    console.log(event.target.files);
+    this.selectedFiles = event.target.files;
+  }
+
+  upload () {
+
+    this.currentFileUpload = this.selectedFiles.item(0);
+    console.log(this.currentFileUpload);
+    this.storageService.uploadFile(this.currentFileUpload).subscribe();
   }
 }

@@ -32,13 +32,20 @@ export class CommonService {
    * 方法：设置http请求header部分
    * @returns {HttpHeaders} http请求头
    */
-  public setHeaders(): HttpHeaders {
+  public setHeaders(url: string): HttpHeaders {
 
     let headers = {};
+
 
     if (`${environment.contentType}`) {
       headers[GeneralConstants.CONSTANT_COMMON_HTTP_HEADER_CONTENT_TYPE] = `${environment.contentType}`;
     }
+
+    if (url && url.indexOf('storage') != -1 && `${environment.contentType}`) {
+      headers['X-Requested-With'] = 'XMLHttpRequest';
+      //headers[GeneralConstants.CONSTANT_COMMON_HTTP_HEADER_CONTENT_TYPE] = 'multipart/form-data';
+    }
+
 
     if (`${environment.accept}`) {
       headers[GeneralConstants.CONSTANT_COMMON_HTTP_HEADER_ACCEPT] = `${environment.accept}`;
