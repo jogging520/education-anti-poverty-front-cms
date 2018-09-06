@@ -60,10 +60,9 @@ export class CommonService {
 
   /**
    * 方法：根据token中保存的公共信息，形成params对象
-   * @param {Object} parameters 原始对象
    * @returns {Object} 增加了公共信息后的对象
    */
-  public setParams(parameters?: Object): Object {
+  public setParams(): Object {
 
     let params = {};
 
@@ -87,14 +86,6 @@ export class CommonService {
 
     if (tokenData && tokenData.user) {
       params[GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_USER] = tokenData.user;
-    }
-
-    if (parameters) {
-      Object.keys(parameters)
-        .forEach((key) => {
-        if (parameters[key])
-          params[key] = parameters[key];
-        });
     }
 
     return params;

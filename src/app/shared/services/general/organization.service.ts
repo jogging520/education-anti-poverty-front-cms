@@ -24,8 +24,7 @@ export class OrganizationService {
    */
   public queryOrganizations(): Observable<Organization> {
     return this.httpClient.get(
-      `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_ORGANIZATION}`,
-      this.commonService.setParams({})
+      `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_ORGANIZATION}`
     )
       .pipe(
         flatMap((organizations: Organization[]) => organizations),
@@ -41,8 +40,7 @@ export class OrganizationService {
     return this.httpClient.get(
       `${environment.serverUrl}
       ${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_ORGANIZATION}\\
-      ${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_REGION}`,
-      this.commonService.setParams({})
+      ${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_REGION}`
     )
       .pipe(
         flatMap((regions: Region[]) => regions),

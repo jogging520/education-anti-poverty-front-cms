@@ -1,4 +1,4 @@
-import {Inject, Injectable, Injector} from '@angular/core';
+import {Injectable, Injector} from '@angular/core';
 import { Router } from '@angular/router';
 import {
   HttpInterceptor,
@@ -9,14 +9,12 @@ import {
   HttpHeaderResponse,
   HttpProgressEvent,
   HttpResponse,
-  HttpUserEvent,
+  HttpUserEvent, HttpParams,
 } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { mergeMap, catchError } from 'rxjs/operators';
 import { NzMessageService } from 'ng-zorro-antd';
 import { _HttpClient } from '@delon/theme';
-import { environment } from '@env/environment';
-import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
 import {CommonService} from "@shared/services/general/common.service";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 
@@ -26,7 +24,6 @@ import * as GeneralConstants from "@shared/constants/general/general-constants";
 @Injectable()
 export class DefaultInterceptor implements HttpInterceptor {
   constructor(private injector: Injector,
-              @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService,
               private commonService: CommonService) {}
 
   get msg(): NzMessageService {
@@ -97,14 +94,31 @@ export class DefaultInterceptor implements HttpInterceptor {
     | HttpUserEvent<any>
     > {
 
-    req.params.keys().forEach(key => console.log(key, req.params.get(key)));
     let commonParams = this.commonService.setParams();
+    let reqParams = req.params;
+    let newReqParams: HttpParams = new HttpParams();
 
-    let tokenData = this.tokenService.get();
+    if (reqParams) {
+      reqParams.keys()
+        .forEach((key) => {
+          if (reqParams.get(key))
+            newReqParams = newReqParams.append(key, reqParams.get(key));
+        });
+    }
+
+    if (commonParams) {
+      Object.keys(commonParams)
+        .forEach((key) => {
+          if (commonParams[key]) {
+            newReqParams = newReqParams.append(key, commonParams[key]);
+          }
+        });
+    }
 
     const newReq = req.clone({
       url: req.url,
-      headers: this.commonService.setHeaders()
+      headers: this.commonService.setHeaders(),
+      params: newReqParams
     });
 
     return next.handle(newReq).pipe(

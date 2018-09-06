@@ -49,8 +49,7 @@ export class OperationService {
 
     return this.httpClient
       .post(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_OPERATION}`,
-        operation,
-        this.commonService.setParams({})
+        operation
         )
       .pipe(
         catchError(error => this.commonService.handleError(error))
@@ -66,7 +65,7 @@ export class OperationService {
   public queryOperations(conditions?: Object): Observable<Operation> {
     return this.httpClient
       .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_OPERATION}`,
-        this.commonService.setParams(conditions)
+        conditions
         )
       .pipe(
         flatMap((operations: Operation[]) => operations),

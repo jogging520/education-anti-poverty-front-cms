@@ -33,12 +33,6 @@ export class StartupService {
 
   private initial(resolve: any, reject: any, id?: string) {
     //1、设置headers信息，设置初始流水号
-    let headers = {
-      'Content-Type': `${environment.contentType}`,
-      'Accept': `${environment.accept}`,
-      'apikey': `${environment.apiKey}`
-    };
-
     let serialNo: string = '';
 
     if (!id) {
@@ -63,13 +57,7 @@ export class StartupService {
     //3、获取应用程序相关信息、错误码相关信息等基础策略信息并设置
     this.httpClient
       .get(`${environment.serverUrl}strategies`,
-        {headers: headers,
-          params: {
-            serialNo: serialNo,
-            appType: `${environment.appType}`,
-            category: `${environment.category}`,
-            session: tokenData.session,
-            user: tokenData.user,
+        {params: {
             types: ['application', 'errorcode'].join(',')
           }}
       )
@@ -109,14 +97,7 @@ export class StartupService {
     //4、获取区域信息数据并设置
     this.httpClient
       .get(`${environment.serverUrl}organizations\\regions`,
-        {headers: headers,
-          params: {
-            serialNo: serialNo,
-            appType: `${environment.appType}`,
-            category: `${environment.category}`,
-            session: tokenData.session,
-            user: tokenData.user
-          }}
+        {params: {}}
       )
       .pipe(
         flatMap((region: any) => region),
@@ -147,14 +128,7 @@ export class StartupService {
     //5、获取组织机构数据并设置
     this.httpClient
       .get(`${environment.serverUrl}organizations`,
-        {headers: headers,
-          params: {
-            serialNo: serialNo,
-            appType: `${environment.appType}`,
-            category: `${environment.category}`,
-            session: tokenData.session,
-            user: tokenData.user
-          }}
+        {}
       )
       .pipe(
         flatMap((organization: any) => organization),
@@ -193,15 +167,7 @@ export class StartupService {
     this.httpClient
       .get(
         `${environment.serverUrl}privileges\\roles`,
-        {headers: headers,
-          params: {
-            serialNo: serialNo,
-            appType: `${environment.appType}`,
-            category: `${environment.category}`,
-            session: tokenData.session,
-            user: tokenData.user,
-            ids: roles.join(',')
-          }}
+        {params: {ids: roles.join(',')}}
       )
       .pipe(
         flatMap((role: any) => role),
@@ -238,14 +204,7 @@ export class StartupService {
           this.httpClient
             .get(
               `${environment.serverUrl}menus\\${environment.appType}`,
-              {headers: headers,
-                params: {
-                  serialNo: serialNo,
-                  appType: `${environment.appType}`,
-                  category: `${environment.category}`,
-                  session: tokenData.session,
-                  user: tokenData.user,
-                }}
+              {}
             )
             .pipe(
               catchError(error => {

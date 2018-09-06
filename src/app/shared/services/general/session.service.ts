@@ -63,10 +63,10 @@ export class SessionService {
       .post(
         `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_LOGIN}`,
         null,
-        this.commonService.setParams({
+        {
           userName: encryptedUserName,
           password: encryptedPassword,
-          mobile: encryptedMobile}))
+          mobile: encryptedMobile})
       .pipe(
         map((token: Token) => {
           if (token.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_TOKEN_STATUS_SUCCESS) {
@@ -171,8 +171,7 @@ export class SessionService {
           this.commonService.setSerialNo();
 
           this.httpClient
-            .delete(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_SESSION}`,
-              this.commonService.setParams({})
+            .delete(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_SESSION}`
             )
             .pipe(
               catchError(error => this.commonService.handleError(error))
