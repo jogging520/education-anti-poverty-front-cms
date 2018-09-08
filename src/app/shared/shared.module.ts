@@ -17,6 +17,7 @@ import { NgxAmapModule } from 'ngx-amap';
 import {UserRegionPipe} from "@shared/pipes/business/user-region.pipe";
 import { ShowAuthedDirective } from './directives/show-authed.directive';
 import { PasswordEqualValidatorDirective } from './validators/sync/password-equal-validator.directive';
+import { ImagePipe } from './pipes/general/image.pipe';
 
 const THIRDMODULES = [
   NgZorroAntdModule,
@@ -26,8 +27,8 @@ const THIRDMODULES = [
 
 // topCode: your componets & directives
 const COMPONENTS = [RegionComponent, OrganizationComponent];
-const DIRECTIVES = [ShowAuthedDirective];
-const PIPES = [UserRegionPipe];
+const DIRECTIVES = [ShowAuthedDirective, PasswordEqualValidatorDirective];
+const PIPES = [UserRegionPipe, ImagePipe];
 // endregion
 
 @NgModule({
@@ -51,7 +52,6 @@ const PIPES = [UserRegionPipe];
     ...COMPONENTS,
     ...DIRECTIVES,
     ...PIPES,
-    PasswordEqualValidatorDirective,
   ],
   exports: [
     CommonModule,

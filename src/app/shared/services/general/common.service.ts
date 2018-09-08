@@ -40,8 +40,6 @@ export class CommonService {
       headers[GeneralConstants.CONSTANT_COMMON_HTTP_HEADER_CONTENT_TYPE] = `${environment.contentType}`;
     }
 
-    //CONSTANT_COMMON_ROUTE_PATH_PICTURE
-
     if (`${environment.accept}`) {
       headers[GeneralConstants.CONSTANT_COMMON_HTTP_HEADER_ACCEPT] = `${environment.accept}`;
     }

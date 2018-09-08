@@ -23,7 +23,7 @@
   <nz-card-tab>
     <nz-tabset nzSize="large" (nzSelectChange)="setRegionCode($event)">
       <nz-tab *ngFor="let tab of tabs; index as idx" [nzTitle]="tab.tab">
-        <nz-list [nzLoading]="loading" [nzRenderItem]="item" [nzDataSource]="users | userRegion: tab.key" [nzGrid]="{gutter: 24, lg: 6, md: 8, sm: 12, xs: 24 }">
+        <nz-list [nzLoading]="loading" [nzRenderItem]="item" [nzDataSource]="users | nbUserRegion: tab.key" [nzGrid]="{gutter: 24, lg: 6, md: 8, sm: 12, xs: 24 }">
           <ng-template #item let-item>
             <nz-list-item>
               <nz-card [nzHoverable]="true" class="ant-card__body-nopadding" [@tada]="tada">

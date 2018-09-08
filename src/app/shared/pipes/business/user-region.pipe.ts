@@ -5,7 +5,7 @@ import {Organization} from "@shared/models/general/organization";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Pipe({
-  name: 'userRegion'
+  name: 'nbUserRegion'
 })
 export class UserRegionPipe implements PipeTransform, OnInit {
 
