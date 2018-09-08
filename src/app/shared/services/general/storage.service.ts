@@ -16,19 +16,10 @@ export class StorageService {
     private commonService: CommonService
   ) { }
 
-  public uploadFile(file: File): Observable<any> {
-    let formData: FormData = new FormData();
-
-    formData.append('file', file);
-    formData.append('_method', 'PUT');
-
-    return this.httpClient
-      .post(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_STORAGE}`,
-        formData,
-        {type: 'picture'}
-      )
-      .pipe(
-        catchError(error => this.commonService.handleError(error))
-      );
+  get(picture: string): void {
+    this.httpClient
+      .get(`http://223.105.5.116:9090/pictures/${picture}?width=300&height=300`)
+      .pipe()
+      .subscribe();
   }
 }

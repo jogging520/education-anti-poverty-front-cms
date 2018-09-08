@@ -9,7 +9,7 @@ import {
   HttpHeaderResponse,
   HttpProgressEvent,
   HttpResponse,
-  HttpUserEvent, HttpParams,
+  HttpUserEvent
 } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { mergeMap, catchError } from 'rxjs/operators';
@@ -93,33 +93,14 @@ export class DefaultInterceptor implements HttpInterceptor {
     | HttpResponse<any>
     | HttpUserEvent<any>
     > {
-
-    let commonParams = this.commonService.setParams();
-    let reqParams = req.params;
-    let newReqParams: HttpParams = new HttpParams();
-
-    if (reqParams) {
-      reqParams.keys()
-        .forEach((key) => {
-          if (reqParams.get(key))
-            newReqParams = newReqParams.append(key, reqParams.get(key));
-        });
-    }
-
-    if (commonParams) {
-      Object.keys(commonParams)
-        .forEach((key) => {
-          if (commonParams[key]) {
-            newReqParams = newReqParams.append(key, commonParams[key]);
-          }
-        });
-    }
-
     const newReq = req.clone({
       url: req.url,
-      headers: this.commonService.setHeaders(req.url),
-      params: newReqParams
+      headers: this.commonService.setHeaders(req),
+      params: this.commonService.setParams(req)
     });
+
+    //console.log(req);
+    //console.log(newReq);
 
     return next.handle(newReq).pipe(
       mergeMap((event: any) => {

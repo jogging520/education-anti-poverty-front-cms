@@ -17,12 +17,10 @@ import { NgxAmapModule } from 'ngx-amap';
 import {UserRegionPipe} from "@shared/pipes/business/user-region.pipe";
 import { ShowAuthedDirective } from './directives/show-authed.directive';
 import { PasswordEqualValidatorDirective } from './validators/sync/password-equal-validator.directive';
-import { FileUploadModule } from 'ng2-file-upload';
 
 const THIRDMODULES = [
   NgZorroAntdModule,
-  CountdownModule,
-  FileUploadModule
+  CountdownModule
 ];
 // endregion
 

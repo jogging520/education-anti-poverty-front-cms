@@ -45,6 +45,7 @@ export const CONSTANT_COMMON_ROUTE_PATH_REGION: string                          
 export const CONSTANT_COMMON_ROUTE_PATH_STATISTICS: string                             = 'statistics'; //统计路由的path路径
 export const CONSTANT_COMMON_ROUTE_PATH_OPERATION: string                              = 'operations'; //操作记录路由的path路径
 export const CONSTANT_COMMON_ROUTE_PATH_STORAGE: string                                = 'storage'; //存储路由的path路径
+export const CONSTANT_COMMON_ROUTE_PATH_PICTURE: string                                = 'pictures'; //图片路由的path路径
 export const CONSTANT_COMMON_ROUTE_PATH_PRIVILEGE: string                              = 'privileges'; //权限路由的path路径
 export const CONSTANT_COMMON_ROUTE_PATH_ROLE: string                                   = 'privileges/roles'; //角色路由的path路径
 export const CONSTANT_COMMON_ROUTE_PATH_MENU: string                                   = 'menus'; //菜单路由的path路径
@@ -92,6 +93,9 @@ export const CONSTANT_MODULE_SHARED_MODEL_ROLE_STATUS_ACTIVE: string            
 export const CONSTANT_MODULE_SHARED_MODEL_ORGANIZATION_STATUS_ACTIVE: string           = 'ACTIVE';         //组织机构类中的在用状态定义常量
 
 export const CONSTANT_MODULE_SHARED_MODEL_REGION_STATUS_ACTIVE: string                 = 'ACTIVE';         //区域类中的在用状态定义常量
+
+export const CONSTANT_MODULE_SHARED_MODEL_STORAGE_FILE_ATTRIBUTE_NAME: string          = 'file';         //存储类中的文件属性名称定义常量
+export const CONSTANT_MODULE_SHARED_MODEL_STORAGE_TYPE_PICTURE: string                 = 'type=picture';         //存储类中的图片类型定义常量
 
 export const CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_LOGIN: string      = 'LOGIN';  //操作记录登录业务类型定义常量
 export const CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_LOGOUT: string     = 'LOGOUT';  //操作记录登出业务类型定义常量

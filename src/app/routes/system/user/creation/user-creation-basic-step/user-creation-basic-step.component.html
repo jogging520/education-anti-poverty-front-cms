@@ -1,3 +1,5 @@
+<nz-avatar nzIcon="anticon anticon-user" nzSrc="{{storedPicture}}"></nz-avatar>
+
 <form nz-form [formGroup]="formGroup" (ngSubmit)="submit()">
   <nz-form-item>
     <nz-form-label nzSpan="5" nzRequired>用户姓名</nz-form-label>
@@ -32,14 +34,6 @@
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
-    <label class="btn btn-default">
-      <input type="file" (change)="selectFile($event)">
-    </label>
-
-    <button class="btn btn-success" [disabled]="!selectedFiles"
-            (click)="upload()">Upload</button>
-  </nz-form-item>
-  <nz-form-item>
     <nz-form-label nzSpan="5" nzRequired>付款账户</nz-form-label>
     <nz-form-control [nzSpan]="19">
       <div class="clearfix">
@@ -50,8 +44,9 @@
           [nzShowButton]="fileList.length < 1"
           [nzFileType]="image/png"
           [nzSize]="100"
-
-          [nzPreview]="handlePreview">
+          [nzPreview]="handlePreview"
+          (nzChange)="onChange($event)"
+        >
           <i class="anticon anticon-plus"></i>
           <div class="ant-upload-text">Upload</div>
         </nz-upload>

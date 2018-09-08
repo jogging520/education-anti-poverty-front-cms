@@ -8,7 +8,6 @@ import {UploadFile} from "ng-zorro-antd";
 import {environment} from "@env/environment";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 import {StorageService} from "@shared/services/general/storage.service";
-import {FileUploader} from "ng2-file-upload";
 
 
 @Component({
@@ -22,20 +21,10 @@ export class UserCreationBasicStepComponent implements OnInit {
   previewVisible = false;
   fileList = [];
 
-  selectedFiles: FileList
-  currentFileUpload: File
-
   formGroup: FormGroup;
 
-  pictureUrl: string = `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_STORAGE}?type=picture`;
-
-
-  public uploader:FileUploader = new FileUploader({
-    url: this.pictureUrl,
-    method: "POST",
-    itemAlias: "uploadedfile",
-    autoUpload: true
-  });
+  pictureUrl: string = '';
+  storedPicture: string = '';
 
   constructor(private formBuilder: FormBuilder,
               public item: UserCreationStepService,
@@ -77,6 +66,8 @@ export class UserCreationBasicStepComponent implements OnInit {
       ],
     });
     this.formGroup.patchValue(this.item, {onlySelf: true, emitEvent: true});
+
+    this.pictureUrl = `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_STORAGE}?${GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_STORAGE_TYPE_PICTURE}`;
 
   }
 
@@ -121,42 +112,16 @@ export class UserCreationBasicStepComponent implements OnInit {
     this.previewVisible = true;
   }
 
-  customRequest = ({ onSuccess, onError, file }) => {
-    console.log(file.name);
-    this.storageService
-      .uploadFile(file)
-      .subscribe();
-  }
+  onChange(event): void {
+    console.log(event);
+    if (event.type === 'success') {
+      console.log(`${environment.serverUrl}pictures/${event.file.response[0].name}?width=300&height=300`);
 
-  selectedFileOnChanged(event:any) {
-    // 打印文件选择名称
-    console.log(event.target.value);
-  }
+      //this.storedPicture = `${environment.serverUrl}pictures/${event.file.response[0].name}?width=300&height=300`;
+      this.storedPicture = event.file.thumbUrl;
+      //console.log(this.storedPicture);
 
-  uploadFile() {
-    // 上传
-    this.uploader.queue[0].onSuccess = function (response, status, headers) {
-      // 上传文件成功
-      if (status == 200) {
-        // 上传文件后获取服务器返回的数据
-        let tempRes = JSON.parse(response);
-      } else {
-        // 上传文件后获取服务器返回的数据错误
-        alert("");
-      }
-    };
-    this.uploader.queue[0].upload(); // 开始上传
-  }
-
-  selectFile(event) {
-    console.log(event.target.files);
-    this.selectedFiles = event.target.files;
-  }
-
-  upload () {
-
-    this.currentFileUpload = this.selectedFiles.item(0);
-    console.log(this.currentFileUpload);
-    this.storageService.uploadFile(this.currentFileUpload).subscribe();
+      this.storageService.get(event.file.response[0].name);
+    }
   }
 }
