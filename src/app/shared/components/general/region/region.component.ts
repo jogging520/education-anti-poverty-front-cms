@@ -5,7 +5,7 @@ import {Region} from "@shared/models/general/region";
 import {CacheService} from "@delon/cache";
 
 @Component({
-  selector: 'app-nb-region',
+  selector: 'nb-region',
   templateUrl: './region.component.html',
   styles: []
 })

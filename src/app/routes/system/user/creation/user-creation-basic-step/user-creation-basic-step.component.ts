@@ -7,7 +7,6 @@ import {UserService} from "@shared/services/general/user.service";
 import {UploadFile} from "ng-zorro-antd";
 import {environment} from "@env/environment";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
-import {StorageService} from "@shared/services/general/storage.service";
 
 
 @Component({
@@ -24,13 +23,13 @@ export class UserCreationBasicStepComponent implements OnInit {
   formGroup: FormGroup;
 
   pictureUrl: string = '';
-  storedPicture: string = '';
+
+  image = {src: 'group1/M00/00/00/wKiWBVuTk1eAZ2tBAACopcp9hhM559.jpg?width=300&height=300'};
 
   constructor(private formBuilder: FormBuilder,
               public item: UserCreationStepService,
               private commonService: CommonService,
-              private userService: UserService,
-              private storageService: StorageService
+              private userService: UserService
               ) { }
 
   ngOnInit() {
@@ -113,15 +112,11 @@ export class UserCreationBasicStepComponent implements OnInit {
   }
 
   onChange(event): void {
-    console.log(event);
     if (event.type === 'success') {
-      console.log(`${environment.serverUrl}pictures/${event.file.response[0].name}?width=300&height=300`);
 
-      //this.storedPicture = `${environment.serverUrl}pictures/${event.file.response[0].name}?width=300&height=300`;
-      this.storedPicture = event.file.thumbUrl;
-      //console.log(this.storedPicture);
+      this.image.src = `${event.file.response[0].name}?width=300&height=300`;
 
-      this.storageService.get(event.file.response[0].name);
+      console.log(this.image);
     }
   }
 }

@@ -4,7 +4,7 @@ import {Option} from "@shared/models/general/option";
 import {CacheService} from "@delon/cache";
 
 @Component({
-  selector: 'app-nb-organization',
+  selector: 'nb-organization',
   templateUrl: './organization.component.html',
   styles: []
 })
