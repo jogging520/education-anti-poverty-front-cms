@@ -7,7 +7,7 @@ import {Router} from "@angular/router";
 import {ReuseTabService} from "@delon/abc";
 import {StartupService} from "@core/startup/startup.service";
 import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
-import {mergeMap, catchError, map, flatMap} from "rxjs/operators";
+import {mergeMap, catchError, map} from "rxjs/operators";
 import {environment} from "@env/environment";
 import {Token} from "@shared/models/general/token";
 import {Operation} from "@shared/models/general/operation";
@@ -63,11 +63,10 @@ export class SessionService {
       .post(
         `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_LOGIN}`,
         null,
-        this.commonService.setParams({
+        {
           userName: encryptedUserName,
           password: encryptedPassword,
-          mobile: encryptedMobile}),
-        {headers: CommonService.setHeaders()})
+          mobile: encryptedMobile})
       .pipe(
         map((token: Token) => {
           if (token.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_TOKEN_STATUS_SUCCESS) {
@@ -172,9 +171,7 @@ export class SessionService {
           this.commonService.setSerialNo();
 
           this.httpClient
-            .delete(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_SESSION}`,
-              this.commonService.setParams({}),
-              {headers: CommonService.setHeaders()}
+            .delete(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_SESSION}`
             )
             .pipe(
               catchError(error => this.commonService.handleError(error))

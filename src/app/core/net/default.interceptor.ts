@@ -1,4 +1,4 @@
-import { Injectable, Injector } from '@angular/core';
+import {Injectable, Injector} from '@angular/core';
 import { Router } from '@angular/router';
 import {
   HttpInterceptor,
@@ -9,20 +9,22 @@ import {
   HttpHeaderResponse,
   HttpProgressEvent,
   HttpResponse,
-  HttpUserEvent,
+  HttpUserEvent
 } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { mergeMap, catchError } from 'rxjs/operators';
 import { NzMessageService } from 'ng-zorro-antd';
 import { _HttpClient } from '@delon/theme';
-import { environment } from '@env/environment';
+import {CommonService} from "@shared/services/general/common.service";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 /**
  * 默认HTTP拦截器，其注册细节见 `app.module.ts`
  */
 @Injectable()
 export class DefaultInterceptor implements HttpInterceptor {
-  constructor(private injector: Injector) {}
+  constructor(private injector: Injector,
+              private commonService: CommonService) {}
 
   get msg(): NzMessageService {
     return this.injector.get(NzMessageService);
@@ -61,7 +63,7 @@ export class DefaultInterceptor implements HttpInterceptor {
         // }
         break;
       case 401: // 未登录状态码
-        this.goTo('/passport/login');
+        this.goTo(GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN);
         break;
       case 403:
       case 404:
@@ -71,10 +73,10 @@ export class DefaultInterceptor implements HttpInterceptor {
       default:
         if (event instanceof HttpErrorResponse) {
           console.warn(
-            '未可知错误，大部分是由于后端不支持CORS或无效配置引起',
+            GeneralConstants.CONSTANT_COMMON_CORS_ERROR,
             event,
           );
-          this.msg.error(event.message);
+          this.msg.error(GeneralConstants.CONSTANT_COMMON_CORS_ERROR);
         }
         break;
     }
@@ -90,16 +92,16 @@ export class DefaultInterceptor implements HttpInterceptor {
     | HttpProgressEvent
     | HttpResponse<any>
     | HttpUserEvent<any>
-  > {
-    // 统一加上服务端前缀
-    let url = req.url;
-    if (!url.startsWith('https://') && !url.startsWith('http://')) {
-      url = environment.serverUrl + url;
-    }
-
+    > {
     const newReq = req.clone({
-      url: url,
+      url: req.url,
+      headers: this.commonService.setHeaders(req),
+      params: this.commonService.setParams(req)
     });
+
+    //console.log(req);
+    //console.log(newReq);
+
     return next.handle(newReq).pipe(
       mergeMap((event: any) => {
         // 允许统一对请求错误处理，这是因为一个请求若是业务上错误的情况下其HTTP请求的状态是200的情况下需要

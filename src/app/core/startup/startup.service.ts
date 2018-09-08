@@ -13,6 +13,7 @@ import { v4 as uuid } from 'uuid';
 import {throwError} from "rxjs/index";
 import {Region} from "@shared/models/general/region";
 import {Organization} from "@shared/models/general/organization";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 /**
  * 用于应用启动时
@@ -33,20 +34,12 @@ export class StartupService {
 
   private initial(resolve: any, reject: any, id?: string) {
     //1、设置headers信息，设置初始流水号
-    let headers = {
-      'Content-Type': `${environment.contentType}`,
-      'Accept': `${environment.accept}`,
-      'apikey': `${environment.apiKey}`
-    };
-
     let serialNo: string = '';
 
     if (!id) {
       serialNo = uuid();
       this.cacheService
-        .set('serialNo', serialNo);
-    } else {
-      serialNo = id;
+        .set(GeneralConstants.CONSTANT_COMMON_CACHE_SERIAL_NO, serialNo);
     }
 
     const tokenData = this.tokenService.get();
@@ -54,7 +47,7 @@ export class StartupService {
 
     //2、如果没有登录或者已经超过登录时间，那么重定向到登录页面。
     if (!tokenData.token || !tokenData.loginTime || currentTime - tokenData.loginTime > tokenData.lifeTime) {
-      this.injector.get(Router).navigate(['/passport/login']).catch();
+      this.injector.get(Router).navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
       resolve({});
       return;
     }
@@ -62,45 +55,41 @@ export class StartupService {
     //TODO 写一个通用的cache存放
     //3、获取应用程序相关信息、错误码相关信息等基础策略信息并设置
     this.httpClient
-      .get(`${environment.serverUrl}strategies`,
-        {headers: headers,
-          params: {
-            serialNo: serialNo,
-            appType: `${environment.appType}`,
-            category: `${environment.category}`,
-            session: tokenData.session,
-            user: tokenData.user,
-            types: ['application', 'errorcode'].join(',')
+      .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_STRATEGY}`,
+        {params: {
+            types: [GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_STRATEGY_TYPE_APPLICATION,
+              GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_STRATEGY_TYPE_ERROR_CODE]
+              .join(GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_SEPARATOR)
           }}
       )
       .pipe(
         flatMap((strategy: any) => strategy),
         map((strategy: Strategy) => {
-          if (strategy.status !== 'ACTIVE') {
+          if (strategy.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_STRATEGY_STATUS_ACTIVE) {
             return throwError(strategy.status);
           }
 
           return strategy;
         }),
         catchError(error => {
-          this.injector.get(Router).navigate(['/passport/login']).catch();
+          this.injector.get(Router).navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
           resolve(null);
           return throwError(error);
         })
       )
       .subscribe(
         (strategy: Strategy) => {
-          if (strategy.type === 'application') {
+          if (strategy.type === GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_STRATEGY_TYPE_APPLICATION) {
             this.settingService.setApp({name: strategy.name, description: strategy.description});
             this.titleService.suffix = strategy.name;
           }
 
-          if (strategy.type === 'errorcode') {
-            this.cacheService.set('errorcode', strategy.parameters);
+          if (strategy.type === GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_STRATEGY_TYPE_ERROR_CODE) {
+            this.cacheService.set(GeneralConstants.CONSTANT_COMMON_CACHE_ERROR_CODE, strategy.parameters);
           }
         },
         (error) => {
-          this.injector.get(Router).navigate(['/passport/login']).catch();
+          this.injector.get(Router).navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
           resolve(null);
           throwError(error);
         }
@@ -108,37 +97,29 @@ export class StartupService {
 
     //4、获取区域信息数据并设置
     this.httpClient
-      .get(`${environment.serverUrl}organizations\\regions`,
-        {headers: headers,
-          params: {
-            serialNo: serialNo,
-            appType: `${environment.appType}`,
-            category: `${environment.category}`,
-            session: tokenData.session,
-            user: tokenData.user
-          }}
+      .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_REGION}`
       )
       .pipe(
         flatMap((region: any) => region),
         map((region: Region) => {
-          if (region.status !== 'ACTIVE') {
+          if (region.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_REGION_STATUS_ACTIVE) {
             return throwError(region.status);
           }
 
           return region;
         }),
         catchError(error => {
-          this.injector.get(Router).navigate(['/passport/login']).catch();
+          this.injector.get(Router).navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
           resolve(null);
           return throwError(error);
         })
       )
       .subscribe(
         (region: Region) => {
-            this.cacheService.set('region', region);
+            this.cacheService.set(GeneralConstants.CONSTANT_COMMON_CACHE_REGION, region);
         },
         (error) => {
-          this.injector.get(Router).navigate(['/passport/login']).catch();
+          this.injector.get(Router).navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
           resolve(null);
           throwError(error);
         }
@@ -146,37 +127,29 @@ export class StartupService {
 
     //5、获取组织机构数据并设置
     this.httpClient
-      .get(`${environment.serverUrl}organizations`,
-        {headers: headers,
-          params: {
-            serialNo: serialNo,
-            appType: `${environment.appType}`,
-            category: `${environment.category}`,
-            session: tokenData.session,
-            user: tokenData.user
-          }}
+      .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_ORGANIZATION}`
       )
       .pipe(
         flatMap((organization: any) => organization),
         map((organization: Organization) => {
-          if (organization.status !== 'ACTIVE') {
+          if (organization.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_ORGANIZATION_STATUS_ACTIVE) {
             return throwError(organization.status);
           }
 
           return organization;
         }),
         catchError(error => {
-          this.injector.get(Router).navigate(['/passport/login']).catch();
+          this.injector.get(Router).navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
           resolve(null);
           return throwError(error);
         })
       )
       .subscribe(
         (organization: Organization) => {
-          this.cacheService.set('organization', organization);
+          this.cacheService.set(GeneralConstants.CONSTANT_COMMON_CACHE_ORGANIZATION, organization);
         },
         (error) => {
-          this.injector.get(Router).navigate(['/passport/login']).catch();
+          this.injector.get(Router).navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
           resolve(null);
           throwError(error);
         }
@@ -192,21 +165,13 @@ export class StartupService {
 
     this.httpClient
       .get(
-        `${environment.serverUrl}privileges\\roles`,
-        {headers: headers,
-          params: {
-            serialNo: serialNo,
-            appType: `${environment.appType}`,
-            category: `${environment.category}`,
-            session: tokenData.session,
-            user: tokenData.user,
-            ids: roles.join(',')
-          }}
+        `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_ROLE}`,
+        {params: {ids: roles.join(GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_SEPARATOR)}}
       )
       .pipe(
         flatMap((role: any) => role),
         map((role: Role) => {
-          if (role.status !== 'ACTIVE') {
+          if (role.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_ROLE_STATUS_ACTIVE) {
             return throwError(role.status);
           }
 
@@ -220,7 +185,7 @@ export class StartupService {
           return ability;
         }, abilities),
         catchError(error => {
-          this.injector.get(Router).navigate(['/passport/login']).catch();
+          this.injector.get(Router).navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
           resolve(null);
           return throwError(error);
         })
@@ -228,7 +193,7 @@ export class StartupService {
       .subscribe(
         () => {},
         (error) => {
-          this.injector.get(Router).navigate(['/passport/login']).catch();
+          this.injector.get(Router).navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
           resolve(null);
           throwError(error);
         },
@@ -237,19 +202,12 @@ export class StartupService {
 
           this.httpClient
             .get(
-              `${environment.serverUrl}menus\\${environment.appType}`,
-              {headers: headers,
-                params: {
-                  serialNo: serialNo,
-                  appType: `${environment.appType}`,
-                  category: `${environment.category}`,
-                  session: tokenData.session,
-                  user: tokenData.user,
-                }}
+              `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_MENU}\\${environment.appType}`,
+              {}
             )
             .pipe(
               catchError(error => {
-                this.injector.get(Router).navigate(['/passport/login']).catch();
+                this.injector.get(Router).navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
                 resolve(null);
                 return throwError(error);
               })
@@ -259,12 +217,12 @@ export class StartupService {
                 this.menuService.add(menus);
               },
               (error) => {
-                this.injector.get(Router).navigate(['/passport/login']).catch();
+                this.injector.get(Router).navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
                 resolve(null);
                 throwError(error);
               },
               () => {
-                this.injector.get(Router).navigate(['/']).catch();
+                this.injector.get(Router).navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_ROOT]).catch();
                 resolve({});
               }
             );

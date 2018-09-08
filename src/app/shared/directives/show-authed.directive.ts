@@ -5,12 +5,12 @@ import {DA_SERVICE_TOKEN, ITokenService} from "@delon/auth";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Directive({
-  selector: '[showAuthed]'
+  selector: '[nb-showAuthed]'
 })
 export class ShowAuthedDirective {
 
   //判断条件：true为认证，false为非认证
-  condition: boolean;
+  condition: boolean = true;
 
   constructor(
     private templateRef: TemplateRef<any>,
@@ -44,9 +44,5 @@ export class ShowAuthedDirective {
           }
         }
       );
-  }
-
-  @Input() set showAuthed(condition: boolean) {
-    this.condition = condition;
   }
 }

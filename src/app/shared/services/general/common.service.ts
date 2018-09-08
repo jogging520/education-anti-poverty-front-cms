@@ -4,7 +4,7 @@ import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
 import {Router} from "@angular/router";
 import {NzMessageService} from "ng-zorro-antd";
 import {Observable, throwError} from "rxjs/index";
-import {HttpErrorResponse, HttpHeaders} from "@angular/common/http";
+import {HttpErrorResponse, HttpHeaders, HttpParams, HttpRequest} from "@angular/common/http";
 import {environment} from "@env/environment";
 import { v4 as uuid } from 'uuid';
 import {ACLService} from "@delon/acl";
@@ -29,15 +29,18 @@ export class CommonService {
 
   /**
    * 方法：设置http请求header部分
-   * @returns {HttpHeaders} http请求头
+   * @param {HttpRequest} httpRequest http请求体
+   * @return {HttpHeaders} http请求头
    */
-  public static setHeaders(): HttpHeaders {
+  public setHeaders(httpRequest: HttpRequest<any>): HttpHeaders {
 
     let headers = {};
 
-    if (`${environment.contentType}`) {
+    if (`${environment.contentType}` && httpRequest.url.indexOf(GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_STORAGE) == -1) {
       headers[GeneralConstants.CONSTANT_COMMON_HTTP_HEADER_CONTENT_TYPE] = `${environment.contentType}`;
     }
+
+    //CONSTANT_COMMON_ROUTE_PATH_PICTURE
 
     if (`${environment.accept}`) {
       headers[GeneralConstants.CONSTANT_COMMON_HTTP_HEADER_ACCEPT] = `${environment.accept}`;
@@ -47,50 +50,56 @@ export class CommonService {
       headers[GeneralConstants.CONSTANT_COMMON_HTTP_HEADER_API_KEY] = `${environment.apiKey}`;
     }
 
+    let tokenData = this.tokenService.get();
+
+    if (tokenData && tokenData.token) {
+      headers[GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_TOKEN] = tokenData.token;
+    }
+
     return new HttpHeaders(headers);
 
   }
 
   /**
    * 方法：根据token中保存的公共信息，形成params对象
-   * @param {Object} parameters 原始对象
-   * @returns {Object} 增加了公共信息后的对象
+   * @param {HttpRequest} httpRequest http请求体
+   * @return {HttpParams} 增加了公共信息后的Http参数对象
    */
-  public setParams(parameters?: Object): Object {
+  public setParams(httpRequest: HttpRequest<any>): HttpParams {
 
-    let params = {};
+    let httpParams: HttpParams = new HttpParams();
 
     if (this.getSerialNo()) {
-      params[GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_SERIAL_NO] = this.getSerialNo();
+      httpParams = httpParams.append(GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_SERIAL_NO, this.getSerialNo());
     }
 
     if (`${environment.appType}`) {
-      params[GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_APP_TYPE] = `${environment.appType}`;
+      httpParams = httpParams.append(GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_APP_TYPE, `${environment.appType}`);
     }
 
     if (`${environment.category}`) {
-      params[GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_CATEGORY] = `${environment.category}`;
+      httpParams = httpParams.append(GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_CATEGORY, `${environment.category}`);
     }
 
     let tokenData = this.tokenService.get();
 
     if (tokenData && tokenData.session) {
-      params[GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_SESSION] = tokenData.session;
+      httpParams = httpParams.append(GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_SESSION, tokenData.session);
     }
 
     if (tokenData && tokenData.user) {
-      params[GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_USER] = tokenData.user;
+      httpParams = httpParams.append(GeneralConstants.CONSTANT_COMMON_HTTP_PARAM_PUBLIC_USER, tokenData.user);
     }
 
-    if (parameters) {
-      Object.keys(parameters)
+    if (httpRequest.params) {
+      httpRequest.params.keys()
         .forEach((key) => {
-        if (parameters[key])
-          params[key] = parameters[key];
+          if (httpRequest.params.get(key))
+            httpParams = httpParams.append(key, httpRequest.params.get(key));
         });
     }
 
-    return params;
+    return httpParams;
 
   }
 
@@ -210,6 +219,9 @@ export class CommonService {
      return new Date().getTime() - GeneralConstants.CONSTANT_COMMON_YESTERDAY_MICRO_SECOND;
   }
 
+  /**
+   * 方法：清理各类缓存数据，包括：tab页、token、权限、菜单等数据。
+   */
   public clear(): void {
     this.reuseTabService.clear();
     this.tokenService.clear();

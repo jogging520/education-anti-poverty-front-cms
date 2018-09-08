@@ -24,12 +24,10 @@ export class OrganizationService {
    */
   public queryOrganizations(): Observable<Organization> {
     return this.httpClient.get(
-      `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_ORGANIZATION}`,
-      this.commonService.setParams({}),
-      {headers: CommonService.setHeaders()}
+      `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_ORGANIZATION}`
     )
       .pipe(
-        flatMap(organizations => organizations),
+        flatMap((organizations: Organization[]) => organizations),
         catchError(error => this.commonService.handleError(error))
       );
   }
@@ -40,14 +38,10 @@ export class OrganizationService {
    */
   public queryRegions(): Observable<Region> {
     return this.httpClient.get(
-      `${environment.serverUrl}
-      ${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_ORGANIZATION}\\
-      ${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_REGION}`,
-      this.commonService.setParams({}),
-      {headers: CommonService.setHeaders()}
+      `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_REGION}`
     )
       .pipe(
-        flatMap(regions => regions),
+        flatMap((regions: Region[]) => regions),
         catchError(error => this.commonService.handleError(error))
       );
   }

@@ -4,20 +4,33 @@ import {UserCreationStepService} from "../../service/user-creation-step.service"
 import {existingUserValidator} from "@shared/validators/async/user-exists-validator";
 import {CommonService} from "@shared/services/general/common.service";
 import {UserService} from "@shared/services/general/user.service";
+import {UploadFile} from "ng-zorro-antd";
+import {environment} from "@env/environment";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
+import {StorageService} from "@shared/services/general/storage.service";
+
 
 @Component({
   selector: 'app-user-creation-basic-step',
   templateUrl: './user-creation-basic-step.component.html',
-  styles: []
+  styleUrls: ['./user-creation-basic-step.component.less'],
 })
 export class UserCreationBasicStepComponent implements OnInit {
 
+  previewImage = '';
+  previewVisible = false;
+  fileList = [];
+
   formGroup: FormGroup;
+
+  pictureUrl: string = '';
+  storedPicture: string = '';
 
   constructor(private formBuilder: FormBuilder,
               public item: UserCreationStepService,
               private commonService: CommonService,
-              private userService: UserService
+              private userService: UserService,
+              private storageService: StorageService
               ) { }
 
   ngOnInit() {
@@ -54,16 +67,8 @@ export class UserCreationBasicStepComponent implements OnInit {
     });
     this.formGroup.patchValue(this.item, {onlySelf: true, emitEvent: true});
 
-    // this.formGroup.controls['nb']
-    //   .valueChanges
-    //   .pipe(
-    //     //tap((value) => console.log(value)),
-    //
-    //     debounceTime(2000),
-    //     distinctUntilChanged(),)
-    //   .subscribe((data) => {
-    //   console.log(data);
-    //   })
+    this.pictureUrl = `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_STORAGE}?${GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_STORAGE_TYPE_PICTURE}`;
+
   }
 
   get name() {
@@ -100,5 +105,23 @@ export class UserCreationBasicStepComponent implements OnInit {
 
   private printError() {
     console.log(this.formGroup.controls);
+  }
+
+  handlePreview = (file: UploadFile) => {
+    this.previewImage = file.url || file.thumbUrl;
+    this.previewVisible = true;
+  }
+
+  onChange(event): void {
+    console.log(event);
+    if (event.type === 'success') {
+      console.log(`${environment.serverUrl}pictures/${event.file.response[0].name}?width=300&height=300`);
+
+      //this.storedPicture = `${environment.serverUrl}pictures/${event.file.response[0].name}?width=300&height=300`;
+      this.storedPicture = event.file.thumbUrl;
+      //console.log(this.storedPicture);
+
+      this.storageService.get(event.file.response[0].name);
+    }
   }
 }

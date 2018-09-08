@@ -21,7 +21,7 @@ export function existingUserValidator(commonService: CommonService,
             .pipe(
               tap(),
               map(users => {
-                return (users && users.length > 0) ? {userExisted: true} : null;
+                return (users && users.length > 0) ? {userExists: true} : null;
               }),
               catchError(error => commonService.handleError(error))
             );
