@@ -1,15 +1,19 @@
 import { SettingsService } from '@delon/theme';
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, Optional} from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
-import {
-  SocialService,
-  SocialOpenType
-} from '@delon/auth';
+import { SocialService, SocialOpenType } from '@delon/auth';
 import { environment } from '@env/environment';
 import {SessionService} from "@shared/services/general/session.service";
 import {CommonService} from "@shared/services/general/common.service";
+import {catchError, map} from "rxjs/internal/operators";
+import {Operation} from "@shared/models/general/operation";
+import {StartupService} from "@core/startup/startup.service";
+import {ReuseTabService} from "@delon/abc";
+import {throwError} from "rxjs/index";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
+import {OperationService} from "@shared/services/general/operation.service";
 
 @Component({
   selector: 'passport-login',
@@ -30,11 +34,14 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     private modalSrv: NzModalService,
     private settingsService: SettingsService,
     private socialService: SocialService,
+    @Optional()
+    @Inject(ReuseTabService)
+    private reuseTabService: ReuseTabService,
+    private startupService: StartupService,
     private sessionService: SessionService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private operationService: OperationService
   ) {
-
-    //this.commonService.clear();
 
     this.form = fb.group({
       userName: [null, [Validators.required, Validators.minLength(5)]],
@@ -105,7 +112,43 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     this.sessionService
-      .login(this.userName.value, this.password.value, this.mobile.value);
+      .login(this.userName.value, this.password.value, this.mobile.value)
+      .subscribe(
+        () => {
+          this.reuseTabService.clear();
+          this.commonService.handleReuseTabExclude();
+          this.startupService.load(this.commonService.getSerialNo()).catch();
+        },
+        () => {
+          this.error = GeneralConstants.CONSTANT_MODULE_PASSPORT_LOGIN_COMMON_ERROR;
+          this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
+        },
+        () => {
+          this.operationService
+            .createOperation(GeneralConstants.CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_LOGIN,
+              this.commonService.getSerialNo())
+            .pipe(
+              map((operation: Operation) => {
+                if (operation.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_STATUS_SUCCESS) {
+                  return throwError(new Error(operation.status));
+                }
+
+                return operation;
+              }),
+              catchError(error => this.commonService.handleError(error))
+            )
+            .subscribe(
+              () => {
+                this.loading = false;
+              },
+              () => {
+                this.loading = false;
+                this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
+              },
+              () => {
+                this.loading = false;
+              });
+        });
 
     this.resetForm();
 

@@ -109,7 +109,8 @@ export const CONSTANT_MODULE_SHARED_MODEL_STORAGE_TYPE_PICTURE: string          
 export const CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_LOGIN: string      = 'LOGIN';  //操作记录登录业务类型定义常量
 export const CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_LOGOUT: string     = 'LOGOUT';  //操作记录登出业务类型定义常量
 export const CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_QUERY_USER: string = 'QUERY_USER';  //操作记录查询用户业务类型定义常量
-export const CONSTANT_MODULE_SHARED_VALIDATOR_USER_EXIST_DE_BOUNCE_TIME: number        = 2000;  //用户是否存在校验器的等待时间
+export const CONSTANT_MODULE_SHARED_VALIDATOR_USER_EXIST_DE_BOUNCE_TIME: number        = 2000;  //用户是否存在校验器的等待时间定义常量
 
+export const CONSTANT_MODULE_PASSPORT_LOGIN_COMMON_ERROR: string                       = '登录失败，可能是用户名不存在、密码校验失败，或者超过做大登录次数。';  //登录的错误信息定义常量
 
 
