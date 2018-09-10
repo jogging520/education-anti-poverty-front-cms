@@ -114,7 +114,7 @@ export class UserCreationBasicStepComponent implements OnInit {
   onChange(event): void {
     if (event.type === 'success') {
 
-      this.image.src = `${event.file.response[0].name}?width=300&height=300`;
+      this.image.src = `${event.file.response[0].name}`;
 
       console.log(this.image);
     }

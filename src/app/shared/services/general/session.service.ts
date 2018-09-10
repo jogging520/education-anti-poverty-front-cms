@@ -102,11 +102,9 @@ export class SessionService {
                   email: user.emails[0]});
 
                 this.setAuth(user);
-              }),
-              catchError(error => this.commonService.handleError(error))
+              })
             )
-        }),
-        catchError(error => this.commonService.handleError(error))
+        })
       )
   }
 

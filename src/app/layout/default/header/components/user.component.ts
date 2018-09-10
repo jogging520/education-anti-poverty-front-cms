@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { SettingsService } from '@delon/theme';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import {SessionService} from "@shared/services/general/session.service";
-import {environment} from "@env/environment";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 import {catchError, map} from "rxjs/internal/operators";
 import {Operation} from "@shared/models/general/operation";
@@ -73,5 +72,4 @@ export class HeaderUserComponent {
             );
         });
   }
-
 }
