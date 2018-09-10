@@ -68,7 +68,9 @@ export class HeaderUserComponent {
                 catchError(error => this.commonService.handleError(error))
                 this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
               },
-              () => {}
+              () => {
+                this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
+              }
             );
         });
   }

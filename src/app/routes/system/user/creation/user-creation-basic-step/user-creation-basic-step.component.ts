@@ -5,8 +5,8 @@ import {existingUserAsyncValidator} from "@shared/validators/general/user-exists
 import {CommonService} from "@shared/services/general/common.service";
 import {UserService} from "@shared/services/general/user.service";
 import {UploadFile} from "ng-zorro-antd";
-import {environment} from "@env/environment";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
+import {StorageService} from "@shared/services/general/storage.service";
 
 
 @Component({
@@ -29,7 +29,8 @@ export class UserCreationBasicStepComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               public item: UserCreationStepService,
               private commonService: CommonService,
-              private userService: UserService
+              private userService: UserService,
+              private storageService: StorageService
               ) { }
 
   ngOnInit() {
@@ -66,7 +67,7 @@ export class UserCreationBasicStepComponent implements OnInit {
     });
     this.formGroup.patchValue(this.item, {onlySelf: true, emitEvent: true});
 
-    this.pictureUrl = `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_STORAGE}?${GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_STORAGE_TYPE_PICTURE}`;
+    this.pictureUrl = this.storageService.getPictureUrl();
 
   }
 

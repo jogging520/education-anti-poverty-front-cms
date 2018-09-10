@@ -12,7 +12,7 @@ export class ImagePipe implements PipeTransform {
 
   transform(url): Observable<SafeUrl> {
     return this.storageService
-      .getImage(url);
+      .getPicture(url);
   }
 
 }

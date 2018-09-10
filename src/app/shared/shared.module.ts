@@ -18,6 +18,7 @@ import {UserRegionPipe} from "@shared/pipes/business/user-region.pipe";
 import { ShowAuthedDirective } from './directives/show-authed.directive';
 import { PasswordEqualValidatorSyncDirective } from './validators/general/password-equal-sync-validator.directive';
 import { ImagePipe } from './pipes/general/image.pipe';
+import {AuthenticationGuard} from "@shared/guards/authentication.guard";
 
 const THIRDMODULES = [
   NgZorroAntdModule,
@@ -51,7 +52,7 @@ const PIPES = [UserRegionPipe, ImagePipe];
     // your components
     ...COMPONENTS,
     ...DIRECTIVES,
-    ...PIPES,
+    ...PIPES
   ],
   exports: [
     CommonModule,
@@ -68,7 +69,7 @@ const PIPES = [UserRegionPipe, ImagePipe];
     // your components
     ...COMPONENTS,
     ...DIRECTIVES,
-    ...PIPES,
+    ...PIPES
   ]
 })
 export class SharedModule { }
