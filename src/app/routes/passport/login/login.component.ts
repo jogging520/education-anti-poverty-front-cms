@@ -110,6 +110,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     }
     // mock http
     this.loading = true;
+    this.error = '';
 
     this.sessionService
       .login(this.userName.value, this.password.value, this.mobile.value)
@@ -119,9 +120,9 @@ export class UserLoginComponent implements OnInit, OnDestroy {
           this.commonService.handleReuseTabExclude();
           this.startupService.load(this.commonService.getSerialNo()).catch();
         },
-        () => {
+        (error) => {
           this.error = GeneralConstants.CONSTANT_MODULE_PASSPORT_LOGIN_COMMON_ERROR;
-          this.messageService.error(this.error);
+          this.loading = false;
           this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
         },
         () => {
@@ -139,9 +140,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
               catchError(error => this.commonService.handleError(error))
             )
             .subscribe(
-              () => {
-                this.loading = false;
-              },
+              () => {},
               () => {
                 this.loading = false;
                 this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
