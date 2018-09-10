@@ -6,8 +6,8 @@ import {catchError, map, tap, switchMap} from "rxjs/internal/operators";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 import {CommonService} from "@shared/services/general/common.service";
 
-export function existingUserValidator(commonService: CommonService,
-                                      userService: UserService): AsyncValidatorFn {
+export function existingUserAsyncValidator(commonService: CommonService,
+                                           userService: UserService): AsyncValidatorFn {
 
   return (control: AbstractControl): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> => {
     let encryptedUserName = encodeURIComponent(

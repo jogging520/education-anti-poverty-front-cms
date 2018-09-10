@@ -227,4 +227,21 @@ export class CommonService {
     this.aclService.removeRole(this.aclService.data.roles);
     this.menuService.clear();
   }
+
+  /**
+   * 方法：处理重用tab页面的排除项，这些页面不会在重用页面中展示。
+   */
+  public handleReuseTabExclude(): void {
+    let excludes: RegExp[] = [];
+
+    excludes.push(new RegExp(GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_LOGIN));
+    excludes.push(new RegExp(GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_REGISTER));
+    excludes.push(new RegExp(GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_LOCK));
+    excludes.push(new RegExp(GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_FORBIDDEN));
+    excludes.push(new RegExp(GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_NOT_FOUND));
+    excludes.push(new RegExp(GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_SERVER_INTERNAL_ERROR));
+    excludes.push(new RegExp(GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_CALL_BACK));
+
+    this.reuseTabService.excludes = excludes;
+  }
 }

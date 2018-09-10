@@ -16,7 +16,7 @@ import { OrganizationComponent } from './components/general/organization/organiz
 import { NgxAmapModule } from 'ngx-amap';
 import {UserRegionPipe} from "@shared/pipes/business/user-region.pipe";
 import { ShowAuthedDirective } from './directives/show-authed.directive';
-import { PasswordEqualValidatorDirective } from './validators/sync/password-equal-validator.directive';
+import { PasswordEqualValidatorSyncDirective } from './validators/general/password-equal-sync-validator.directive';
 import { ImagePipe } from './pipes/general/image.pipe';
 
 const THIRDMODULES = [
@@ -27,7 +27,7 @@ const THIRDMODULES = [
 
 // topCode: your componets & directives
 const COMPONENTS = [RegionComponent, OrganizationComponent];
-const DIRECTIVES = [ShowAuthedDirective, PasswordEqualValidatorDirective];
+const DIRECTIVES = [ShowAuthedDirective, PasswordEqualValidatorSyncDirective];
 const PIPES = [UserRegionPipe, ImagePipe];
 // endregion
 

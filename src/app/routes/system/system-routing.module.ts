@@ -11,11 +11,13 @@ import {OperationResolver} from "@shared/resolvers/business/operation.resolver";
 const routes: Routes = [
   { path: 'operation',
     component: SystemOperationComponent,
-    resolve: {operationParams: OperationResolver}
+    resolve: {operationParams: OperationResolver},
+    data: { title: '查看操作记录' }
   },
   { path: 'user',
     component: SystemUserComponent,
-    resolve: {userParams: UserResolver}
+    resolve: {userParams: UserResolver},
+    data: { title: '用户管理' }
   }
   ,
   { path: 'privilege',

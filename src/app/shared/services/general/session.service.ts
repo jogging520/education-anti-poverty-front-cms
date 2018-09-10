@@ -140,7 +140,9 @@ export class SessionService {
               }),
               catchError(error => this.commonService.handleError(error))
             )
-            .subscribe();
+            .subscribe(() => {
+              this.commonService.handleReuseTabExclude();
+            });
         }
       )
   }

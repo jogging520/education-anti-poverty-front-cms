@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Organization} from "@shared/models/general/organization";
 import {Option} from "@shared/models/general/option";
 import {CacheService} from "@delon/cache";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Component({
   selector: 'nb-organization',
@@ -28,7 +29,7 @@ export class OrganizationComponent implements OnInit {
 
   ngOnInit() {
     this.cacheService
-      .get<Organization>('organization')
+      .get<Organization>(GeneralConstants.CONSTANT_COMMON_CACHE_ORGANIZATION)
       .subscribe(organization => {
         let options = this.transform(this.locate(organization, this.topCode));
 

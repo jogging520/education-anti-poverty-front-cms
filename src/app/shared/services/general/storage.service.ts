@@ -19,8 +19,6 @@ export class StorageService {
   ) { }
 
   public getImage(imageUri: string): Observable<any> {
-    console.log(imageUri);
-
     return this.httpClient
       .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_PICTURE}/${imageUri}`,
         null,

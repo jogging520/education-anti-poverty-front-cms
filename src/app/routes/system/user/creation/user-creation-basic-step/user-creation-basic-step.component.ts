@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserCreationStepService} from "../../service/user-creation-step.service";
-import {existingUserValidator} from "@shared/validators/async/user-exists-validator";
+import {existingUserAsyncValidator} from "@shared/validators/general/user-exists-async-validator";
 import {CommonService} from "@shared/services/general/common.service";
 import {UserService} from "@shared/services/general/user.service";
 import {UploadFile} from "ng-zorro-antd";
@@ -24,7 +24,7 @@ export class UserCreationBasicStepComponent implements OnInit {
 
   pictureUrl: string = '';
 
-  image = {src: 'group1/M00/00/00/wKiWBVuTk1eAZ2tBAACopcp9hhM559.jpg?width=300&height=300'};
+  image = {src: 'group1/M00/00/00/wKiWBVuTk1eAZ2tBAACopcp9hhM559.jpg'};
 
   constructor(private formBuilder: FormBuilder,
               public item: UserCreationStepService,
@@ -42,7 +42,7 @@ export class UserCreationBasicStepComponent implements OnInit {
       ],
       nb: [
         null,  [Validators.required, Validators.minLength(6)],
-          [existingUserValidator(this.commonService, this.userService)],
+          [existingUserAsyncValidator(this.commonService, this.userService)],
       ],
       pay_account: [
         null,
