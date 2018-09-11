@@ -1,5 +1,5 @@
-import {Inject, Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, ReplaySubject, throwError, timer} from "rxjs/index";
+import {Inject, Injectable, OnDestroy} from '@angular/core';
+import {BehaviorSubject, Observable, ReplaySubject, throwError} from "rxjs/index";
 import {User} from "@shared/models/general/user";
 import {_HttpClient, SettingsService} from "@delon/theme";
 import {CommonService} from "@shared/services/general/common.service";
@@ -10,11 +10,15 @@ import {Token} from "@shared/models/general/token";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 import {UserService} from "@shared/services/general/user.service";
 import {CacheService} from "@delon/cache";
+import {defaultIfEmpty} from "rxjs/internal/operators";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
 })
-export class SessionService {
+export class SessionService implements OnDestroy {
+
+  interval: any;
 
   private currentUserSubject = new BehaviorSubject<User>(new User());
   public currentUser = this.currentUserSubject.asObservable();
@@ -24,6 +28,7 @@ export class SessionService {
 
   constructor(
     private httpClient: _HttpClient,
+    private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService,
     private settingService: SettingsService,
     private cacheService: CacheService,
@@ -146,11 +151,24 @@ export class SessionService {
   }
 
   public heartbeat(): void {
-    setInterval(() => {
+    this.interval = setInterval(() => {
       this.cacheService
         .get(GeneralConstants.CONSTANT_COMMON_CACHE_ACTIVE_TIME)
-        .subscribe((data) => {
-          console.log('heartbeat' + data);
-        })}, 10000);
+        .pipe(
+          defaultIfEmpty()
+        )
+        .subscribe((activeTime) => {
+          const currentTime = new Date().getTime();
+
+          if (currentTime - Number(activeTime) > GeneralConstants.CONSTANT_COMMON_HEART_BEAT_NO_INTERACTIVE_TIME) {
+            this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
+          } else {
+
+          }
+        })}, GeneralConstants.CONSTANT_COMMON_HEART_BEAT_INTERVAL);
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.interval);
   }
 }

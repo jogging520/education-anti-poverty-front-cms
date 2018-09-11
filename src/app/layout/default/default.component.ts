@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
   Router,
   NavigationEnd,
@@ -7,19 +7,21 @@ import {
 } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd';
 import { ScrollService, MenuService, SettingsService } from '@delon/theme';
+import {SessionService} from "@shared/services/general/session.service";
 
 @Component({
   selector: 'layout-default',
   templateUrl: './default.component.html',
 })
-export class LayoutDefaultComponent {
+export class LayoutDefaultComponent implements OnInit {
+
   isFetching = false;
 
   constructor(
     router: Router,
     scroll: ScrollService,
     private _message: NzMessageService,
-    public menuSrv: MenuService,
+    private sessionService: SessionService,
     public settings: SettingsService,
   ) {
     // scroll to top in change page
@@ -40,5 +42,10 @@ export class LayoutDefaultComponent {
         this.isFetching = false;
       }, 100);
     });
+  }
+
+  ngOnInit(): void {
+    this.sessionService
+      .heartbeat();
   }
 }

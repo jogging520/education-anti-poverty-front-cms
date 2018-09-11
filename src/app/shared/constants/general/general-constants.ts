@@ -78,6 +78,13 @@ export const CONSTANT_COMMON_CORS_ERROR: string                                 
 export const CONSTANT_COMMON_LISTEN_MOUSE_EVENT: string                                = 'mousedown';//监听鼠标进入事件
 export const CONSTANT_COMMON_LISTEN_EVENT_MOUSE_ARGUMENTS: string                      = '$event';//监听鼠标进入事件参数
 
+
+/**
+ * 心跳定义
+ */
+export const CONSTANT_COMMON_HEART_BEAT_INTERVAL:number                                = 10000; //心跳的时间间隔（毫秒）定义
+export const CONSTANT_COMMON_HEART_BEAT_NO_INTERACTIVE_TIME: number                    = 30000; //判断无交互的时间间隔
+
 /**
  * 常量数据定义
  */

@@ -229,6 +229,10 @@ export class StartupService {
         }
       );
 
+    //7、设置初始的激活时间
+    this.cacheService
+      .set(GeneralConstants.CONSTANT_COMMON_CACHE_ACTIVE_TIME, new Date().getTime());
+
     return;
   }
 
