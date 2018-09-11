@@ -27,6 +27,7 @@ export const CONSTANT_COMMON_CACHE_REGION: string                               
 export const CONSTANT_COMMON_CACHE_ORGANIZATION: string                                = 'organization';       //组织机构缓存数据定义常量
 export const CONSTANT_COMMON_CACHE_SERIAL_NO: string                                   = 'serialNo';       //流水号缓存数据定义常量
 export const CONSTANT_COMMON_CACHE_ERROR_CODE: string                                  = 'errorCode';       //错误码号缓存数据定义常量
+export const CONSTANT_COMMON_CACHE_ACTIVE_TIME: string                                 = 'activeTime';       //活动时间缓存数据定义常量
 
 
 /**
@@ -71,6 +72,11 @@ export const CONSTANT_COMMON_INTERNAL_SERVER_ERROR: string                      
 export const CONSTANT_COMMON_DEFAULT_ERROR: string                                     = '系统发生未可知错误，请联系管理员检查。';         //http应答默认错误描述的定义常量
 export const CONSTANT_COMMON_CORS_ERROR: string                                        = '系统发生未可知错误，可能是由于后端不支持CORS或无效配置引起，请联系管理员检查。'; //http应答CORS错误
 
+/**
+ * 事件定义
+ */
+export const CONSTANT_COMMON_LISTEN_MOUSE_EVENT: string                                = 'mousedown';//监听鼠标进入事件
+export const CONSTANT_COMMON_LISTEN_EVENT_MOUSE_ARGUMENTS: string                      = '$event';//监听鼠标进入事件参数
 
 /**
  * 常量数据定义

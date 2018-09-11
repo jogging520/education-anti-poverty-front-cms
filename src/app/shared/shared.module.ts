@@ -18,7 +18,7 @@ import {UserRegionPipe} from "@shared/pipes/business/user-region.pipe";
 import { ShowAuthedDirective } from './directives/show-authed.directive';
 import { PasswordEqualValidatorSyncDirective } from './validators/general/password-equal-sync-validator.directive';
 import { ImagePipe } from './pipes/general/image.pipe';
-import {AuthenticationGuard} from "@shared/guards/authentication.guard";
+import { MouseEventDirective } from './directives/mouse-event.directive';
 
 const THIRDMODULES = [
   NgZorroAntdModule,
@@ -28,7 +28,7 @@ const THIRDMODULES = [
 
 // topCode: your componets & directives
 const COMPONENTS = [RegionComponent, OrganizationComponent];
-const DIRECTIVES = [ShowAuthedDirective, PasswordEqualValidatorSyncDirective];
+const DIRECTIVES = [ShowAuthedDirective, PasswordEqualValidatorSyncDirective, MouseEventDirective];
 const PIPES = [UserRegionPipe, ImagePipe];
 // endregion
 

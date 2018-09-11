@@ -1,5 +1,5 @@
 import {Inject, Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, ReplaySubject, throwError} from "rxjs/index";
+import {BehaviorSubject, Observable, ReplaySubject, throwError, timer} from "rxjs/index";
 import {User} from "@shared/models/general/user";
 import {_HttpClient, SettingsService} from "@delon/theme";
 import {CommonService} from "@shared/services/general/common.service";
@@ -9,6 +9,7 @@ import {environment} from "@env/environment";
 import {Token} from "@shared/models/general/token";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 import {UserService} from "@shared/services/general/user.service";
+import {CacheService} from "@delon/cache";
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,9 @@ export class SessionService {
     private httpClient: _HttpClient,
     @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService,
     private settingService: SettingsService,
+    private cacheService: CacheService,
     private commonService: CommonService,
-    private userService: UserService
+    private userService: UserService,
   ) { }
 
   /**
@@ -141,5 +143,14 @@ export class SessionService {
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
     this.commonService.clear();
+  }
+
+  public heartbeat(): void {
+    setInterval(() => {
+      this.cacheService
+        .get(GeneralConstants.CONSTANT_COMMON_CACHE_ACTIVE_TIME)
+        .subscribe((data) => {
+          console.log('heartbeat' + data);
+        })}, 10000);
   }
 }

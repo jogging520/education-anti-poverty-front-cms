@@ -34,7 +34,7 @@
   <nz-form-item>
     <nz-form-label nzSpan="5" nzRequired>测试NB</nz-form-label>
     <nz-form-control [nzSpan]="19" >
-      <img [attr.src]="image.src | nbImage | async" [ngStyle]="{ 'width': '100%' }"/>
+      <img [attr.src]="image.src | nbImage | async" [ngStyle]="{ 'width': '100%' }" />
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
@@ -54,7 +54,7 @@
           <i class="anticon anticon-plus"></i>
           <div class="ant-upload-text">Upload</div>
         </nz-upload>
-        <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="'图片测试'" (nzOnCancel)="previewVisible=false">
+        <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="'图片展示'" (nzOnCancel)="previewVisible=false">
           <ng-template #modalContent>
             <img [src]="previewImage" [ngStyle]="{ 'width': '100%' }" />
           </ng-template>
