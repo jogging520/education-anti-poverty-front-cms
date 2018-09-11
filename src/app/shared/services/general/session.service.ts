@@ -18,7 +18,10 @@ import {Router} from "@angular/router";
 })
 export class SessionService implements OnDestroy {
 
-  interval: any;
+  //激活时间定时器
+  idleInterval: any;
+  //token定时器
+  heartbeatInterval: any;
 
   private currentUserSubject = new BehaviorSubject<User>(new User());
   public currentUser = this.currentUserSubject.asObservable();
@@ -150,8 +153,11 @@ export class SessionService implements OnDestroy {
     this.commonService.clear();
   }
 
-  public heartbeat(): void {
-    this.interval = setInterval(() => {
+  /**
+   * 方法：计算idle时间（根据激活的时间和当前时间的时间差判断，是否跳转到登录页面）
+   */
+  public idle(): void {
+    this.idleInterval = setInterval(() => {
       this.cacheService
         .get(GeneralConstants.CONSTANT_COMMON_CACHE_ACTIVE_TIME)
         .pipe(
@@ -160,15 +166,23 @@ export class SessionService implements OnDestroy {
         .subscribe((activeTime) => {
           const currentTime = new Date().getTime();
 
-          if (currentTime - Number(activeTime) > GeneralConstants.CONSTANT_COMMON_HEART_BEAT_NO_INTERACTIVE_TIME) {
+          if (currentTime - Number(activeTime) > GeneralConstants.CONSTANT_COMMON_IDLE_NO_INTERACTIVE_TIME) {
             this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
-          } else {
-
           }
-        })}, GeneralConstants.CONSTANT_COMMON_HEART_BEAT_INTERVAL);
+        })}, GeneralConstants.CONSTANT_COMMON_IDLE_INTERVAL);
   }
 
+  public heartbeat(): void {
+    this.heartbeatInterval = setInterval(() => {
+
+    }, GeneralConstants.CONSTANT_COMMON_HEART_BEAT_INTERVAL)
+  }
+
+  /**
+   * 方法：销毁的时候要清理调定时器
+   */
   ngOnDestroy(): void {
-    clearInterval(this.interval);
+    clearInterval(this.idleInterval);
+    clearInterval(this.heartbeatInterval);
   }
 }

@@ -46,6 +46,6 @@ export class LayoutDefaultComponent implements OnInit {
 
   ngOnInit(): void {
     this.sessionService
-      .heartbeat();
+      .idle();
   }
 }
