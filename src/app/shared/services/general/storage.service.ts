@@ -18,16 +18,27 @@ export class StorageService {
     private commonService: CommonService
   ) { }
 
-  public getImage(imageUri: string): Observable<any> {
-    console.log(imageUri);
-
+  /**
+   * 方法：根据url传调用图片的数据流
+   * @param {string} pictureUri 图片的location
+   * @return {Observable<any>} 图片的数据流
+   */
+  public getPicture(pictureUri: string): Observable<any> {
     return this.httpClient
-      .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_PICTURE}/${imageUri}`,
+      .get(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_PICTURE}/${pictureUri}`,
         null,
         { responseType: GeneralConstants.CONSTANT_COMMON_HTTP_RESPONSE_TYPE_BLOB })
       .pipe(
         map(e => this.domSanitizer.bypassSecurityTrustUrl(URL.createObjectURL(e))),
         catchError(error => this.commonService.handleError(error))
       );
+  }
+
+  /**
+   * 方法：获取图片的Url地址
+   * @return {string} 图片的Url地址
+   */
+  public getPictureUrl(): string {
+    return `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_STORAGE}?${GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_STORAGE_TYPE_PICTURE}`;
   }
 }

@@ -3,6 +3,7 @@ import {Organization} from "@shared/models/general/organization";
 import {Option} from "@shared/models/general/option";
 import {Region} from "@shared/models/general/region";
 import {CacheService} from "@delon/cache";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Component({
   selector: 'nb-region',
@@ -35,7 +36,7 @@ export class RegionComponent implements OnInit {
 
   ngOnInit() {
     this.cacheService
-      .get<Region>('region')
+      .get<Region>(GeneralConstants.CONSTANT_COMMON_CACHE_REGION)
       .subscribe(region => {
         let options = this.transform(this.locate(region, this.topCode));
 
@@ -129,7 +130,7 @@ export class RegionComponent implements OnInit {
    */
   private getLongitudeAndLatitude(code: string): void {
     this.cacheService
-      .get<Region>('region')
+      .get<Region>(GeneralConstants.CONSTANT_COMMON_CACHE_REGION)
       .subscribe((region: Region) => {
         let locatedRegion: Region = this.locate(region, code);
 

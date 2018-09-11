@@ -12,7 +12,7 @@ import {User} from "@shared/models/general/user";
 
 
 @Injectable({ providedIn: 'root' })
-export class UserExistsValidatorDirective implements AsyncValidator {
+export class UserExistsSyncValidatorDirective implements AsyncValidator {
 
   preValue: string = '';
   isUserExisted: boolean = false;

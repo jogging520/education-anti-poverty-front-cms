@@ -20,6 +20,7 @@ import { Exception500Component } from './exception/500.component';
 import {ACLGuard} from "@delon/acl";
 
 import * as GeneralConstants from "@shared/constants/general/general-constants";
+import {AuthenticationGuard} from "@shared/guards/authentication.guard";
 
 const routes: Routes = [
   {
@@ -29,11 +30,16 @@ const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard',
         component: DashboardComponent,
+        canActivate:[AuthenticationGuard],
         canLoad: [ ACLGuard ],
-        data: {guard: GeneralConstants.CONSTANT_COMMON_PRIVILEGE_COMPONENT_DASHBOARD }
+        data: {guard: GeneralConstants.CONSTANT_COMMON_PRIVILEGE_COMPONENT_DASHBOARD, title: '总体展示' }
       },
       // 业务子模块
-      { path: 'system', loadChildren: './system/system.module#SystemModule', canLoad: [ ACLGuard ], data: { guard: 50100001 } }
+      { path: 'system',
+        loadChildren: './system/system.module#SystemModule',
+        canActivate:[AuthenticationGuard],
+        canLoad: [ ACLGuard ],
+        data: { guard: 50100001 } }
     ]
   },
   // 全屏布局

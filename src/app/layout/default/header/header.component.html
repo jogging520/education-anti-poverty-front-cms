@@ -12,12 +12,6 @@
         <i class="anticon anticon-menu-{{settings.layout.collapsed ? 'unfold' : 'fold'}}"></i>
       </div>
     </li>
-    <!-- Github Page -->
-    <li>
-      <a class="item" href="//github.com/cipchk/ng-alain" target="_blank">
-        <i class="anticon anticon-github"></i>
-      </a>
-    </li>
     <!-- Lock Page -->
     <li class="hidden-xs">
       <div class="item" [routerLink]="['/lock']">
@@ -36,30 +30,6 @@
     <!-- Notify -->
     <li>
       <header-notify></header-notify>
-    </li>
-    <!-- Task -->
-    <li class="hidden-xs">
-      <header-task></header-task>
-    </li>
-    <!-- App Icons -->
-    <li class="hidden-xs">
-      <header-icon></header-icon>
-    </li>
-    <!-- Settings -->
-    <li class="hidden-xs">
-      <nz-dropdown nzTrigger="click" nzPlacement="bottomRight">
-        <div class="item" nz-dropdown>
-          <i class="anticon anticon-setting"></i>
-        </div>
-        <div nz-menu style="width:200px;">
-          <div nz-menu-item>
-            <header-fullscreen></header-fullscreen>
-          </div>
-          <div nz-menu-item>
-            <header-storage></header-storage>
-          </div>
-        </div>
-      </nz-dropdown>
     </li>
     <li class="hidden-xs">
       <header-user></header-user>

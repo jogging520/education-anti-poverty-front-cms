@@ -1,19 +1,15 @@
-import {Inject, Injectable, Optional} from '@angular/core';
-import {BehaviorSubject, ReplaySubject, throwError} from "rxjs/index";
+import {Inject, Injectable} from '@angular/core';
+import {BehaviorSubject, Observable, ReplaySubject, throwError, timer} from "rxjs/index";
 import {User} from "@shared/models/general/user";
 import {_HttpClient, SettingsService} from "@delon/theme";
 import {CommonService} from "@shared/services/general/common.service";
-import {Router} from "@angular/router";
-import {ReuseTabService} from "@delon/abc";
-import {StartupService} from "@core/startup/startup.service";
 import {DA_SERVICE_TOKEN, TokenService} from "@delon/auth";
 import {mergeMap, catchError, map} from "rxjs/operators";
 import {environment} from "@env/environment";
 import {Token} from "@shared/models/general/token";
-import {Operation} from "@shared/models/general/operation";
-import {OperationService} from "@shared/services/general/operation.service";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 import {UserService} from "@shared/services/general/user.service";
+import {CacheService} from "@delon/cache";
 
 @Injectable({
   providedIn: 'root'
@@ -28,16 +24,11 @@ export class SessionService {
 
   constructor(
     private httpClient: _HttpClient,
-    private router: Router,
-    @Optional()
-    @Inject(ReuseTabService)
-    private reuseTabService: ReuseTabService,
-    private startupService: StartupService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService,
     private settingService: SettingsService,
+    private cacheService: CacheService,
     private commonService: CommonService,
-    private operationService: OperationService,
-    private userService: UserService
+    private userService: UserService,
   ) { }
 
   /**
@@ -45,8 +36,9 @@ export class SessionService {
    * @param {string} userName 用户名
    * @param {string} password 密码
    * @param {string} mobile 手机号码
+   * @return {Observable<any>} 登录返回的流
    */
-  public login(userName?: string, password?: string, mobile?: string): void {
+  public login(userName?: string, password?: string, mobile?: string): Observable<any> {
 
     if (!this.commonService.getSerialNo()) {
       this.commonService.setSerialNo();
@@ -59,7 +51,7 @@ export class SessionService {
     let encryptedMobile = encodeURIComponent(
       this.commonService.encrypt(btoa(mobile), true));
 
-    this.httpClient
+    return this.httpClient
       .post(
         `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_LOGIN}`,
         null,
@@ -112,83 +104,27 @@ export class SessionService {
                   email: user.emails[0]});
 
                 this.setAuth(user);
-              }),
-              catchError(error => this.commonService.handleError(error))
+              })
             )
-        }),
-        catchError(error => this.commonService.handleError(error))
-      )
-      .subscribe(
-        () => {
-          this.reuseTabService.clear();
-          this.startupService.load(this.commonService.getSerialNo()).catch();
-        },
-        () => {
-          this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
-        },
-        () => {
-          this.operationService
-            .createOperation(GeneralConstants.CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_LOGIN,
-              this.commonService.getSerialNo())
-            .pipe(
-              map((operation: Operation) => {
-                if (operation.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_STATUS_SUCCESS) {
-                  return throwError(new Error(operation.status));
-                }
-
-                return operation;
-              }),
-              catchError(error => this.commonService.handleError(error))
-            )
-            .subscribe();
-        }
+        })
       )
   }
 
   /**
    * 方法：登出
+   * @return {Observable<any>} 登出返回的流
    */
-  public logout() {
-    this.operationService
-      .createOperation(GeneralConstants.CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_LOGOUT,
-        this.commonService.setSerialNo())
+  public logout(): Observable<any> {
+    return this.httpClient
+      .delete(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_SESSION}`
+      )
       .pipe(
-        map((operation: Operation) => {
-          if (operation.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_STATUS_SUCCESS) {
-            return throwError(new Error(operation.status));
-          }
-
-          return operation;
+        map((data) => {
+          this.purgeAuth();
+          return data;
         }),
         catchError(error => this.commonService.handleError(error))
-      )
-      .subscribe(
-        () => {},
-        () => {
-          this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
-        },
-        () => {
-          this.commonService.setSerialNo();
-
-          this.httpClient
-            .delete(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_SESSION}`
-            )
-            .pipe(
-              catchError(error => this.commonService.handleError(error))
-            )
-            .subscribe(
-              () => {
-                this.purgeAuth();
-              },
-              (error) => {
-                console.log(error);
-                this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
-              },
-              () => {
-                this.purgeAuth();
-              }
-            );
-        });
+      );
   }
 
   /**
@@ -207,5 +143,14 @@ export class SessionService {
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
     this.commonService.clear();
+  }
+
+  public heartbeat(): void {
+    setInterval(() => {
+      this.cacheService
+        .get(GeneralConstants.CONSTANT_COMMON_CACHE_ACTIVE_TIME)
+        .subscribe((data) => {
+          console.log('heartbeat' + data);
+        })}, 10000);
   }
 }

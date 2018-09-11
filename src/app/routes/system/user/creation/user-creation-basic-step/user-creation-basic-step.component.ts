@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserCreationStepService} from "../../service/user-creation-step.service";
-import {existingUserValidator} from "@shared/validators/async/user-exists-validator";
+import {existingUserAsyncValidator} from "@shared/validators/general/user-exists-async-validator";
 import {CommonService} from "@shared/services/general/common.service";
 import {UserService} from "@shared/services/general/user.service";
 import {UploadFile} from "ng-zorro-antd";
-import {environment} from "@env/environment";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
+import {StorageService} from "@shared/services/general/storage.service";
 
 
 @Component({
@@ -24,12 +24,13 @@ export class UserCreationBasicStepComponent implements OnInit {
 
   pictureUrl: string = '';
 
-  image = {src: 'group1/M00/00/00/wKiWBVuTk1eAZ2tBAACopcp9hhM559.jpg?width=300&height=300'};
+  image = {src: 'group1/M00/00/00/wKiWBVuTk1eAZ2tBAACopcp9hhM559.jpg'};
 
   constructor(private formBuilder: FormBuilder,
               public item: UserCreationStepService,
               private commonService: CommonService,
-              private userService: UserService
+              private userService: UserService,
+              private storageService: StorageService
               ) { }
 
   ngOnInit() {
@@ -42,7 +43,7 @@ export class UserCreationBasicStepComponent implements OnInit {
       ],
       nb: [
         null,  [Validators.required, Validators.minLength(6)],
-          [existingUserValidator(this.commonService, this.userService)],
+          [existingUserAsyncValidator(this.commonService, this.userService)],
       ],
       pay_account: [
         null,
@@ -66,7 +67,7 @@ export class UserCreationBasicStepComponent implements OnInit {
     });
     this.formGroup.patchValue(this.item, {onlySelf: true, emitEvent: true});
 
-    this.pictureUrl = `${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_STORAGE}?${GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_STORAGE_TYPE_PICTURE}`;
+    this.pictureUrl = this.storageService.getPictureUrl();
 
   }
 
@@ -114,7 +115,7 @@ export class UserCreationBasicStepComponent implements OnInit {
   onChange(event): void {
     if (event.type === 'success') {
 
-      this.image.src = `${event.file.response[0].name}?width=300&height=300`;
+      this.image.src = `${event.file.response[0].name}`;
 
       console.log(this.image);
     }

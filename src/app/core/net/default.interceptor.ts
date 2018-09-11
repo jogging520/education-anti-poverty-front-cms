@@ -11,7 +11,7 @@ import {
   HttpResponse,
   HttpUserEvent
 } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import { mergeMap, catchError } from 'rxjs/operators';
 import { NzMessageService } from 'ng-zorro-antd';
 import { _HttpClient } from '@delon/theme';
@@ -63,20 +63,19 @@ export class DefaultInterceptor implements HttpInterceptor {
         // }
         break;
       case 401: // 未登录状态码
-        this.goTo(GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN);
-        break;
+        return throwError(event);
       case 403:
+        return throwError(event);
       case 404:
+        return throwError(event);
       case 500:
-        this.goTo(`/${event.status}`);
-        break;
+        return throwError(event);
       default:
         if (event instanceof HttpErrorResponse) {
           console.warn(
             GeneralConstants.CONSTANT_COMMON_CORS_ERROR,
             event,
           );
-          this.msg.error(GeneralConstants.CONSTANT_COMMON_CORS_ERROR);
         }
         break;
     }
@@ -98,9 +97,6 @@ export class DefaultInterceptor implements HttpInterceptor {
       headers: this.commonService.setHeaders(req),
       params: this.commonService.setParams(req)
     });
-
-    //console.log(req);
-    //console.log(newReq);
 
     return next.handle(newReq).pipe(
       mergeMap((event: any) => {

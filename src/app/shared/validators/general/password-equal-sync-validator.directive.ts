@@ -6,12 +6,12 @@ import {AsyncValidator, FormGroup, NG_VALIDATORS, ValidationErrors, Validator} f
   providers: [
     {
       provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => PasswordEqualValidatorDirective),
+      useExisting: forwardRef(() => PasswordEqualValidatorSyncDirective),
       multi: true
     }
   ]
 })
-export class PasswordEqualValidatorDirective implements Validator {
+export class PasswordEqualValidatorSyncDirective implements Validator {
 
   constructor() { }
 

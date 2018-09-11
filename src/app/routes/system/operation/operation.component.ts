@@ -8,6 +8,7 @@ import {tap, map} from "rxjs/operators";
 import {CommonService} from "@shared/services/general/common.service";
 import {SystemOperationViewComponent} from "./view/view.component";
 import {ActivatedRoute} from "@angular/router";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
 
 @Component({
   selector: 'app-system-operation',
@@ -127,12 +128,13 @@ export class SystemOperationComponent implements OnInit {
     this.operationService
       .queryOperations(this.conditions)
       .pipe(tap())
-      .subscribe((operation: Operation) => {
-          if (operation.status === 'ACTIVE') {
+      .subscribe(
+        (operation: Operation) => {
+          if (operation.status === GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_STATUS_ACTIVE) {
             data.push(operation);
           }},
         () => {
-          this.messageService.warning('获取操作记录数据失败。');
+          this.messageService.warning(GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_COMMON_ERROR);
           this.loading = false;
         },
         () => {

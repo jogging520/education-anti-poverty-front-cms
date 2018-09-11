@@ -3,6 +3,12 @@ import { Router } from '@angular/router';
 import { SettingsService } from '@delon/theme';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import {SessionService} from "@shared/services/general/session.service";
+import * as GeneralConstants from "@shared/constants/general/general-constants";
+import {catchError, map} from "rxjs/internal/operators";
+import {Operation} from "@shared/models/general/operation";
+import {OperationService} from "@shared/services/general/operation.service";
+import {throwError} from "rxjs/index";
+import {CommonService} from "@shared/services/general/common.service";
 
 @Component({
   selector: 'header-user',
@@ -26,11 +32,46 @@ export class HeaderUserComponent {
     public settings: SettingsService,
     private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
-    private passportService: SessionService
+    private sessionService: SessionService,
+    private commonService: CommonService,
+    private operationService: OperationService,
   ) {}
 
   logout() {
-    this.passportService.logout();
-    this.router.navigateByUrl(this.tokenService.login_url).catch();
+    this.operationService
+      .createOperation(GeneralConstants.CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_LOGOUT,
+        this.commonService.setSerialNo())
+      .pipe(
+        map((operation: Operation) => {
+          if (operation.status !== GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_STATUS_SUCCESS) {
+            return throwError(new Error(operation.status));
+          }
+
+          return operation;
+        }),
+        catchError(error => this.commonService.handleError(error))
+      )
+      .subscribe(
+        () => {
+        },
+        () => {
+          this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
+        },
+        () => {
+          this.commonService.setSerialNo();
+
+          this.sessionService
+            .logout()
+            .subscribe(
+              () => {},
+              (error) => {
+                catchError(error => this.commonService.handleError(error))
+                this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
+              },
+              () => {
+                this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
+              }
+            );
+        });
   }
 }
