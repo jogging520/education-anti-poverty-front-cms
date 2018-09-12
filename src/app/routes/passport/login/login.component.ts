@@ -206,6 +206,12 @@ export class UserLoginComponent implements OnInit, OnDestroy {
 
   // endregion
 
+  public onChange(event: any): void {
+    if (this.error) {
+      this.error = '';
+    }
+  }
+
   ngOnDestroy(): void {
     if (this.interval$) clearInterval(this.interval$);
   }

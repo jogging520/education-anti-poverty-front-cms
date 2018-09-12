@@ -84,14 +84,16 @@ export const CONSTANT_COMMON_LISTEN_KEY_EVENT_ARGUMENTS: string                 
 /**
  * 心跳定义
  */
-export const CONSTANT_COMMON_IDLE_INTERVAL:number                                = 10000; //心跳的时间间隔（毫秒）定义
-export const CONSTANT_COMMON_IDLE_NO_INTERACTIVE_TIME: number                    = 30000; //判断无交互的时间间隔
+export const CONSTANT_COMMON_IDLE_INTERVAL:number                                      = 10000; //心跳的时间间隔（毫秒）定义
+export const CONSTANT_COMMON_IDLE_NO_INTERACTIVE_TIME: number                          = 300000; //判断无交互的时间间隔
 export const CONSTANT_COMMON_HEART_BEAT_INTERVAL:number                                = 10000; //心跳的时间间隔（毫秒）定义
 
 /**
  * 常量数据定义
  */
 export const CONSTANT_COMMON_YESTERDAY_MICRO_SECOND: number                            = 86400000;  //一天的毫秒数
+
+
 
 /**
  * MODULE 模块常量定义
