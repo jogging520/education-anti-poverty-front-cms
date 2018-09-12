@@ -19,6 +19,7 @@ import { ShowAuthedDirective } from './directives/show-authed.directive';
 import { PasswordEqualValidatorSyncDirective } from './validators/general/password-equal-sync-validator.directive';
 import { ImagePipe } from './pipes/general/image.pipe';
 import { EventListenerDirective } from './directives/event-listener.directive';
+import { MarkdownPipe } from './pipes/general/markdown.pipe';
 
 const THIRDMODULES = [
   NgZorroAntdModule,
@@ -29,7 +30,7 @@ const THIRDMODULES = [
 // topCode: your componets & directives
 const COMPONENTS = [RegionComponent, OrganizationComponent];
 const DIRECTIVES = [ShowAuthedDirective, PasswordEqualValidatorSyncDirective, EventListenerDirective];
-const PIPES = [UserRegionPipe, ImagePipe];
+const PIPES = [UserRegionPipe, ImagePipe, MarkdownPipe];
 // endregion
 
 @NgModule({
@@ -52,7 +53,7 @@ const PIPES = [UserRegionPipe, ImagePipe];
     // your components
     ...COMPONENTS,
     ...DIRECTIVES,
-    ...PIPES
+    ...PIPES,
   ],
   exports: [
     CommonModule,
