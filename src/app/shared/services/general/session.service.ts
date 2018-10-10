@@ -155,6 +155,7 @@ export class SessionService implements OnDestroy {
 
   /**
    * 方法：计算idle时间（根据激活的时间和当前时间的时间差判断，是否跳转到登录页面）
+   * 激活时间是在startup（包括登录）后做初始化更新，然后通过指令方式在每一个layout中定期更新
    */
   public idle(): void {
     this.idleInterval = setInterval(() => {
@@ -171,7 +172,8 @@ export class SessionService implements OnDestroy {
           if (currentTime - Number(activeTime) > GeneralConstants.CONSTANT_COMMON_IDLE_NO_INTERACTIVE_TIME) {
             this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
           }
-        })}, GeneralConstants.CONSTANT_COMMON_IDLE_INTERVAL);
+        })
+    }, GeneralConstants.CONSTANT_COMMON_IDLE_INTERVAL);
   }
 
   /**
@@ -191,6 +193,19 @@ export class SessionService implements OnDestroy {
         .pipe()
         .subscribe((token: Token) => {
           console.log(token);
+
+          this.tokenService.set({
+            session: token.session,
+            user: token.user,
+            loginTime: new Date().getTime(),
+            lifeTime: token.lifeTime,
+            token: token.jwt,
+            downPublicKey: token.downPublicKey,
+            upPrivateKey: token.upPrivateKey,
+            roles: this.tokenService.get().roles,
+            permissions: this.tokenService.get().permissions,
+            affiliations: this.tokenService.get().affiliations
+          });
 
         });
     }, GeneralConstants.CONSTANT_COMMON_HEART_BEAT_INTERVAL)
