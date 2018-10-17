@@ -213,7 +213,7 @@ export class CommonService {
    * 方法：获取前一天时间的值
    * @return {number} 前一天时间
    */
-  public static lastDate(): number {
+  public static beforeDate(): number {
      return new Date().getTime() - GeneralConstants.CONSTANT_COMMON_YESTERDAY_MICRO_SECOND;
   }
 

@@ -3,14 +3,14 @@ export class Region {
   code: string;
   name: string;
   type: string;
-  category?: string;
+  category: string;
   level: string;
   longitude: number;
   latitude: number;
-  createTime?: string;
-  timestamp?: string;
+  createTime: string;
+  timestamp: string;
   status: string;
   serialNo: string;
-  description: string;
-  children: Region[];
+  description?: string;
+  children?: Region[];
 }

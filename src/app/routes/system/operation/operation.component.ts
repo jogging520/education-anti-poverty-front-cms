@@ -112,7 +112,7 @@ export class SystemOperationComponent implements OnInit {
    * 方法：默认初始化查询操作记录
    */
   private queryDefaultOperations(): void {
-    this.conditions.fromCreateTime = CommonService.lastDate();
+    this.conditions.fromCreateTime = CommonService.beforeDate();
     this.conditions.toCreateTime = CommonService.currentDate();
     this.queryOperations();
   }
