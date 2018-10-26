@@ -109,7 +109,7 @@ export class SessionService implements OnDestroy {
                 this.settingService.setUser({
                   name: decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))),
                   avatar: user.avatar,
-                  email: user.emails[0]});
+                  email: user.email});
 
                 this.setAuth(user);
               })
@@ -212,11 +212,19 @@ export class SessionService implements OnDestroy {
   }
 
   /**
+   * 方法：清理定时器
+   */
+  public clearIntervals(): void {
+    clearInterval(this.idleInterval);
+    clearInterval(this.heartbeatInterval);
+  }
+
+
+  /**
    * 方法：销毁的时候要清理掉定时器
    */
   ngOnDestroy(): void {
-    clearInterval(this.idleInterval);
-    clearInterval(this.heartbeatInterval);
+    this.clearIntervals();
   }
 
 }

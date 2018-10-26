@@ -6,8 +6,8 @@ export class Operation {
   user: string;
   session: string;
   businessType: string;
-  createTime: string;
-  timestamp: string;
+  createTime: Date;
+  timestamp: Date;
   status: string;
   description?: string;
   children?: Operation[];

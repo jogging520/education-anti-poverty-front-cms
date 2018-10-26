@@ -86,7 +86,7 @@ export const CONSTANT_COMMON_LISTEN_KEY_EVENT_ARGUMENTS: string                 
  */
 export const CONSTANT_COMMON_IDLE_INTERVAL:number                                      = 10000; //心跳的时间间隔（毫秒）定义
 export const CONSTANT_COMMON_IDLE_NO_INTERACTIVE_TIME: number                          = 300000; //判断无交互的时间间隔
-export const CONSTANT_COMMON_HEART_BEAT_INTERVAL:number                                = 20000; //心跳的时间间隔（毫秒）定义
+export const CONSTANT_COMMON_HEART_BEAT_INTERVAL:number                                = 30000; //心跳的时间间隔（毫秒）定义
 
 /**
  * 常量数据定义

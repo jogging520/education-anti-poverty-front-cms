@@ -54,6 +54,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.commonService.clear();
+    this.sessionService.clearIntervals();
   }
 
   // topCode: fields
