@@ -9,8 +9,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { SettingsService, TitleService } from '@delon/theme';
 import { VERSION as VERSION_ALAIN } from '@delon/theme';
-import { VERSION as VERSION_ZORRO } from 'ng-zorro-antd';
-import {SessionService} from "@shared/services/general/session.service";
+import { VERSION as VERSION_ZORRO } from 'ng-zorro-antd'
 
 @Component({
   selector: 'app-root',
@@ -36,7 +35,7 @@ export class AppComponent implements OnInit {
     private settings: SettingsService,
     private router: Router,
     private titleSrv: TitleService,
-    private sessionService: SessionService
+
   ) {
     renderer.setAttribute(
       el.nativeElement,
@@ -54,8 +53,5 @@ export class AppComponent implements OnInit {
     this.router.events
       .pipe(filter(evt => evt instanceof NavigationEnd))
       .subscribe(() => this.titleSrv.setTitle());
-
-    this.sessionService
-      .heartbeat();
   }
 }

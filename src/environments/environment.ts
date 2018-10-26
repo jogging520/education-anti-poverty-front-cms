@@ -3,8 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  serverUrl:          `http://223.105.5.116:9090/`,
-  webSocketUrl:       `ws://223.105.5.116:9090/`,
+  serverUrl:          `http://117.157.24.68:9001/`,
+  webSocketUrl:       `ws://117.157.24.68:9001/`,
   production:         false,
   useHash:            true,
   hmr:                false,

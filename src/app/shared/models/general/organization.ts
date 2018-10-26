@@ -3,13 +3,13 @@ export class Organization {
   code: string;
   name: string;
   type: string;
-  category?: string;
+  category: string;
   region: string;
   parent?: string;
-  createTime?: string;
-  timestamp?: string;
+  createTime: string;
+  timestamp: string;
   status: string;
   serialNo: string;
-  description: string;
+  description?: string;
   children?: Organization[];
 }

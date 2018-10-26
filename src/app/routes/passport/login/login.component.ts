@@ -2,7 +2,7 @@ import { SettingsService } from '@delon/theme';
 import {Component, Inject, OnDestroy, OnInit, Optional} from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { NzMessageService, NzModalService } from 'ng-zorro-antd';
+import { NzModalService } from 'ng-zorro-antd';
 import { SocialService, SocialOpenType } from '@delon/auth';
 import { environment } from '@env/environment';
 import {SessionService} from "@shared/services/general/session.service";
@@ -30,7 +30,6 @@ export class UserLoginComponent implements OnInit, OnDestroy {
   constructor(
     fb: FormBuilder,
     private router: Router,
-    public messageService: NzMessageService,
     private modalSrv: NzModalService,
     private settingsService: SettingsService,
     private socialService: SocialService,
@@ -54,7 +53,8 @@ export class UserLoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
+    this.commonService.clear();
+    this.sessionService.clearIntervals();
   }
 
   // topCode: fields
@@ -206,6 +206,12 @@ export class UserLoginComponent implements OnInit, OnDestroy {
   }
 
   // endregion
+
+  public onChange(event: any): void {
+    if (this.error) {
+      this.error = '';
+    }
+  }
 
   ngOnDestroy(): void {
     if (this.interval$) clearInterval(this.interval$);

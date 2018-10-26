@@ -1,5 +1,5 @@
-import {Inject, Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, ReplaySubject, throwError, timer} from "rxjs/index";
+import {Inject, Injectable, OnDestroy} from '@angular/core';
+import {BehaviorSubject, Observable, ReplaySubject, throwError} from "rxjs/index";
 import {User} from "@shared/models/general/user";
 import {_HttpClient, SettingsService} from "@delon/theme";
 import {CommonService} from "@shared/services/general/common.service";
@@ -10,11 +10,18 @@ import {Token} from "@shared/models/general/token";
 import * as GeneralConstants from "@shared/constants/general/general-constants";
 import {UserService} from "@shared/services/general/user.service";
 import {CacheService} from "@delon/cache";
+import {defaultIfEmpty} from "rxjs/internal/operators";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
 })
-export class SessionService {
+export class SessionService implements OnDestroy {
+
+  //激活时间定时器
+  private idleInterval: any;
+  //token定时器
+  private heartbeatInterval: any;
 
   private currentUserSubject = new BehaviorSubject<User>(new User());
   public currentUser = this.currentUserSubject.asObservable();
@@ -24,6 +31,7 @@ export class SessionService {
 
   constructor(
     private httpClient: _HttpClient,
+    private router: Router,
     @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService,
     private settingService: SettingsService,
     private cacheService: CacheService,
@@ -101,7 +109,7 @@ export class SessionService {
                 this.settingService.setUser({
                   name: decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))),
                   avatar: user.avatar,
-                  email: user.emails[0]});
+                  email: user.email});
 
                 this.setAuth(user);
               })
@@ -145,12 +153,78 @@ export class SessionService {
     this.commonService.clear();
   }
 
-  public heartbeat(): void {
-    setInterval(() => {
+  /**
+   * 方法：计算idle时间（根据激活的时间和当前时间的时间差判断，是否跳转到登录页面）
+   * 激活时间是在startup（包括登录）后做初始化更新，然后通过指令方式在每一个layout中定期更新
+   */
+  public idle(): void {
+    this.idleInterval = setInterval(() => {
       this.cacheService
         .get(GeneralConstants.CONSTANT_COMMON_CACHE_ACTIVE_TIME)
-        .subscribe((data) => {
-          console.log('heartbeat' + data);
-        })}, 10000);
+        .pipe(
+          defaultIfEmpty(() => {
+            clearInterval(this.idleInterval)
+          })
+        )
+        .subscribe((activeTime) => {
+          const currentTime = new Date().getTime();
+
+          if (currentTime - Number(activeTime) > GeneralConstants.CONSTANT_COMMON_IDLE_NO_INTERACTIVE_TIME) {
+            this.router.navigate([GeneralConstants.CONSTANT_COMMON_ROUTE_LOGIN]).catch();
+          }
+        })
+    }, GeneralConstants.CONSTANT_COMMON_IDLE_INTERVAL);
   }
+
+  /**
+   * 方法：心跳（与服务端的心跳，更换最新令牌）
+   */
+  public heartbeat(): void {
+
+    const tokenData = this.tokenService.get();
+    if (!tokenData || !tokenData.token) {
+      clearInterval(this.heartbeatInterval);
+      return;
+    }
+
+    this.heartbeatInterval = setInterval(() => {
+      this.httpClient
+        .put(`${environment.serverUrl}${GeneralConstants.CONSTANT_COMMON_ROUTE_PATH_SESSION}`)
+        .pipe()
+        .subscribe((token: Token) => {
+          console.log(token);
+
+          this.tokenService.set({
+            session: token.session,
+            user: token.user,
+            loginTime: new Date().getTime(),
+            lifeTime: token.lifeTime,
+            token: token.jwt,
+            downPublicKey: token.downPublicKey,
+            upPrivateKey: token.upPrivateKey,
+            roles: this.tokenService.get().roles,
+            permissions: this.tokenService.get().permissions,
+            affiliations: this.tokenService.get().affiliations
+          });
+
+        });
+    }, GeneralConstants.CONSTANT_COMMON_HEART_BEAT_INTERVAL)
+  }
+
+  /**
+   * 方法：清理定时器
+   */
+  public clearIntervals(): void {
+    clearInterval(this.idleInterval);
+    clearInterval(this.heartbeatInterval);
+  }
+
+
+  /**
+   * 方法：销毁的时候要清理掉定时器
+   */
+  ngOnDestroy(): void {
+    this.clearIntervals();
+  }
+
 }

@@ -6,20 +6,20 @@ export class User {
   salt?: string;
   realName: string;
   avatar?: string;
-  appTypes?: string[];
-  category?: string;
+  appTypes: string[];
+  category: string;
   roles: string[];
   permissions?: number[];
   affiliations: {
     common: string[];
     default: string[];
   };
-  mobiles: string[];
-  emails?: string[];
-  wechates?: string[];
-  createTime?: string;
-  timestamp?: string;
-  status?: string;
-  serialNo?: string;
+  mobile?: string;
+  email?: string;
+  weChat?: string;
+  createTime: string;
+  timestamp: string;
+  status: string;
+  serialNo: string;
   description?: string;
 }

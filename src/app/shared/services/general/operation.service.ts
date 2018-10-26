@@ -43,6 +43,8 @@ export class OperationService {
       user: tokenData.user,
       session: tokenData.session,
       businessType: businessType,
+      createTime: new Date(),
+      timestamp: new Date(),
       status: GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_STATUS_ACTIVE,
       description: GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_OPERATION_DESCRIPTION
     };

@@ -57,7 +57,11 @@ export class OperationResolver implements Resolve<any> {
             Object.keys(originalAppTypes.parameters)
               .forEach((key) => {
                 if (originalAppTypes.parameters[key])
-                  operationParams.channelTypes.push({'text': originalAppTypes.parameters[key], 'value': key});
+                  operationParams.channelTypes.push(
+                    {
+                      text : originalAppTypes.parameters[key],
+                      value: key
+                    });
               });
           }
 
@@ -67,21 +71,32 @@ export class OperationResolver implements Resolve<any> {
             Object.keys(originalBusinessTypes.parameters)
               .forEach((key) => {
                 if (originalBusinessTypes.parameters[key])
-                  operationParams.businessTypes.push({'text': originalBusinessTypes.parameters[key], 'value': key});
+                  operationParams.businessTypes.push(
+                    {
+                      text: originalBusinessTypes.parameters[key],
+                      value: key
+                    });
               });
           }
 
           if (originalUsers) {
             originalUsers.forEach((user: User) => {
               if (user.status === GeneralConstants.CONSTANT_MODULE_SHARED_MODEL_USER_STATUS_ACTIVE) {
-                operationParams.users.push({'text': decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))), 'value': user.id});
+                operationParams.users.push(
+                  {
+                    text: decodeURIComponent(escape(atob(this.commonService.decrypt(user.realName)))),
+                    value: user.id
+                  });
               }
             });
           }
 
           if (tokenData.roles && tokenData.roles.indexOf('admin') > -1) {
-            operationParams.users.push({'text': SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_WHOLE_USER_LABEL,
-              'value': SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_WHOLE_USER_VALUE});
+            operationParams.users.push(
+              {
+                text: SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_WHOLE_USER_LABEL,
+                value: SystemConstants.CONSTANT_MODULE_SYSTEM_COMPONENT_OPERATION_WHOLE_USER_VALUE
+              });
           }
 
           return operationParams;

@@ -3,9 +3,9 @@ export class Storage {
   type: string;
   name: string;
   category: string;
-  createTime?: string;
-  timestamp?: string;
-  status?: string;
-  serialNo?: string;
+  createTime: string;
+  timestamp: string;
+  status: string;
+  serialNo: string;
   description?: string;
 }

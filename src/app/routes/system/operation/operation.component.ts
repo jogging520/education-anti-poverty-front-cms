@@ -38,7 +38,7 @@ export class SystemOperationComponent implements OnInit {
         let formattedUser = '';
 
         this.users
-          .forEach((user, index, array) => {
+          .forEach((user) => {
             if (operation.user.toLocaleUpperCase() === user.value.toLocaleUpperCase())
               formattedUser = user.text;
           });
@@ -52,7 +52,7 @@ export class SystemOperationComponent implements OnInit {
         let formattedAppType = '';
 
         this.channelTypes
-          .forEach((channelType, index, array) => {
+          .forEach((channelType) => {
           if (operation.appType.toLocaleUpperCase() === channelType.value.toLocaleUpperCase())
             formattedAppType = channelType.text;
           });
@@ -66,7 +66,7 @@ export class SystemOperationComponent implements OnInit {
         let formattedBusinessType = '';
 
         this.businessTypes
-          .forEach((businessType, index, array) => {
+          .forEach((businessType) => {
             if (operation.businessType.toLocaleUpperCase() === businessType.value.toLocaleUpperCase())
               formattedBusinessType = businessType.text;
           });
@@ -112,7 +112,7 @@ export class SystemOperationComponent implements OnInit {
    * 方法：默认初始化查询操作记录
    */
   private queryDefaultOperations(): void {
-    this.conditions.fromCreateTime = CommonService.lastDate();
+    this.conditions.fromCreateTime = CommonService.beforeDate();
     this.conditions.toCreateTime = CommonService.currentDate();
     this.queryOperations();
   }
@@ -149,8 +149,7 @@ export class SystemOperationComponent implements OnInit {
    * @param event 事件
    */
   private onCreateTimeOk(event: any): void {
-    this.conditions.fromCreateTime = event[0];
-    this.conditions.toCreateTime = event[1];
+    this.setConditionTime();
   }
 
   /**
@@ -158,6 +157,13 @@ export class SystemOperationComponent implements OnInit {
    * @param event 事件
    */
   private onCreateTimeChange(event: any): void {
+    this.setConditionTime();
+  }
+
+  /**
+   * 方法：根据事件设置条件中的事件条件
+   */
+  private setConditionTime(): void {
     this.conditions.fromCreateTime = event[0];
     this.conditions.toCreateTime = event[1];
   }
