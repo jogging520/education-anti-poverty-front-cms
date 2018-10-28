@@ -39,6 +39,11 @@ const routes: Routes = [
         loadChildren: './system/system.module#SystemModule',
         canActivate:[AuthenticationGuard],
         canLoad: [ ACLGuard ],
+        data: { guard: 50100001 } },
+      { path: 'policy',
+        loadChildren: './policy/policy.module#PolicyModule',
+        canActivate:[AuthenticationGuard],
+        canLoad: [ ACLGuard ],
         data: { guard: 50100001 } }
     ]
   },

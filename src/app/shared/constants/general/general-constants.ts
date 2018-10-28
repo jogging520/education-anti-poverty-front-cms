@@ -59,6 +59,7 @@ export const CONSTANT_COMMON_ROUTE_PATH_FORBIDDEN: string                       
 export const CONSTANT_COMMON_ROUTE_PATH_NOT_FOUND: string                              = '404'; //未找到路由的path路径
 export const CONSTANT_COMMON_ROUTE_PATH_SERVER_INTERNAL_ERROR: string                  = '500'; //服务器内部错误路由的path路径
 export const CONSTANT_COMMON_ROUTE_PATH_CALL_BACK: string                              = 'callback'; //回调路由的path路径
+export const CONSTANT_COMMON_ROUTE_PATH_POLICY: string                                 = 'cms/policies'; //政策路由的path路径
 
 /**
  * 权限定义
@@ -123,6 +124,8 @@ export const CONSTANT_MODULE_SHARED_MODEL_REGION_STATUS_ACTIVE: string          
 
 export const CONSTANT_MODULE_SHARED_MODEL_STORAGE_FILE_ATTRIBUTE_NAME: string          = 'file';         //存储类中的文件属性名称定义常量
 export const CONSTANT_MODULE_SHARED_MODEL_STORAGE_TYPE_PICTURE: string                 = 'type=picture';         //存储类中的图片类型定义常量
+
+export const CONSTANT_MODULE_SHARED_MODEL_POLICY_STATUS_ACTIVE: string                 = 'ACTIVE';         //政策类中的操作在用状态定义常量
 
 export const CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_LOGIN: string      = 'LOGIN';  //操作记录登录业务类型定义常量
 export const CONSTANT_MODULE_SHARED_SERVICE_OPERATION_BUSINESS_TYPE_LOGOUT: string     = 'LOGOUT';  //操作记录登出业务类型定义常量
